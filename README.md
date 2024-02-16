@@ -1,5 +1,7 @@
 # bubblebobble
  In this house we do be cooking some games, innit??
+ a bo'ol o' wo'a
+##vamosahacerelmejor game
  
  Name:Aniol Lopez Ortega
  Mage level: Pot developer
