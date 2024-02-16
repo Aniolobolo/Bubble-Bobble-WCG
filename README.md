@@ -1,19 +1,12 @@
 # bubblebobble
- Fortnite battle pass
-I just shit out my ass
-Booted up my PC, 'cause I need, need
-To get that Fortnite battle pass
-I like Fortnite, did I mention Fortnite?
-I like Fortnite, it's night time
-I mean it's five o' clock, that's basically night time
-Y'all remember Cartoon Network, adventure time?
-Fortnite battle pass
-I just shit out my ass
-Booted up my PC, 'cause I need, need
-To get that Fortnite battle pass
- (WizardCookingGames Product)
+ In this house we do be cooking some games in it
+ 
+ Name:Aniol Lopez Ortega
+ Mage level: Pot developer
+ Skill: fireball, testicular torsion, morph into neco-arc
 
+ Name:Asier Ulloa Garcia-Obledo
+ Mage level: Cook
+ Skill: fireball, testicular torsion,morph into parapa the rapper
 
-
-
-Dame pavos :C🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃
+ 
