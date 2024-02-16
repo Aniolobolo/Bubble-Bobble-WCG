@@ -16,5 +16,4 @@ To get that Fortnite battle pass
 
 
 
-
-No tngo opavos para comprar el pase de batlatlla :C
+Dame pavos :C🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃🦃
