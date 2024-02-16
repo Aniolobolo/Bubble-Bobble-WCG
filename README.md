@@ -12,3 +12,9 @@ I just shit out my ass
 Booted up my PC, 'cause I need, need
 To get that Fortnite battle pass
  (WizardCookingGames Product)
+
+
+
+
+
+No tngo opavos para comprar el pase de batlatlla :C
