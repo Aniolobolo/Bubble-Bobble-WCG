@@ -16,4 +16,4 @@ TODO: Write history
 TODO: Write credits
 ## License 🧙🏾‍♂️🧙🏾‍♂️
 TODO: Write license (pagar 509 rupias (bolivares))
-# esto es una kk porque no va HJOSAJHSAASBOfaGeuñgeGggGEwgwGG
+
