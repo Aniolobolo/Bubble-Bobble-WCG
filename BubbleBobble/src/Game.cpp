@@ -77,8 +77,8 @@ AppStatus Game::LoadResources()
 AppStatus Game::BeginPlay()
 {
     scene = new Scene();
-    soundEffects[2] = LoadSound("sound/Music/1-Main-Theme.ogg");
-    PlaySound(soundEffects[2]);
+    levelMusic = LoadMusicStream("sound/Music/1-Main-Theme.ogg");
+    PlayMusicStream(levelMusic);
     if (scene == nullptr)
     {
         LOG("Failed to allocate memory for Scene");
@@ -89,7 +89,6 @@ AppStatus Game::BeginPlay()
         LOG("Failed to initialise Scene");
         return AppStatus::ERROR;
     }
-
     return AppStatus::OK;
 }
 void Game::FinishPlay()
@@ -102,7 +101,7 @@ AppStatus Game::Update()
 {
     //Check if user attempts to close the window, either by clicking the close button or by pressing Alt+F4
     if(WindowShouldClose()) return AppStatus::QUIT;
-
+    UpdateMusicStream(levelMusic);
     switch (state)
     {
         case GameState::MAIN_MENU: 
@@ -119,6 +118,7 @@ AppStatus Game::Update()
         case GameState::PLAYING:  
             if (IsKeyPressed(KEY_ESCAPE))
             {
+                StopMusicStream(levelMusic);
                 FinishPlay();
                 state = GameState::MAIN_MENU;
             }
@@ -157,6 +157,7 @@ void Game::Render()
 }
 void Game::Cleanup()
 {
+    StopMusicStream(levelMusic);
     UnloadResources();
     CloseWindow();
 }

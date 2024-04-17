@@ -214,6 +214,12 @@ void Player::Update()
 	Sprite* sprite = dynamic_cast<Sprite*>(render);
 	sprite->Update();
 	Warp();
+
+	if (IsKeyPressed(KEY_ONE) || IsKeyPressed(KEY_TWO) || IsKeyPressed(KEY_THREE)) {
+		state = State::IDLE;
+		SetAnimation((int)PlayerAnim::IDLE_RIGHT);
+	}
+
 }
 void Player::MoveX()
 {
