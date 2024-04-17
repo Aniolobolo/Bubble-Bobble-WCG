@@ -3,6 +3,10 @@
 #include "ResourceManager.h"
 #include <stdio.h>
 
+Sound soundEffects[30];
+Music levelMusic;
+Music bossMusic;
+
 Game::Game()
 {
     state = GameState::MAIN_MENU;
@@ -30,6 +34,8 @@ AppStatus Game::Initialise(float scale)
 
     //Initialise window
     InitWindow((int)w, (int)h, "Bubble Bobble");
+    soundEffects[0] = LoadSound("sound/SoundEffects/Intro/TitleFX.wav");
+    PlaySound(soundEffects[0]);
 
     //Render texture initialisation, used to hold the rendering result so we can easily resize it
     target = LoadRenderTexture(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -71,6 +77,8 @@ AppStatus Game::LoadResources()
 AppStatus Game::BeginPlay()
 {
     scene = new Scene();
+    soundEffects[2] = LoadSound("sound/Music/1-Main-Theme.ogg");
+    PlaySound(soundEffects[2]);
     if (scene == nullptr)
     {
         LOG("Failed to allocate memory for Scene");
@@ -101,6 +109,8 @@ AppStatus Game::Update()
             if (IsKeyPressed(KEY_ESCAPE)) return AppStatus::QUIT;
             if (IsKeyPressed(KEY_SPACE))
             {
+                soundEffects[1] = LoadSound("sound/SoundEffects/Intro/CoinInsertedFX.wav");
+                PlaySound(soundEffects[1]);
                 if(BeginPlay() != AppStatus::OK) return AppStatus::ERROR;
                 state = GameState::PLAYING;
             }
