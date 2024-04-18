@@ -5,6 +5,7 @@
 Scene::Scene()
 {
 	player = nullptr;
+	player2 = nullptr;
     level = nullptr;
 	
 	camera.target = { 0, 0 };				//Center of the screen
@@ -26,6 +27,12 @@ Scene::~Scene()
 		player->Release();
 		delete player;
 		player = nullptr;
+	}
+	if (player2 != nullptr)
+	{
+		player2->Release();
+		delete player2;
+		player2 = nullptr;
 	}
     if (level != nullptr)
     {
@@ -55,6 +62,34 @@ AppStatus Scene::Init()
 		return AppStatus::ERROR;
 	}
 
+	//Create player
+	player2 = new Player2({ 0,0 }, eState::EIDLE, eLook::ERIGHT);
+	if (player2 == nullptr)
+	{
+		LOG("Failed to allocate memory for Player2");
+		return AppStatus::ERROR;
+	}
+	//Initialise player
+	if (player2->Initialise() != AppStatus::OK)
+	{
+		LOG("Failed to initialise Player2");
+		return AppStatus::ERROR;
+	}
+
+	//Create player
+	enemy1 = new Enemy({ 0,0 }, hState::EIDLE, hLook::ERIGHT);
+	if (enemy1 == nullptr)
+	{
+		LOG("Failed to allocate memory for Enemy");
+		return AppStatus::ERROR;
+	}
+	//Initialise player
+	if (enemy1->Initialise() != AppStatus::OK)
+	{
+		LOG("Failed to initialise Enemy");
+		return AppStatus::ERROR;
+	}
+
 	//Create level 
     level = new TileMap();
     if (level == nullptr)
@@ -76,6 +111,8 @@ AppStatus Scene::Init()
 	}
 	//Assign the tile map reference to the player to check collisions while navigating
 	player->SetTileMap(level);
+	player2->SetTileMap(level);
+	enemy1->SetTileMap(level);
 
     return AppStatus::OK;
 }
@@ -85,6 +122,7 @@ AppStatus Scene::LoadLevel(int stage)
 	int x, y, i;
 	Tile tile;
 	Point pos;
+	Point ePos;
 	int *map = nullptr;
 	Object *obj;
 	
@@ -104,7 +142,7 @@ AppStatus Scene::LoadLevel(int stage)
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
-			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
+			1,   1,   50,   0,   0,   0,   0,   0,   102,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   1,   1,   53,   0,   0,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,	  1,   1,   1,   1, 53, 0, 0, 1, 1, 1, 1,
 			1,   1,   51,  52,  54,   0,   0,   55,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52, 54, 0, 0, 55, 52, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
@@ -119,12 +157,13 @@ AppStatus Scene::LoadLevel(int stage)
 			1,   1,   51,  52,  54,   0,   0,   55,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52, 54, 0, 0, 55, 52, 1, 1,
 			1,   1,   50,  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 0,   0,   0,  0,   0, 0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
-			1,   1,   50,  100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,   0,   0,  0, 0, 0, 0, 0, 0, 1, 1,
+			1,   1,   50,  100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,   0,   0,  0, 0, 0, 0, 101, 0, 1, 1,
 			1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,	  1,   1,   1,  1, 1, 1, 1, 1, 1, 1, 1
 
 
 		};
 		player->InitScore();
+		player2->InitScore();
 	}
 	else if (stage == 2)
 	{
@@ -154,7 +193,7 @@ AppStatus Scene::LoadLevel(int stage)
 			2,   2,   56,  0,   2,   56,   0,   0,   2,   57,   60,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 2, 2,
 			2,   2,   56,  0,   2,   56,   0,   0,   2,   56,   0,   0,   0,   0,   0,   0, 0,  0,   0,  0,   0, 0,   0,   0,   0, 0, 0, 0, 0, 0, 2, 2,
 			2,   2,   56,   0,   61,   60,   0,   0,   61,   60,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 2, 2,
-			2,   2,   56,  100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,   0,   0,  0, 0, 0, 0, 0, 0, 2, 2,
+			2,   2,   56,  100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,   0,   0,  0, 0, 0, 0, 101, 0, 2, 2,
 			2,   2,   2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 59, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 		};
 	}
@@ -186,7 +225,7 @@ AppStatus Scene::LoadLevel(int stage)
 			10,   11,   62,   0,   0,   0,   0,   0,   7,   7,   7,   7,   7,   7,   65,   0,   0,   0,   7,   7,   7,	  7,   7,   7,   65, 0, 0, 0, 0, 0, 10, 11,
 			8,   9,   62,   0,   0,   0,   0,   0,   67,   64,   64,   64,   64,   64,   66,   0,   0,   0,   67,   64,   64,	64,   64,   64,   66, 0, 0, 0, 0, 0, 8, 9,
 			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	 0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,  100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,   0,   0,  0, 0, 0, 0, 0, 0, 8, 9,
+			8,   9,   62,  100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,   0,   0,  0, 0, 0, 0, 101, 0, 8, 9,
 			10,   11,   7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 10, 11,
 		};
 	}
@@ -213,6 +252,20 @@ AppStatus Scene::LoadLevel(int stage)
 				pos.x = x * TILE_SIZE;
 				pos.y = y * TILE_SIZE + TILE_SIZE - 1;
 				player->SetPos(pos);
+				map[i] = 0;
+			}
+			else if (tile == Tile::PLAYER2)
+			{
+				ePos.x = x * TILE_SIZE;
+				ePos.y = y * TILE_SIZE + TILE_SIZE - 1;
+				player2->SetPos(ePos);
+				map[i] = 0;
+			}
+			else if (tile == Tile::ENEMY1)
+			{
+				ePos.x = x * TILE_SIZE;
+				ePos.y = y * TILE_SIZE + TILE_SIZE - 1;
+				enemy1->SetPos(ePos);
 				map[i] = 0;
 			}
 			/*else if (tile == Tile::ITEM_APPLE)
@@ -298,6 +351,9 @@ void Scene::Update()
 
 	level->Update();
 	player->Update();
+	player2->Update();
+	enemy1->Update();
+
 	CheckCollisions();
 }
 void Scene::Render()
@@ -309,11 +365,15 @@ void Scene::Render()
 	{
 		RenderObjects(); 
 		player->Draw();
+		player2->Draw();
+		enemy1->Draw();
 	}
 	if (debug == DebugMode::SPRITES_AND_HITBOXES || debug == DebugMode::ONLY_HITBOXES)
 	{
 		RenderObjectsDebug(YELLOW);
 		player->DrawDebug(GREEN);
+		player2->DrawDebug(GREEN);
+		enemy1->DrawDebug(GREEN);
 	}
 
 	EndMode2D();
@@ -324,13 +384,15 @@ void Scene::Release()
 {
     level->Release();
 	player->Release();
+	player2->Release();
 	ClearLevel();
 }
 void Scene::CheckCollisions()
 {
-	AABB player_box, obj_box;
+	AABB player_box, player2_box, obj_box;
 	
 	player_box = player->GetHitbox();
+	player2_box = player2->GetHitbox();
 	auto it = objects.begin();
 	while (it != objects.end())
 	{
@@ -343,6 +405,15 @@ void Scene::CheckCollisions()
 			delete* it; 
 			//Erase the object from the vector and get the iterator to the next valid element
 			it = objects.erase(it); 
+		}
+		else if (player2_box.TestAABB(obj_box))
+		{
+			player2->IncrScore((*it)->Points());
+
+			//Delete the object
+			delete* it;
+			//Erase the object from the vector and get the iterator to the next valid element
+			it = objects.erase(it);
 		}
 		else
 		{

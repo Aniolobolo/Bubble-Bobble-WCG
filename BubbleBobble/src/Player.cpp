@@ -25,7 +25,7 @@ AppStatus Player::Initialise()
 	const int n = PLAYER_FRAME_SIZE;
 
 	ResourceManager& data = ResourceManager::Instance();
-	if (data.LoadTexture(Resource::IMG_PLAYER, "images/eric.png") != AppStatus::OK)
+	if (data.LoadTexture(Resource::IMG_PLAYER, "images/player.png") != AppStatus::OK)
 	{
 		return AppStatus::ERROR;
 	}
@@ -191,7 +191,7 @@ void Player::ChangeAnimRight()
 	look = Look::RIGHT;
 	switch (state)
 	{
-		case State::IDLE:	 SetAnimation((int)PlayerAnim::IDLE_RIGHT);    break; 
+		case State::IDLE:	 SetAnimation((int)PlayerAnim::IDLE_RIGHT);    break;
 		case State::WALKING: SetAnimation((int)PlayerAnim::WALKING_RIGHT); break;
 		case State::JUMPING: SetAnimation((int)PlayerAnim::JUMPING_RIGHT); break;
 		case State::FALLING: SetAnimation((int)PlayerAnim::FALLING_RIGHT); break;

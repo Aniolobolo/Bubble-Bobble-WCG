@@ -1,6 +1,8 @@
 #pragma once
 #include <raylib.h>
 #include "Player.h"
+#include "Player2.h"
+#include "Enemy.h"
 #include "TileMap.h"
 #include "Object.h"
 
@@ -28,6 +30,8 @@ private:
     void RenderGUI() const;
 
     Player *player;
+    Player2 *player2;
+    Enemy* enemy1;
     TileMap *level;
     int goal_score[3];
     int actualLevel;

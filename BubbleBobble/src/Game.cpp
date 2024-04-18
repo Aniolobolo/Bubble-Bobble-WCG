@@ -34,8 +34,7 @@ AppStatus Game::Initialise(float scale)
 
     //Initialise window
     InitWindow((int)w, (int)h, "Bubble Bobble");
-    soundEffects[0] = LoadSound("sound/SoundEffects/Intro/TitleFX.wav");
-    PlaySound(soundEffects[0]);
+    
 
     //Render texture initialisation, used to hold the rendering result so we can easily resize it
     target = LoadRenderTexture(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -61,6 +60,7 @@ AppStatus Game::Initialise(float scale)
     SetExitKey(0);
 
     return AppStatus::OK;
+    
 }
 AppStatus Game::LoadResources()
 {
@@ -71,6 +71,12 @@ AppStatus Game::LoadResources()
         return AppStatus::ERROR;
     }
     img_menu = data.GetTexture(Resource::IMG_MENU);
+    
+    if (data.LoadTexture(Resource::IMG_INSERTCOIN, "images/insertCoin.png") != AppStatus::OK)
+    {
+        return AppStatus::ERROR;
+    }
+    img_insertcoin = data.GetTexture(Resource::IMG_INSERTCOIN);
     
     return AppStatus::OK;
 }
@@ -108,9 +114,16 @@ AppStatus Game::Update()
             if (IsKeyPressed(KEY_ESCAPE)) return AppStatus::QUIT;
             if (IsKeyPressed(KEY_SPACE))
             {
+                state = GameState::INSERT_COIN;
+            }
+            break;
+        case GameState::INSERT_COIN:
+            if (IsKeyPressed(KEY_ESCAPE)) state = GameState::MAIN_MENU;
+            if (IsKeyPressed(KEY_SPACE))
+            {
                 soundEffects[1] = LoadSound("sound/SoundEffects/Intro/CoinInsertedFX.wav");
                 PlaySound(soundEffects[1]);
-                if(BeginPlay() != AppStatus::OK) return AppStatus::ERROR;
+                if (BeginPlay() != AppStatus::OK) return AppStatus::ERROR;
                 state = GameState::PLAYING;
             }
             break;
@@ -143,6 +156,10 @@ void Game::Render()
             DrawTexture(*img_menu, 0, 0, WHITE);
             break;
 
+        case GameState::INSERT_COIN:
+            DrawTexture(*img_insertcoin, 0, 0, WHITE);
+            break;
+
         case GameState::PLAYING:
             scene->Render();
             break;
@@ -165,6 +182,7 @@ void Game::UnloadResources()
 {
     ResourceManager& data = ResourceManager::Instance();
     data.ReleaseTexture(Resource::IMG_MENU);
+    data.ReleaseTexture(Resource::IMG_INSERTCOIN);
 
     UnloadRenderTexture(target);
 }
