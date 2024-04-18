@@ -5,6 +5,8 @@
 #include "Globals.h"
 #include <raymath.h>
 
+Sound playerSoundEffects[30];
+
 Player::Player(const Point& p, State s, Look view) :
 	Entity(p, PLAYER_PHYSICAL_WIDTH, PLAYER_PHYSICAL_HEIGHT, PLAYER_FRAME_SIZE, PLAYER_FRAME_SIZE)
 {
@@ -162,6 +164,8 @@ void Player::StartFalling()
 }
 void Player::StartJumping()
 {
+	playerSoundEffects[0] = LoadSound("sound/SoundEffects/Characters/JumpFX.wav");
+	PlaySound(playerSoundEffects[0]);
 	dir.y = -PLAYER_JUMP_FORCE;
 	state = State::JUMPING;
 	if (IsLookingRight())	SetAnimation((int)PlayerAnim::JUMPING_RIGHT);
