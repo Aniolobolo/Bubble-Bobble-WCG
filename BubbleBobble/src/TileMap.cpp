@@ -94,9 +94,6 @@ void TileMap::InitTileDictionary()
 	dict_rect[(int)Tile::SHADOW_EDGEDOWN4] = { 14 * n,  5 * n, n, n };
 	dict_rect[(int)Tile::SHADOW_PLATLEFT4] = { 15 * n,  5 * n, n, n };
 
-	dict_rect[(int)Tile::PIMIENTO] = { 0,  0, n, n };
-	dict_rect[(int)Tile::BERENJENA] = { 1 * n,  0, n, n };
-
 
 	//dict_rect[(int)Tile::LADDER_L] = { 2 * n, 2 * n, n, n };
 	//dict_rect[(int)Tile::LADDER_R] = { 3 * n, 2 * n, n, n };

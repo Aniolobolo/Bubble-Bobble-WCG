@@ -7,12 +7,13 @@ Scene::Scene()
 	player = nullptr;
 	player2 = nullptr;
     level = nullptr;
-	
 	camera.target = { 0, 0 };				//Center of the screen
 	camera.offset = { 0, MARGIN_GUI_Y };	//Offset from the target (center of the screen)
 	camera.rotation = 0.0f;					//No rotation
 	camera.zoom = 1.0f;						//Default zoom
-
+	eBubblingTime = 0;
+	eTimeSpawnX = GetRandomValue(-1, 1);
+	eTimeSpawnY = GetRandomValue(-1, 1);
 	debug = DebugMode::OFF;
 
 	actualLevel = 1;
@@ -22,6 +23,7 @@ Scene::Scene()
 }
 Scene::~Scene()
 {
+	// Release and delete player objects
 	if (player != nullptr)
 	{
 		player->Release();
@@ -34,17 +36,28 @@ Scene::~Scene()
 		delete player2;
 		player2 = nullptr;
 	}
-    if (level != nullptr)
-    {
-		level->Release();
-        delete level;
-        level = nullptr;
-    }
-	for (Entity* obj : objects)
+
+	// Release and delete level
+	if (level != nullptr)
 	{
-		delete obj;
+		level->Release();
+		delete level;
+		level = nullptr;
 	}
-	objects.clear();
+
+	// Delete objects from the vector efficiently
+	for (auto it = objects.begin(); it != objects.end(); ++it)
+	{
+		delete* it; // Dereference the iterator to get the object and delete it
+	}
+	objects.clear(); // Clear the vector after deleting elements
+
+	// Delete bubbles from the vector efficiently (assuming bubbles is a vector)
+	for (auto it = bubbles.begin(); it != bubbles.end(); ++it)
+	{
+		delete* it;
+	}
+	bubbles.clear();
 }
 AppStatus Scene::Init()
 {
@@ -125,6 +138,7 @@ AppStatus Scene::LoadLevel(int stage)
 	Point ePos;
 	int *map = nullptr;
 	Object *obj;
+	Bubble* bubl;
 	
 	ClearLevel();
 
@@ -152,7 +166,7 @@ AppStatus Scene::LoadLevel(int stage)
 			1,   1,   51,  52,  54,   0,   0,   55,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52, 54, 0, 0, 55, 52, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
-			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
+			1,   1,   50,   0,   0,   0,   0,   103,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   1,   1,   53,   0,   0,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,	  1,   1,   1,   1, 53, 0, 0, 1, 1, 1, 1,
 			1,   1,   51,  52,  54,   0,   0,   55,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52, 54, 0, 0, 55, 52, 1, 1,
 			1,   1,   50,  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
@@ -164,6 +178,7 @@ AppStatus Scene::LoadLevel(int stage)
 		};
 		player->InitScore();
 		player->InitLife();
+
 		player2->InitScore();
 	}
 	else if (stage == 2)
@@ -262,6 +277,15 @@ AppStatus Scene::LoadLevel(int stage)
 				player2->SetPos(ePos);
 				map[i] = 0;
 			}
+			else if (tile == Tile::BUBBLE)
+			{
+				pos.x = x * TILE_SIZE;
+				pos.y = y * TILE_SIZE + TILE_SIZE - 1;
+				bubl = new Bubble(pos, Direction::LEFT);
+
+				bubbles.push_back(bubl);
+				map[i] = 0;
+			}
 			else if (tile == Tile::ENEMY1)
 			{
 				ePos.x = x * TILE_SIZE;
@@ -318,11 +342,36 @@ AppStatus Scene::LoadLevel(int stage)
 	delete map;
 	return AppStatus::OK;
 }
+void Scene::BubbleSpawner()
+{
+	int maxTimeX = GetRandomValue(5, 10);
+	int maxTimeY = GetRandomValue(5, 10);
+
+	switch (actualLevel)
+	{
+	case 2:
+		Point p1 = { 80, 226 };
+		Point p2 = { 160, 226 };
+		if (eTimeSpawnX >= maxTimeX)
+		{
+			Bubble* bubl = new Bubble(p1, Direction::LEFT);
+			bubbles.push_back(bubl);
+			eTimeSpawnX = 0;
+		}
+		else if (eTimeSpawnY >= maxTimeY)
+		{
+			Bubble* bubl2 = new Bubble(p2, Direction::RIGHT);
+			bubbles.push_back(bubl2);
+			eTimeSpawnY = 0;
+		}
+		eTimeSpawnX += GetFrameTime();
+		eTimeSpawnY += GetFrameTime();
+	}
+}
 void Scene::Update()
 {
 	Point p1, p2;
 	AABB box;
-
 	//Switch between the different debug modes: off, on (sprites & hitboxes), on (hitboxes) 
 	if (IsKeyPressed(KEY_F1))
 	{
@@ -354,6 +403,8 @@ void Scene::Update()
 	player->Update();
 	player2->Update();
 	enemy1->Update();
+	UpdateBubbles();
+	BubbleSpawner();
 
 	CheckCollisions();
 }
@@ -433,18 +484,40 @@ void Scene::ClearLevel()
 	}
 	objects.clear();
 }
+void Scene::UpdateBubbles()
+{
+	for (Bubble* bubl : bubbles)
+	{
+		bubl->Update();
+	}
+	/*for (BubbleFromPlayer* buble : bubblesPlayer)
+	{
+		buble->Update();
+	}*/
+}
 void Scene::RenderObjects() const
 {
 	for (Object* obj : objects)
 	{
 		obj->Draw();
 	}
+	//PAOLO LO SIENTO, LO SIENTO DE VERDAD, ERA ESO O QUEDARME SIN TRABAJO
+	//ESPERO QUE TENGAS PIEDAD CONMIGO
+	//Esto es para el draw de la burbuja pero no va porque el codigo es super skibidi man ultra gyat 100 kai cenat pomni sigma. :D
+	/*for (Bubble* bubl : bubbles)
+	{
+		bubl->Draw();
+	}*/
 }
 void Scene::RenderObjectsDebug(const Color& col) const
 {
 	for (Object* obj : objects)
 	{
 		obj->DrawDebug(col);
+	}
+	for (Bubble* bubl : bubbles)
+	{
+		bubl->DrawDebug(col);
 	}
 }
 void Scene::RenderGUI() const
