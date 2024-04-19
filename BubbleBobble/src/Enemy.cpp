@@ -15,6 +15,7 @@ Enemy::Enemy(const Point& p, hState s, hLook view) :
 	jump_delay = ENEMY_JUMP_DELAY;
 	map = nullptr;
 	score = 0;
+	dir = { -1,0 };
 }
 Enemy::~Enemy()
 {
@@ -163,6 +164,7 @@ void Enemy::StartJumping()
 	if (IsLookingRight())	SetAnimation((int)EnemyAnim::JUMPING_RIGHT);
 	else					SetAnimation((int)EnemyAnim::JUMPING_LEFT);
 	jump_delay = ENEMY_JUMP_DELAY;
+	
 }
 void Enemy::StartClimbingUp()
 {
@@ -205,7 +207,7 @@ void Enemy::Update()
 	//Player doesn't use the "Entity::Update() { pos += dir; }" default behaviour.
 	//Instead, uses an independent behaviour for each axis.
 	MoveX();
-	MoveY();
+	//MoveY();
 	//ShootBubble();
 	Sprite* sprite = dynamic_cast<Sprite*>(render);
 	sprite->Update();
@@ -225,17 +227,21 @@ void Enemy::MoveX()
 	//We can only go up and down while climbing
 	if (state == hState::ECLIMBING)	return;
 
+	pos -= dir;
+
 	//Enemy walking
 	
 	box = GetHitbox();
 	if (map->TestCollisionWallLeft(box))
 	{
 		pos.x = prev_x;
-		if (state == hState::EWALKING) Stop();
+		if (state == hState::EWALKING) StartWalkingRight();
+		dir = { 1,0 };
 	}
 	else if (map->TestCollisionWallRight(box)) {
 		pos.x = prev_x;
-		if (state == hState::EWALKING) Stop();
+		if (state == hState::EWALKING) StartWalkingLeft();
+		dir = { -1,0 };
 	}
 	
 	
@@ -252,39 +258,40 @@ void Enemy::MoveY()
 	{
 		pos.y += ENEMY_FALLING_SPEED;
 		box = GetHitbox();
-		if (map->TestCollisionGround(box, &pos.y))
-		{
-			if (state == hState::EFALLING) Stop();
+		//if (!map->TestCollisionGround(box, &pos.y))
+		//{
+		//	/*StartJumping();*/
+		//	if (state == hState::EFALLING) Stop();
 
-			//if (IsKeyDown(KEY_UP))
-			//{
-			//	box = GetHitbox();
-			//	if (map->TestOnLadder(box, &pos.x))
-			//		StartClimbingUp();
-			//}
-			else if (IsKeyDown(KEY_DOWN))
-			{
-				//To climb up the ladder, we need to check the control point (x, y)
-				//To climb down the ladder, we need to check pixel below (x, y+1) instead
-				box = GetHitbox();
-				box.pos.y++;
-				//if (map->TestOnLadderTop(box, &pos.x))
-				//{
-				//	StartClimbingDown();
-				//	pos.y += PLAYER_LADDER_SPEED;
-				//}
+		//	//if (IsKeyDown(KEY_UP))
+		//	//{
+		//	//	box = GetHitbox();
+		//	//	if (map->TestOnLadder(box, &pos.x))
+		//	//		StartClimbingUp();
+		//	//}
+		//	else if (IsKeyDown(KEY_DOWN))
+		//	{
+		//		//To climb up the ladder, we need to check the control point (x, y)
+		//		//To climb down the ladder, we need to check pixel below (x, y+1) instead
+		//		box = GetHitbox();
+		//		box.pos.y++;
+		//		//if (map->TestOnLadderTop(box, &pos.x))
+		//		//{
+		//		//	StartClimbingDown();
+		//		//	pos.y += PLAYER_LADDER_SPEED;
+		//		//}
 
-			}
-			/*else if (IsKeyPressed(KEY_J))
-			{
-				StartJumping();
-			}*/
-		}
-		else
-		{
-			if (state != hState::EFALLING) StartFalling();
+		//	}
+		//	/*else if (IsKeyPressed(KEY_J))
+		//	{
+		//		StartJumping();
+		//	}*/
+		//}
+		//else
+		//{
+		//	if (state != hState::EFALLING) StartFalling();
 
-		}
+		//}
 	}
 }
 //void Player::ShootBubble() {

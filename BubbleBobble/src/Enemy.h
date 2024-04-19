@@ -13,12 +13,12 @@
 #define ENEMY_SPEED			    1
 
 //When jumping, initial jump speed and maximum falling speed
-#define ENEMY_JUMP_FORCE		9
+#define ENEMY_JUMP_FORCE		3
 
 //Frame delay for updating the jump velocity
 #define ENEMY_JUMP_DELAY		2
 
-#define ENEMY_FALLING_SPEED	1
+#define ENEMY_FALLING_SPEED	2
 #define ENEMY_ENDJUMPING_SPEED	2
 
 //Player is levitating when abs(speed) <= this value

@@ -314,7 +314,7 @@ AppStatus Scene::LoadLevel(int stage)
 	}
 	//Tile map
 	level->Load(map, LEVEL_WIDTH, LEVEL_HEIGHT);
-
+	delete map;
 	return AppStatus::OK;
 }
 void Scene::Update()
@@ -449,4 +449,7 @@ void Scene::RenderGUI() const
 	//Temporal approach
 	DrawText(TextFormat("1UP", player->GetScore()), 32, 0, 8, GREEN);
 	DrawText(TextFormat("%d", player->GetScore()), 32, 8, 8, WHITE);
+
+	DrawText(TextFormat("2UP", player2->GetScore()), 200, 0, 8, SKYBLUE);
+	DrawText(TextFormat("%d", player2->GetScore()), 200, 8, 8, WHITE);
 }

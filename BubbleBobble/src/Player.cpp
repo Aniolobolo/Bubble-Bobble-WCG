@@ -233,7 +233,7 @@ void Player::MoveX()
 	//We can only go up and down while climbing
 	if (state == State::CLIMBING)	return;
 
-	if (IsKeyDown(KEY_LEFT) && !IsKeyDown(KEY_RIGHT))
+	if (IsKeyDown(KEY_A) && !IsKeyDown(KEY_D))
 	{
 		pos.x += -PLAYER_SPEED;
 		if (state == State::IDLE) StartWalkingLeft();
@@ -249,7 +249,7 @@ void Player::MoveX()
 			if (state == State::WALKING) Stop();
 		}
 	}
-	else if (IsKeyDown(KEY_RIGHT))
+	else if (IsKeyDown(KEY_D))
 	{
 		pos.x += PLAYER_SPEED;
 		if (state == State::IDLE) StartWalkingRight();
@@ -296,20 +296,7 @@ void Player::MoveY()
 			//	if (map->TestOnLadder(box, &pos.x))
 			//		StartClimbingUp();
 			//}
-			else if (IsKeyDown(KEY_DOWN))
-			{
-				//To climb up the ladder, we need to check the control point (x, y)
-				//To climb down the ladder, we need to check pixel below (x, y+1) instead
-				box = GetHitbox();
-				box.pos.y++;
-				//if (map->TestOnLadderTop(box, &pos.x))
-				//{
-				//	StartClimbingDown();
-				//	pos.y += PLAYER_LADDER_SPEED;
-				//}
-					
-			}
-			else if (IsKeyPressed(KEY_SPACE))
+			if (IsKeyPressed(KEY_Q))
 			{
 				StartJumping();
 			}

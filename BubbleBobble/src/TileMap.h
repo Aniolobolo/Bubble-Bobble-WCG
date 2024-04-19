@@ -29,6 +29,8 @@ enum class Tile {
 
 	// id >= 100: entities' initial locations
 	PLAYER = 100, PLAYER2, ENEMY1,
+	//id >= 150 items
+
 
 	//Intervals
 	STATIC_FIRST = BLOCK_L1,

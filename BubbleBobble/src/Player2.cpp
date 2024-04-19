@@ -225,7 +225,7 @@ void Player2::MoveX()
 	//We can only go up and down while climbing
 	if (state == eState::ECLIMBING)	return;
 
-	if (IsKeyDown(KEY_A) && !IsKeyDown(KEY_D))
+	if (IsKeyDown(KEY_LEFT) && !IsKeyDown(KEY_RIGHT))
 	{
 		pos.x += -PLAYER2_SPEED;
 		if (state == eState::EIDLE) StartWalkingLeft();
@@ -241,7 +241,7 @@ void Player2::MoveX()
 			if (state == eState::EWALKING) Stop();
 		}
 	}
-	else if (IsKeyDown(KEY_D))
+	else if (IsKeyDown(KEY_RIGHT))
 	{
 		pos.x += PLAYER2_SPEED;
 		if (state == eState::EIDLE) StartWalkingRight();
@@ -297,7 +297,7 @@ void Player2::MoveY()
 				//}
 					
 			}
-			else if (IsKeyPressed(KEY_J))
+			else if (IsKeyPressed(KEY_RIGHT_CONTROL))
 			{
 				StartJumping();
 			}
