@@ -385,14 +385,16 @@ void Scene::Release()
     level->Release();
 	player->Release();
 	player2->Release();
+	enemy1->Release();
 	ClearLevel();
 }
 void Scene::CheckCollisions()
 {
-	AABB player_box, player2_box, obj_box;
+	AABB player_box, player2_box, enemy1_box, obj_box;
 	
 	player_box = player->GetHitbox();
 	player2_box = player2->GetHitbox();
+	enemy1_box = enemy1->GetHitbox();
 	auto it = objects.begin();
 	while (it != objects.end())
 	{

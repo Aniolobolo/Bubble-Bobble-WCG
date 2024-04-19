@@ -7,22 +7,22 @@
 
 //Logical model size: 12x28
 #define ENEMY_PHYSICAL_WIDTH	12
-#define ENEMY_PHYSICAL_HEIGHT	8
+#define ENEMY_PHYSICAL_HEIGHT	12
 
 //Horizontal speed and vertical speed while falling down
 #define ENEMY_SPEED			    1
 
 //When jumping, initial jump speed and maximum falling speed
-#define ENEMY_JUMP_FORCE		3
+#define ENEMY_JUMP_FORCE		5
 
 //Frame delay for updating the jump velocity
 #define ENEMY_JUMP_DELAY		2
 
-#define ENEMY_FALLING_SPEED	2
-#define ENEMY_ENDJUMPING_SPEED	2
+#define ENEMY_FALLING_SPEED	1
+#define ENEMY_ENDJUMPING_SPEED	1
 
 //Player is levitating when abs(speed) <= this value
-#define ENEMY_LEVITATING_SPEED	4
+#define ENEMY_LEVITATING_SPEED	1
 
 //Gravity affects jumping velocity when jump_delay is 0
 #define GRAVITY_FORCE			1
@@ -62,7 +62,7 @@ public:
 	void Release();
 
 private:
-
+	bool hasJumped;
 	bool IsLookingRight() const;
 	bool IsLookingLeft() const;
 
@@ -97,6 +97,7 @@ private:
 	hState state;
 	hLook look;
 	int jump_delay;
+	int direction;
 
 	TileMap* map;
 

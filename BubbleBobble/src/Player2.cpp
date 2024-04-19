@@ -69,7 +69,7 @@ AppStatus Player2::Initialise()
 	sprite->SetAnimationDelay((int)Player2Anim::LEVITATING_LEFT, ANIM_DELAY);
 	sprite->AddKeyFrame((int)Player2Anim::LEVITATING_LEFT, { n, 5*n, -n, n });
 
-	sprite->SetAnimation((int)Player2Anim::IDLE_RIGHT);
+	sprite->SetAnimation((int)Player2Anim::IDLE_LEFT);
 
 	return AppStatus::OK;
 }

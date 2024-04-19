@@ -10,6 +10,7 @@
 Enemy::Enemy(const Point& p, hState s, hLook view) :
 	Entity(p, ENEMY_PHYSICAL_WIDTH, ENEMY_PHYSICAL_HEIGHT, ENEMY_FRAME_SIZE, ENEMY_FRAME_SIZE)
 {
+	hasJumped = false;
 	state = s;
 	look = view;
 	jump_delay = ENEMY_JUMP_DELAY;
@@ -48,10 +49,10 @@ AppStatus Enemy::Initialise()
 	sprite->AddKeyFrame((int)EnemyAnim::IDLE_LEFT, { 0, 0, -n, n });
 
 	sprite->SetAnimationDelay((int)EnemyAnim::WALKING_RIGHT, ANIM_DELAY);
-	for (i = 0; i < 7; ++i)
+	for (i = 0; i < 4; ++i)
 		sprite->AddKeyFrame((int)EnemyAnim::WALKING_RIGHT, { (float)i * n, 4 * n, n, n });
 	sprite->SetAnimationDelay((int)EnemyAnim::WALKING_LEFT, ANIM_DELAY);
-	for (i = 0; i < 7; ++i)
+	for (i = 0; i < 4; ++i)
 		sprite->AddKeyFrame((int)EnemyAnim::WALKING_LEFT, { (float)i * n, 4 * n, -n, n });
 
 	sprite->SetAnimationDelay((int)EnemyAnim::FALLING_RIGHT, ANIM_DELAY);
@@ -207,7 +208,7 @@ void Enemy::Update()
 	//Player doesn't use the "Entity::Update() { pos += dir; }" default behaviour.
 	//Instead, uses an independent behaviour for each axis.
 	MoveX();
-	//MoveY();
+	MoveY();
 	//ShootBubble();
 	Sprite* sprite = dynamic_cast<Sprite*>(render);
 	sprite->Update();
@@ -224,10 +225,8 @@ void Enemy::MoveX()
 	AABB box;
 	int prev_x = pos.x;
 
-	//We can only go up and down while climbing
-	if (state == hState::ECLIMBING)	return;
 
-	pos -= dir;
+	pos.x += dir.x;
 
 	//Enemy walking
 	
@@ -235,13 +234,13 @@ void Enemy::MoveX()
 	if (map->TestCollisionWallLeft(box))
 	{
 		pos.x = prev_x;
-		if (state == hState::EWALKING) StartWalkingRight();
-		dir = { 1,0 };
+		StartWalkingRight();
+		dir.x = 1;
 	}
 	else if (map->TestCollisionWallRight(box)) {
 		pos.x = prev_x;
-		if (state == hState::EWALKING) StartWalkingLeft();
-		dir = { -1,0 };
+		StartWalkingLeft();
+		dir.x = -1;
 	}
 	
 	
@@ -249,20 +248,30 @@ void Enemy::MoveX()
 void Enemy::MoveY()
 {
 	AABB box;
-
 	if (state == hState::EJUMPING)
 	{
 		LogicJumping();
 	}
 	else //idle, walking, falling
 	{
+		
 		pos.y += ENEMY_FALLING_SPEED;
 		box = GetHitbox();
-		//if (!map->TestCollisionGround(box, &pos.y))
-		//{
-		//	/*StartJumping();*/
-		//	if (state == hState::EFALLING) Stop();
+	
+		if (map->TestCollisionGround(box, &pos.y))
+		{
+			hasJumped = false;
+		}
+		else
+		{
+			if (hasJumped == false) {
+				StartJumping();
+				pos.x += dir.x;
+				hasJumped = true;
 
+			}
+
+		}
 		//	//if (IsKeyDown(KEY_UP))
 		//	//{
 		//	//	box = GetHitbox();
@@ -287,11 +296,7 @@ void Enemy::MoveY()
 		//		StartJumping();
 		//	}*/
 		//}
-		//else
-		//{
-		//	if (state != hState::EFALLING) StartFalling();
-
-		//}
+		
 	}
 }
 //void Player::ShootBubble() {
@@ -355,6 +360,7 @@ void Enemy::LogicJumping()
 				map->TestCollisionGround(box, &pos.y))
 			{
 				Stop();
+
 			}
 		}
 	}
