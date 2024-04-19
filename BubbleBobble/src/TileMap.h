@@ -30,7 +30,7 @@ enum class Tile {
 	// id >= 100: entities' initial locations
 	PLAYER = 100, PLAYER2, ENEMY1,
 	//id >= 150 items
-
+	PIMIENTO = 150, BERENJENA,
 
 	//Intervals
 	STATIC_FIRST = BLOCK_L1,
@@ -38,7 +38,7 @@ enum class Tile {
 	SOLID_FIRST = BLOCK_L1,
 	SOLID_LAST = NOTHING_SOLID,
 	ENTITY_FIRST = PLAYER,
-	ENTITY_LAST = PLAYER2
+	ENTITY_LAST = ENEMY1
 };
 
 class TileMap
@@ -86,5 +86,6 @@ private:
 	
 	//Tile sheet
 	const Texture2D *img_tiles;
+	const Texture2D *img_items;
 };
 

@@ -61,8 +61,9 @@ public:
 	void DrawDebug(const Color& col) const;
 	void Release();
 
-private:
+protected:
 	bool hasJumped;
+	bool hasStartedWalking;
 	bool IsLookingRight() const;
 	bool IsLookingLeft() const;
 

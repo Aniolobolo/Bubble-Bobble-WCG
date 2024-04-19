@@ -163,6 +163,7 @@ AppStatus Scene::LoadLevel(int stage)
 
 		};
 		player->InitScore();
+		player->InitLife();
 		player2->InitScore();
 	}
 	else if (stage == 2)

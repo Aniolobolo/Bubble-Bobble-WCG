@@ -22,6 +22,7 @@ Player::~Player()
 AppStatus Player::Initialise()
 {
 	int i;
+	hasTakenDamage = false;
 	const int n = PLAYER_FRAME_SIZE;
 
 	ResourceManager& data = ResourceManager::Instance();
@@ -76,10 +77,40 @@ AppStatus Player::Initialise()
 	sprite->AddKeyFrame((int)PlayerAnim::CLIMBING_PRE_TOP, { 4 * n, 6 * n, n, n });
 	sprite->SetAnimationDelay((int)PlayerAnim::CLIMBING_TOP, ANIM_DELAY);
 	sprite->AddKeyFrame((int)PlayerAnim::CLIMBING_TOP, { 5 * n, 6 * n, n, n });
-		
+	
+	sprite->SetAnimationDelay((int)PlayerAnim::DAMAGE_LEFT, ANIM_DELAY);
+	for (i = 0; i < 3; ++i)
+		sprite->AddKeyFrame((int)PlayerAnim::DAMAGE_LEFT, { (float)i * n, n, n, n });
+	sprite->SetAnimationDelay((int)PlayerAnim::DAMAGE_RIGHT, ANIM_DELAY);
+	for (i = 0; i < 3; ++i)
+		sprite->AddKeyFrame((int)PlayerAnim::DAMAGE_RIGHT, { (float)i * n, n, n, n });
+
+	sprite->SetAnimationDelay((int)PlayerAnim::DIE_LEFT, ANIM_DELAY);
+	for (i = 0; i < 4; ++i)
+		sprite->AddKeyFrame((int)PlayerAnim::DIE_LEFT, { (float)i * n, 2 * n, n, n });
+	sprite->SetAnimationDelay((int)PlayerAnim::DIE_RIGHT, ANIM_DELAY);
+	for (i = 0; i < 4; ++i)
+		sprite->AddKeyFrame((int)PlayerAnim::DIE_RIGHT, { (float)i * n, 2 * n, n, n });
+
+
 	sprite->SetAnimation((int)PlayerAnim::IDLE_RIGHT);
 
 	return AppStatus::OK;
+}
+
+void Player::InitLife() {
+	
+	life = 3;
+}
+
+void Player::LifeManager() {
+	ReceiveDamage();
+	life--;
+}
+
+int Player::getLife()
+{
+	return life;
 }
 
 void Player::InitScore()
@@ -143,6 +174,22 @@ void Player::Stop()
 	if (IsLookingRight())	SetAnimation((int)PlayerAnim::IDLE_RIGHT);
 	else					SetAnimation((int)PlayerAnim::IDLE_LEFT);
 }
+void Player::ReceiveDamage()
+{
+	state = State::DAMAGED;
+	if (IsLookingRight())	SetAnimation((int)PlayerAnim::DAMAGE_RIGHT);
+	else					SetAnimation((int)PlayerAnim::DAMAGE_LEFT);
+	if (life <= 0) {
+		Die();
+	}
+		
+}
+void Player::Die()
+{
+	state = State::DEAD;
+	if (IsLookingRight())	SetAnimation((int)PlayerAnim::DIE_RIGHT);
+	else                    SetAnimation((int)PlayerAnim::DIE_LEFT);
+}
 void Player::StartWalkingLeft()
 {
 	state = State::WALKING;
@@ -195,6 +242,8 @@ void Player::ChangeAnimRight()
 		case State::WALKING: SetAnimation((int)PlayerAnim::WALKING_RIGHT); break;
 		case State::JUMPING: SetAnimation((int)PlayerAnim::JUMPING_RIGHT); break;
 		case State::FALLING: SetAnimation((int)PlayerAnim::FALLING_RIGHT); break;
+		case State::DAMAGED: SetAnimation((int)PlayerAnim::DAMAGE_RIGHT); break;
+		case State::DEAD: SetAnimation((int)PlayerAnim::DIE_RIGHT); break;
 	}
 }
 void Player::ChangeAnimLeft()
@@ -206,24 +255,33 @@ void Player::ChangeAnimLeft()
 		case State::WALKING: SetAnimation((int)PlayerAnim::WALKING_LEFT); break;
 		case State::JUMPING: SetAnimation((int)PlayerAnim::JUMPING_LEFT); break;
 		case State::FALLING: SetAnimation((int)PlayerAnim::FALLING_LEFT); break;
+		case State::DAMAGED: SetAnimation((int)PlayerAnim::DAMAGE_LEFT); break;
+		case State::DEAD: SetAnimation((int)PlayerAnim::DIE_LEFT); break;
 	}
 }
 void Player::Update()
 {
 	//Player doesn't use the "Entity::Update() { pos += dir; }" default behaviour.
 	//Instead, uses an independent behaviour for each axis.
-	MoveX();
-	MoveY();
-	//ShootBubble();
-	Sprite* sprite = dynamic_cast<Sprite*>(render);
-	sprite->Update();
-	Warp();
+	
+	if (getLife() > 0) {
+		if (getLife() <= 0) {
+			Die();
+		}
+		MoveX();
+		MoveY();
+		
+		//ShootBubble();
+		Sprite* sprite = dynamic_cast<Sprite*>(render);
+		sprite->Update();
+		Warp();
 
-	if (IsKeyPressed(KEY_ONE) || IsKeyPressed(KEY_TWO) || IsKeyPressed(KEY_THREE)) {
-		state = State::IDLE;
-		SetAnimation((int)PlayerAnim::IDLE_RIGHT);
+		if (IsKeyPressed(KEY_ONE) || IsKeyPressed(KEY_TWO) || IsKeyPressed(KEY_THREE)) {
+			state = State::IDLE;
+			SetAnimation((int)PlayerAnim::IDLE_RIGHT);
+		}
+		
 	}
-
 }
 void Player::MoveX()
 {

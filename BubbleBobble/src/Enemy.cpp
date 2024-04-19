@@ -5,12 +5,11 @@
 #include "Globals.h"
 #include <raymath.h>
 
-
-
 Enemy::Enemy(const Point& p, hState s, hLook view) :
 	Entity(p, ENEMY_PHYSICAL_WIDTH, ENEMY_PHYSICAL_HEIGHT, ENEMY_FRAME_SIZE, ENEMY_FRAME_SIZE)
 {
 	hasJumped = false;
+	hasStartedWalking = false;
 	state = s;
 	look = view;
 	jump_delay = ENEMY_JUMP_DELAY;
@@ -25,6 +24,7 @@ AppStatus Enemy::Initialise()
 {
 	int i;
 	const int n = ENEMY_FRAME_SIZE;
+
 
 	ResourceManager& data = ResourceManager::Instance();
 	if (data.LoadTexture(Resource::IMG_ENEMY1, "images/zenchan.png") != AppStatus::OK)
@@ -205,43 +205,44 @@ void Enemy::ChangeAnimLeft()
 }
 void Enemy::Update()
 {
-	//Player doesn't use the "Entity::Update() { pos += dir; }" default behaviour.
-	//Instead, uses an independent behaviour for each axis.
+
 	MoveX();
 	MoveY();
-	//ShootBubble();
 	Sprite* sprite = dynamic_cast<Sprite*>(render);
 	sprite->Update();
 	Warp();
-
-	if (IsKeyPressed(KEY_ONE) || IsKeyPressed(KEY_TWO) || IsKeyPressed(KEY_THREE)) {
-		state = hState::EIDLE;
-		SetAnimation((int)EnemyAnim::IDLE_LEFT);
-	}
 
 }
 void Enemy::MoveX()
 {
 	AABB box;
 	int prev_x = pos.x;
-
-
-	pos.x += dir.x;
-
+	
 	//Enemy walking
 	
+	pos.x += dir.x;
 	box = GetHitbox();
-	if (map->TestCollisionWallLeft(box))
-	{
-		pos.x = prev_x;
-		StartWalkingRight();
-		dir.x = 1;
-	}
-	else if (map->TestCollisionWallRight(box)) {
-		pos.x = prev_x;
+	
+	if (hasStartedWalking == false) {
 		StartWalkingLeft();
-		dir.x = -1;
+		state = hState::EWALKING;
+		hasStartedWalking = true;
 	}
+
+	if (hasStartedWalking) {
+		if (map->TestCollisionWallLeft(box))
+		{
+			pos.x = prev_x;
+			StartWalkingRight();
+			dir.x = 1;
+		}
+		else if (map->TestCollisionWallRight(box)) {
+			pos.x = prev_x;
+			StartWalkingLeft();
+			dir.x = -1;
+		}
+	}
+	
 	
 	
 }
@@ -257,46 +258,12 @@ void Enemy::MoveY()
 		
 		pos.y += ENEMY_FALLING_SPEED;
 		box = GetHitbox();
-	
-		if (map->TestCollisionGround(box, &pos.y))
+		if (!map->TestCollisionGround(box, &pos.y))
 		{
-			hasJumped = false;
+			state = hState::EFALLING;
 		}
-		else
-		{
-			if (hasJumped == false) {
-				StartJumping();
-				pos.x += dir.x;
-				hasJumped = true;
 
-			}
-
-		}
-		//	//if (IsKeyDown(KEY_UP))
-		//	//{
-		//	//	box = GetHitbox();
-		//	//	if (map->TestOnLadder(box, &pos.x))
-		//	//		StartClimbingUp();
-		//	//}
-		//	else if (IsKeyDown(KEY_DOWN))
-		//	{
-		//		//To climb up the ladder, we need to check the control point (x, y)
-		//		//To climb down the ladder, we need to check pixel below (x, y+1) instead
-		//		box = GetHitbox();
-		//		box.pos.y++;
-		//		//if (map->TestOnLadderTop(box, &pos.x))
-		//		//{
-		//		//	StartClimbingDown();
-		//		//	pos.y += PLAYER_LADDER_SPEED;
-		//		//}
-
-		//	}
-		//	/*else if (IsKeyPressed(KEY_J))
-		//	{
-		//		StartJumping();
-		//	}*/
-		//}
-		
+			
 	}
 }
 //void Player::ShootBubble() {

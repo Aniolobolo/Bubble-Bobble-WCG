@@ -34,7 +34,7 @@
 #define GRAVITY_FORCE			1
 
 //Logic states
-enum class State { IDLE, WALKING, JUMPING, FALLING, CLIMBING, DEAD };
+enum class State { IDLE, WALKING, JUMPING, FALLING, CLIMBING, DAMAGED, DEAD };
 enum class Look { RIGHT, LEFT };
 
 //Rendering states
@@ -47,6 +47,8 @@ enum class PlayerAnim {
 	CLIMBING, CLIMBING_PRE_TOP, CLIMBING_TOP,
 	SHOCK_LEFT, SHOCK_RIGHT,
 	TELEPORT_LEFT, TELEPORT_RIGHT,
+	DAMAGE_LEFT, DAMAGE_RIGHT,
+	DIE_LEFT, DIE_RIGHT,
 	NUM_ANIMATIONS
 };
 
@@ -59,6 +61,11 @@ public:
 	AppStatus Initialise();
 	void SetTileMap(TileMap* tilemap);
 
+	void InitLife();
+	void LifeManager();
+	int getLife();
+
+
 	void InitScore();
 	void IncrScore(int n);
 	int GetScore();
@@ -70,6 +77,8 @@ public:
 private:
 	//Entity* Shots[MAX_SHOTS];
 	//int idx_shot;
+
+	bool hasTakenDamage;
 
 	Texture2D img_shot;
 	
@@ -87,6 +96,8 @@ private:
 	void SetAnimation(int id);
 	PlayerAnim GetAnimation();
 	void Stop();
+	void ReceiveDamage();
+	void Die();
 	void StartWalkingLeft();
 	void StartWalkingRight();
 	void StartFalling();
@@ -112,5 +123,6 @@ private:
 	TileMap *map;
 
 	int score;
+	int life;
 };
 

@@ -19,7 +19,8 @@ Object::Object(const Point& p, ObjectType t) : Entity(p, OBJECT_PHYSICAL_SIZE, O
 	}
 
 	ResourceManager& data = ResourceManager::Instance();
-	render = new StaticImage(data.GetTexture(Resource::IMG_TILES), rc);
+	render = new StaticImage(data.GetTexture(Resource::IMG_ITEMS), rc);
+
 }
 Object::~Object()
 {
