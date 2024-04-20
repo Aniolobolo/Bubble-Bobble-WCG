@@ -10,7 +10,8 @@ enum class Resource {
     IMG_INSERTCOIN,
     IMG_PLAYER,
     IMG_PLAYER2,
-    IMG_ENEMY1,
+    IMG_ZENCHAN,
+    IMG_INVADER,
     IMG_BUBBLE,
     IMG_TILES,
     IMG_ITEMS

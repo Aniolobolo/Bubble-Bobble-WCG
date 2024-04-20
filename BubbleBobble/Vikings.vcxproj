@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AABB.cpp" />
-    <ClCompile Include="src\Bubble.cpp" />
     <ClCompile Include="src\Enemy.cpp" />
     <ClCompile Include="src\Player2.cpp" />
     <ClCompile Include="src\Entity.cpp" />
@@ -29,6 +28,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Object.cpp" />
     <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\PlayerBubble.cpp" />
     <ClCompile Include="src\RenderComponent.cpp" />
     <ClCompile Include="src\ResourceManager.cpp" />
     <ClCompile Include="src\Scene.cpp" />
@@ -38,7 +38,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AABB.h" />
-    <ClInclude Include="src\Bubble.h" />
     <ClInclude Include="src\Enemy.h" />
     <ClInclude Include="src\Player2.h" />
     <ClInclude Include="src\Entity.h" />
@@ -47,6 +46,7 @@
     <ClInclude Include="src\MemLeaks.h" />
     <ClInclude Include="src\Object.h" />
     <ClInclude Include="src\Player.h" />
+    <ClInclude Include="src\PlayerBubble.h" />
     <ClInclude Include="src\Point.h" />
     <ClInclude Include="src\RenderComponent.h" />
     <ClInclude Include="src\ResourceManager.h" />

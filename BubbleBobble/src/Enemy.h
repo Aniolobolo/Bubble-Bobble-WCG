@@ -30,7 +30,7 @@
 //Logic states
 enum class hState { EIDLE, EWALKING, EJUMPING, EFALLING, ECLIMBING, EDEAD };
 enum class hLook { ERIGHT, ELEFT };
-
+enum class hType { ZENCHAN, INVADER};
 //Rendering states
 enum class EnemyAnim {
 	IDLE_LEFT, IDLE_RIGHT,
@@ -47,7 +47,7 @@ enum class EnemyAnim {
 class Enemy : public Entity
 {
 public:
-	Enemy(const Point& p, hState s, hLook view);
+	Enemy(const Point& p, hState s, hLook view, hType t);
 	~Enemy();
 
 	AppStatus Initialise();
@@ -62,7 +62,6 @@ public:
 	void Release();
 
 protected:
-	bool hasJumped;
 	bool hasStartedWalking;
 	bool IsLookingRight() const;
 	bool IsLookingLeft() const;
@@ -97,7 +96,7 @@ protected:
 
 	hState state;
 	hLook look;
-	int jump_delay;
+	hType type;
 	int direction;
 
 	TileMap* map;

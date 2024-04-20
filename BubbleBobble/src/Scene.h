@@ -5,7 +5,7 @@
 #include "Enemy.h"
 #include "TileMap.h"
 #include "Object.h"
-#include "Bubble.h"
+#include "PlayerBubble.h"
 
 enum class DebugMode { OFF, SPRITES_AND_HITBOXES, ONLY_HITBOXES, SIZE };
 
@@ -19,7 +19,6 @@ public:
     void Render();
     void Release();
     AppStatus LoadLevel(int stage);
-    void RandomItemSpawn();
     void PlayerBubbleSpawn();
     int Score() const;
     int highScore();
@@ -27,11 +26,9 @@ public:
 
 private:
 
-    
-    void BubbleSpawner();
-    void UpdateBubbles();
     void CheckCollisions(); 
     void ClearLevel();
+    void UpdateBubbles();
     void RenderObjects() const;
     void RenderObjectsDebug(const Color& col) const;
 
@@ -39,12 +36,13 @@ private:
 
     Player *player;
     Player2 *player2;
-    Enemy* enemy1;
+    std::vector<Enemy*> enemies;
     TileMap *level;
     int goal_score[3];
     int actualLevel;
     std::vector<Object*> objects;
-    std::vector<Bubble*> bubbles;
+    std::vector<PlayerBubble*> playerBubbles;
+    PlayerBubble* pBubble;
 
     float eBubblingTime;
     float eTimeSpawnX;

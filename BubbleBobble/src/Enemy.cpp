@@ -5,14 +5,13 @@
 #include "Globals.h"
 #include <raymath.h>
 
-Enemy::Enemy(const Point& p, hState s, hLook view) :
+Enemy::Enemy(const Point& p, hState s, hLook view, hType t):
 	Entity(p, ENEMY_PHYSICAL_WIDTH, ENEMY_PHYSICAL_HEIGHT, ENEMY_FRAME_SIZE, ENEMY_FRAME_SIZE)
 {
-	hasJumped = false;
+	type = t;
 	hasStartedWalking = false;
 	state = s;
 	look = view;
-	jump_delay = ENEMY_JUMP_DELAY;
 	map = nullptr;
 	score = 0;
 	dir = { -1,0 };
@@ -27,17 +26,44 @@ AppStatus Enemy::Initialise()
 
 
 	ResourceManager& data = ResourceManager::Instance();
-	if (data.LoadTexture(Resource::IMG_ENEMY1, "images/zenchan.png") != AppStatus::OK)
+	if (data.LoadTexture(Resource::IMG_ZENCHAN, "images/zenchan.png") != AppStatus::OK)
 	{
 		return AppStatus::ERROR;
 	}
 
-	render = new Sprite(data.GetTexture(Resource::IMG_ENEMY1));
+	render = new Sprite(data.GetTexture(Resource::IMG_ZENCHAN));
 	if (render == nullptr)
 	{
 		LOG("Failed to allocate memory for player sprite");
 		return AppStatus::ERROR;
 	}
+	//???
+	//if (type == hType::ZENCHAN) {
+	//	if (data.LoadTexture(Resource::IMG_ZENCHAN, "images/zenchan.png") != AppStatus::OK)
+	//	{
+	//		return AppStatus::ERROR;
+	//	}
+
+	//	render = new Sprite(data.GetTexture(Resource::IMG_ZENCHAN));
+	//	if (render == nullptr)
+	//	{
+	//		LOG("Failed to allocate memory for player sprite");
+	//		return AppStatus::ERROR;
+	//	}
+	//}
+	//else if (type == hType::INVADER) {
+	//	if (data.LoadTexture(Resource::IMG_INVADER, "images/invader.png") != AppStatus::OK)
+	//	{
+	//		return AppStatus::ERROR;
+	//	}
+
+	//	render = new Sprite(data.GetTexture(Resource::IMG_INVADER));
+	//	if (render == nullptr)
+	//	{
+	//		LOG("Failed to allocate memory for player sprite");
+	//		return AppStatus::ERROR;
+	//	
+	//}
 
 
 	Sprite* sprite = dynamic_cast<Sprite*>(render);
@@ -158,15 +184,15 @@ void Enemy::StartFalling()
 	if (IsLookingRight())	SetAnimation((int)EnemyAnim::FALLING_RIGHT);
 	else					SetAnimation((int)EnemyAnim::FALLING_LEFT);
 }
-void Enemy::StartJumping()
-{
-	dir.y = -ENEMY_JUMP_FORCE;
-	state = hState::EJUMPING;
-	if (IsLookingRight())	SetAnimation((int)EnemyAnim::JUMPING_RIGHT);
-	else					SetAnimation((int)EnemyAnim::JUMPING_LEFT);
-	jump_delay = ENEMY_JUMP_DELAY;
-	
-}
+//void Enemy::StartJumping()
+//{
+//	dir.y = -ENEMY_JUMP_FORCE;
+//	state = hState::EJUMPING;
+//	if (IsLookingRight())	SetAnimation((int)EnemyAnim::JUMPING_RIGHT);
+//	else					SetAnimation((int)EnemyAnim::JUMPING_LEFT);
+//	jump_delay = ENEMY_JUMP_DELAY;
+//	
+//}
 void Enemy::StartClimbingUp()
 {
 	state = hState::ECLIMBING;
@@ -249,89 +275,72 @@ void Enemy::MoveX()
 void Enemy::MoveY()
 {
 	AABB box;
-	if (state == hState::EJUMPING)
+	pos.y += ENEMY_FALLING_SPEED;
+	box = GetHitbox();
+	if (!map->TestCollisionGround(box, &pos.y))
 	{
-		LogicJumping();
-	}
-	else //idle, walking, falling
-	{
-		
-		pos.y += ENEMY_FALLING_SPEED;
-		box = GetHitbox();
-		if (!map->TestCollisionGround(box, &pos.y))
-		{
-			state = hState::EFALLING;
-		}
-
-			
+		state = hState::EFALLING;
 	}
 }
-//void Player::ShootBubble() {
-//	Vector2 p;
-//	
-//	Shots[idx_shot]->Init({ (float)pos.x + SHOOT_POS_X, (float)pos.y + SHOOT_POS_Y }, 8, 8, BUBBLE_SPEED);
-//	idx_shot++;
-//	idx_shot %= MAX_SHOTS;
+
+//void Enemy::LogicJumping()
+//{
+//	AABB box, prev_box;
+//	int prev_y;
 //
+//	jump_delay--;
+//	if (jump_delay == 0)
+//	{
+//		prev_y = pos.y;
+//		prev_box = GetHitbox();
+//
+//		pos.y += dir.y;
+//		dir.y += GRAVITY_FORCE;
+//		jump_delay = ENEMY_JUMP_DELAY;
+//
+//		//Is the jump finished?
+//		if (dir.y > ENEMY_JUMP_FORCE - 6)
+//		{
+//			dir.y = ENEMY_ENDJUMPING_SPEED;
+//			StartFalling();
+//		}
+//		else
+//		{
+//			//Jumping is represented with 3 different states
+//			if (IsAscending())
+//			{
+//				if (IsLookingRight())	SetAnimation((int)EnemyAnim::JUMPING_RIGHT);
+//				else					SetAnimation((int)EnemyAnim::JUMPING_LEFT);
+//			}
+//			else if (IsLevitating())
+//			{
+//				if (IsLookingRight())	SetAnimation((int)EnemyAnim::LEVITATING_RIGHT);
+//				else					SetAnimation((int)EnemyAnim::LEVITATING_LEFT);
+//			}
+//			else if (IsDescending())
+//			{
+//				if (IsLookingRight())	SetAnimation((int)EnemyAnim::FALLING_RIGHT);
+//				else					SetAnimation((int)EnemyAnim::FALLING_LEFT);
+//			}
+//		}
+//		//We check ground collision when jumping down
+//		if (dir.y >= 0)
+//		{
+//			box = GetHitbox();
+//
+//			//A ground collision occurs if we were not in a collision state previously.
+//			//This prevents scenarios where, after levitating due to a previous jump, we found
+//			//ourselves inside a tile, and the entity would otherwise be placed above the tile,
+//			//crossing it.
+//			if (!map->TestCollisionGround(prev_box, &prev_y) &&
+//				map->TestCollisionGround(box, &pos.y))
+//			{
+//				Stop();
+//
+//			}
+//		}
+//	}
 //}
-void Enemy::LogicJumping()
-{
-	AABB box, prev_box;
-	int prev_y;
-
-	jump_delay--;
-	if (jump_delay == 0)
-	{
-		prev_y = pos.y;
-		prev_box = GetHitbox();
-
-		pos.y += dir.y;
-		dir.y += GRAVITY_FORCE;
-		jump_delay = ENEMY_JUMP_DELAY;
-
-		//Is the jump finished?
-		if (dir.y > ENEMY_JUMP_FORCE - 6)
-		{
-			dir.y = ENEMY_ENDJUMPING_SPEED;
-			StartFalling();
-		}
-		else
-		{
-			//Jumping is represented with 3 different states
-			if (IsAscending())
-			{
-				if (IsLookingRight())	SetAnimation((int)EnemyAnim::JUMPING_RIGHT);
-				else					SetAnimation((int)EnemyAnim::JUMPING_LEFT);
-			}
-			else if (IsLevitating())
-			{
-				if (IsLookingRight())	SetAnimation((int)EnemyAnim::LEVITATING_RIGHT);
-				else					SetAnimation((int)EnemyAnim::LEVITATING_LEFT);
-			}
-			else if (IsDescending())
-			{
-				if (IsLookingRight())	SetAnimation((int)EnemyAnim::FALLING_RIGHT);
-				else					SetAnimation((int)EnemyAnim::FALLING_LEFT);
-			}
-		}
-		//We check ground collision when jumping down
-		if (dir.y >= 0)
-		{
-			box = GetHitbox();
-
-			//A ground collision occurs if we were not in a collision state previously.
-			//This prevents scenarios where, after levitating due to a previous jump, we found
-			//ourselves inside a tile, and the entity would otherwise be placed above the tile,
-			//crossing it.
-			if (!map->TestCollisionGround(prev_box, &prev_y) &&
-				map->TestCollisionGround(box, &pos.y))
-			{
-				Stop();
-
-			}
-		}
-	}
-}
 
 void Enemy::DrawDebug(const Color& col) const
 {

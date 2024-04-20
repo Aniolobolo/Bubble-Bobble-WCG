@@ -34,7 +34,7 @@
 #define GRAVITY_FORCE			1
 
 //Logic states
-enum class State { IDLE, WALKING, JUMPING, FALLING, CLIMBING, DAMAGED, DEAD };
+enum class State { IDLE, WALKING, JUMPING, FALLING, CLIMBING, DAMAGED, SHOOTING, DEAD };
 enum class Look { RIGHT, LEFT };
 
 //Rendering states
@@ -48,43 +48,57 @@ enum class PlayerAnim {
 	SHOCK_LEFT, SHOCK_RIGHT,
 	TELEPORT_LEFT, TELEPORT_RIGHT,
 	DAMAGE_LEFT, DAMAGE_RIGHT,
+	SHOOTING,
 	DIE_LEFT, DIE_RIGHT,
 	NUM_ANIMATIONS
 };
+
+typedef struct
+{
+	float Lifetime;
+}Timer;
 
 class Player: public Entity
 {
 public:
 	Player(const Point& p, State s, Look view);
 	~Player();
-	
+
 	AppStatus Initialise();
 	void SetTileMap(TileMap* tilemap);
 
 	void InitLife();
 	void LifeManager();
 	int getLife();
-
+	void StartTimer(Timer* timer, float lifetime);
+	void UpdateTimer(Timer* timer);
+	bool TimerDone(Timer* timer);
 
 	void InitScore();
 	void IncrScore(int n);
 	int GetScore();
 
+	bool IsLookingRight() const;
+	bool IsLookingLeft() const;
+
+
+	bool BubbleIsBeingCreated = false;
+	bool IsStompingAbove(const Point& p, int distance);
+	bool canJump;
+	void SetDir(Point p);
+	bool TestCollisionFromUp(const AABB& box, int* py);
+	void SetState(State state);
 	void Update();
 	void DrawDebug(const Color& col) const;
 	void Release();
+
 
 private:
 	//Entity* Shots[MAX_SHOTS];
 	//int idx_shot;
 
 	bool hasTakenDamage;
-
-	Texture2D img_shot;
 	
-	bool IsLookingRight() const;
-	bool IsLookingLeft() const;
-
 	//Player mechanics
 	void MoveX();
 	void MoveY();
@@ -104,6 +118,7 @@ private:
 	void StartJumping();
 	void StartClimbingUp();
 	void StartClimbingDown();
+	void StartShooting();
 	void ChangeAnimRight();
 	void ChangeAnimLeft();
 
@@ -124,5 +139,8 @@ private:
 
 	int score;
 	int life;
+	float ptime;
+	int damagedTime;
+	Timer damageTimer;
 };
 

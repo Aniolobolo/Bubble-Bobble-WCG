@@ -15,6 +15,10 @@ Player::Player(const Point& p, State s, Look view) :
 	jump_delay = PLAYER_JUMP_DELAY;
 	map = nullptr;
 	score = 0;
+	life = 3;
+	hasTakenDamage = false;
+	ptime = 3;
+	Timer damageTimer = { 0 };
 }
 Player::~Player()
 {
@@ -22,6 +26,7 @@ Player::~Player()
 AppStatus Player::Initialise()
 {
 	int i;
+	Timer damageTimer = { 0 };
 	hasTakenDamage = false;
 	const int n = PLAYER_FRAME_SIZE;
 
@@ -85,6 +90,10 @@ AppStatus Player::Initialise()
 	for (i = 0; i < 3; ++i)
 		sprite->AddKeyFrame((int)PlayerAnim::DAMAGE_RIGHT, { (float)i * n, n, n, n });
 
+	sprite->SetAnimationDelay((int)PlayerAnim::SHOOTING, ANIM_DELAY);
+	for (i = 0; i < 4; ++i)
+		sprite->AddKeyFrame((int)PlayerAnim::SHOOTING, { (float)i * n, 7 * n, n, n });
+
 	sprite->SetAnimationDelay((int)PlayerAnim::DIE_LEFT, ANIM_DELAY);
 	for (i = 0; i < 4; ++i)
 		sprite->AddKeyFrame((int)PlayerAnim::DIE_LEFT, { (float)i * n, 2 * n, n, n });
@@ -94,7 +103,7 @@ AppStatus Player::Initialise()
 
 
 	sprite->SetAnimation((int)PlayerAnim::IDLE_RIGHT);
-
+	sprite->SetAutomaticMode();
 	return AppStatus::OK;
 }
 
@@ -113,6 +122,29 @@ int Player::getLife()
 	return life;
 }
 
+void Player::StartTimer(Timer* timer, float lifetime)
+{
+	if (timer != NULL)
+		timer->Lifetime = lifetime;
+}
+
+void Player::UpdateTimer(Timer* timer)
+{
+	// subtract this frame from the timer if it's not allready expired
+	if (timer != NULL && timer->Lifetime > 0)
+		timer->Lifetime -= GetFrameTime();
+}
+
+bool Player::TimerDone(Timer* timer)
+{
+	if (timer != NULL) {
+		return timer->Lifetime <= 0;
+	}
+	
+
+	return false;
+}
+
 void Player::InitScore()
 {
 	score = 0;
@@ -124,6 +156,46 @@ void Player::IncrScore(int n)
 int Player::GetScore()
 {
 	return score;
+}
+bool Player::IsStompingAbove(const Point& p, int distance)
+{
+	AABB playerHitbox = GetHitbox();
+
+	int displacement = 50;
+	if (p.y <= playerHitbox.pos.y + playerHitbox.height &&
+		p.y >= playerHitbox.pos.y - displacement &&
+		p.x + distance >= playerHitbox.pos.x &&
+		p.x <= playerHitbox.pos.x + playerHitbox.width
+
+		)
+	{
+		return true;
+	}
+	return false;
+}
+void Player::SetDir(Point p)
+{
+	dir += p;
+}
+bool Player::TestCollisionFromUp(const AABB& box, int* py)
+{
+	Point p(box.pos.x, *py);
+	int tile_y;
+
+	if (pos.y < p.y && IsStompingAbove(p, box.width) /*&& pos.y +30 > p.y*/)
+	{
+		tile_y = (p.y + TILE_SIZE) / TILE_SIZE;
+
+		*py -= 10;
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+void Player::SetState(State state)
+{
+	this->state = state;
 }
 void Player::SetTileMap(TileMap* tilemap)
 {
@@ -177,18 +249,19 @@ void Player::Stop()
 void Player::ReceiveDamage()
 {
 	state = State::DAMAGED;
-	if (IsLookingRight())	SetAnimation((int)PlayerAnim::DAMAGE_RIGHT);
-	else					SetAnimation((int)PlayerAnim::DAMAGE_LEFT);
-	if (life <= 0) {
-		Die();
-	}
-		
+		if (IsLookingRight())	SetAnimation((int)PlayerAnim::DAMAGE_RIGHT);
+		else					SetAnimation((int)PlayerAnim::DAMAGE_LEFT);
+		if (life <= 0) {
+			Die();
+		}
+				
 }
 void Player::Die()
 {
 	state = State::DEAD;
 	if (IsLookingRight())	SetAnimation((int)PlayerAnim::DIE_RIGHT);
 	else                    SetAnimation((int)PlayerAnim::DIE_LEFT);
+	Sprite* sprite = dynamic_cast<Sprite*>(render);
 }
 void Player::StartWalkingLeft()
 {
@@ -233,6 +306,11 @@ void Player::StartClimbingDown()
 	Sprite* sprite = dynamic_cast<Sprite*>(render);
 	sprite->SetManualMode();
 }
+void Player::StartShooting()
+{
+	state = State::SHOOTING;
+	SetAnimation((int)PlayerAnim::SHOOTING);
+}
 void Player::ChangeAnimRight()
 {
 	look = Look::RIGHT;
@@ -263,25 +341,22 @@ void Player::Update()
 {
 	//Player doesn't use the "Entity::Update() { pos += dir; }" default behaviour.
 	//Instead, uses an independent behaviour for each axis.
+	UpdateTimer(&damageTimer);
+	Sprite* sprite = dynamic_cast<Sprite*>(render);
+		sprite->Update();
 	
-	if (getLife() > 0) {
+	if (state != State::DEAD) {
 		if (getLife() <= 0) {
 			Die();
 		}
 		MoveX();
 		MoveY();
-		
-		//ShootBubble();
-		Sprite* sprite = dynamic_cast<Sprite*>(render);
-		sprite->Update();
 		Warp();
-
-		if (IsKeyPressed(KEY_ONE) || IsKeyPressed(KEY_TWO) || IsKeyPressed(KEY_THREE)) {
+	}
+	if (IsKeyPressed(KEY_ONE) || IsKeyPressed(KEY_TWO) || IsKeyPressed(KEY_THREE)) {
 			state = State::IDLE;
 			SetAnimation((int)PlayerAnim::IDLE_RIGHT);
 		}
-		
-	}
 }
 void Player::MoveX()
 {
@@ -354,7 +429,7 @@ void Player::MoveY()
 			//	if (map->TestOnLadder(box, &pos.x))
 			//		StartClimbingUp();
 			//}
-			if (IsKeyPressed(KEY_Q))
+			if (IsKeyPressed(KEY_Q) && state != State::DEAD)
 			{
 				StartJumping();
 			}

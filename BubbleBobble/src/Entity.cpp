@@ -18,6 +18,10 @@ Entity::~Entity()
 		render = nullptr;
 	}
 }
+AppStatus Entity::Initialise()
+{
+	return AppStatus();
+}
 void Entity::SetPos(const Point& p)
 {
 	pos = p;
@@ -36,33 +40,22 @@ void Entity::Update()
 {
 	pos += dir;
 }
-AppStatus Entity::Initialise()
-{
 
-	ResourceManager& data = ResourceManager::Instance();
-	if (data.LoadTexture(Resource::IMG_PLAYER, "images/bubble.png") != AppStatus::OK)
-	{
-		return AppStatus::ERROR;
-	}
-
-	render = new Sprite(data.GetTexture(Resource::IMG_BUBBLE));
-	if (render == nullptr)
-	{
-		LOG("Failed to allocate memory for player sprite");
-		return AppStatus::ERROR;
-	}
-}
 AABB Entity::GetHitbox() const
 {
 	Point p(pos.x, pos.y - (height - 1));
 	AABB hitbox(p, width, height);
 	return hitbox;
 }
+Point Entity::GetPos()
+{
+	return pos;
+}
 Point Entity::GetRenderingPosition() const
 {
 	Point p;
 	p.x = pos.x + width / 2 - frame_width / 2;
-	p.y = pos.y - (frame_height-1);
+	p.y = pos.y - (frame_height - 1);
 	return p;
 }
 void Entity::Draw() const
@@ -94,7 +87,5 @@ void Entity::DrawHitbox(int x, int y, int w, int h, const Color& col) const
 void Entity::Release()
 {
 	ResourceManager& data = ResourceManager::Instance();
-	data.ReleaseTexture(Resource::IMG_BUBBLE);
-
 	render->Release();
 }

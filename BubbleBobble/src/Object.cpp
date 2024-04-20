@@ -9,7 +9,7 @@ Object::Object(const Point& p, ObjectType t) : Entity(p, OBJECT_PHYSICAL_SIZE, O
 	const int n = TILE_SIZE;
 	switch (type)
 	{
-		case ObjectType::APPLE: rc = {4*n, 3*n, n, n}; break;
+		case ObjectType::PEPPER: rc = {4*n, 3*n, n, n}; break;
 		case ObjectType::CHILI: rc = {5*n, 3*n, n, n}; break;
 		case ObjectType::WOOPER: rc = { 4 * n, 4 * n, n, n }; break;
 		case ObjectType::GULPIN: rc = { 5 * n, 4 * n, n, n }; break;
@@ -20,7 +20,6 @@ Object::Object(const Point& p, ObjectType t) : Entity(p, OBJECT_PHYSICAL_SIZE, O
 
 	ResourceManager& data = ResourceManager::Instance();
 	render = new StaticImage(data.GetTexture(Resource::IMG_ITEMS), rc);
-	data.LoadTexture(Resource::IMG_ITEMS, "images/items.png");
 
 
 }
@@ -33,7 +32,7 @@ void Object::DrawDebug(const Color& col) const
 }
 int Object::Points() const
 {
-	if (type == ObjectType::APPLE)		return POINTS_APPLE;
+	if (type == ObjectType::PEPPER)		return POINTS_APPLE;
 	else if (type == ObjectType::CHILI)	return POINTS_CHILI;
 	else if (type == ObjectType::WOOPER)	return POINTS_POK1;
 	else if (type == ObjectType::GULPIN)	return POINTS_POK2;

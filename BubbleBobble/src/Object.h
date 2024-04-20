@@ -10,7 +10,7 @@
 #define POINTS_POK2	30
 #define POINTS_POK3	40
 
-enum class ObjectType { APPLE, CHILI, WOOPER, GULPIN, BAGON };
+enum class ObjectType { PEPPER, CHILI, WOOPER, GULPIN, BAGON };
 
 class Object : public Entity
 {

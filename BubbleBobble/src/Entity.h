@@ -23,6 +23,7 @@ public:
 	void Warp();
 	void Update();
 	AABB GetHitbox() const;
+	Point GetPos();
 	void Init(Vector2 p, int w, int h, int s);
 	//Draw representation model
 	void Draw() const;
