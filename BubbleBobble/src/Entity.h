@@ -6,7 +6,6 @@
 #include "RenderComponent.h"
 #include "AABB.h"
 
-//NO SE SI METER ESTO AQUI
 #define BUBBLE_SPEED    4
 #define MAX_SHOTS       5
 #define SHOOT_POS_X      18

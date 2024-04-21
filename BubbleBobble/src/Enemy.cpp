@@ -31,11 +31,16 @@ AppStatus Enemy::Initialise()
 		return AppStatus::ERROR;
 	}
 
-	render = new Sprite(data.GetTexture(Resource::IMG_ZENCHAN));
-	if (render == nullptr)
+	if (data.LoadTexture(Resource::IMG_INVADER, "images/invader.png") != AppStatus::OK)
 	{
-		LOG("Failed to allocate memory for player sprite");
 		return AppStatus::ERROR;
+	}
+	switch (type)
+	{
+	case hType::ZENCHAN:render = new Sprite(data.GetTexture(Resource::IMG_ZENCHAN)); break;
+	case hType::INVADER:render = new Sprite(data.GetTexture(Resource::IMG_INVADER)); break;
+
+	default: LOG("Internal error: enemy creation of invalid type");
 	}
 	//???
 	//if (type == hType::ZENCHAN) {
@@ -246,26 +251,52 @@ void Enemy::MoveX()
 	
 	//Enemy walking
 	
-	pos.x += dir.x;
-	box = GetHitbox();
-	
-	if (hasStartedWalking == false) {
-		StartWalkingLeft();
-		state = hState::EWALKING;
-		hasStartedWalking = true;
-	}
+	if (type == hType::ZENCHAN) {
+		pos.x += dir.x;
+		box = GetHitbox();
 
-	if (hasStartedWalking) {
-		if (map->TestCollisionWallLeft(box))
-		{
-			pos.x = prev_x;
-			StartWalkingRight();
-			dir.x = 1;
-		}
-		else if (map->TestCollisionWallRight(box)) {
-			pos.x = prev_x;
+		if (hasStartedWalking == false) {
 			StartWalkingLeft();
-			dir.x = -1;
+			state = hState::EWALKING;
+			hasStartedWalking = true;
+		}
+
+		if (hasStartedWalking) {
+			if (map->TestCollisionWallLeft(box))
+			{
+				pos.x = prev_x;
+				StartWalkingRight();
+				dir.x = 1;
+			}
+			else if (map->TestCollisionWallRight(box)) {
+				pos.x = prev_x;
+				StartWalkingLeft();
+				dir.x = -1;
+			}
+		}
+	}
+	else if (type == hType::INVADER) {
+		pos.x += dir.x;
+		box = GetHitbox();
+
+		if (hasStartedWalking == false) {
+			StartWalkingLeft();
+			state = hState::EWALKING;
+			hasStartedWalking = true;
+		}
+
+		if (hasStartedWalking) {
+			if (map->TestCollisionWallLeft(box))
+			{
+				pos.x = prev_x;
+				StartWalkingRight();
+				dir.x = 1;
+			}
+			else if (map->TestCollisionWallRight(box)) {
+				pos.x = prev_x;
+				StartWalkingLeft();
+				dir.x = -1;
+			}
 		}
 	}
 	
@@ -275,12 +306,24 @@ void Enemy::MoveX()
 void Enemy::MoveY()
 {
 	AABB box;
-	pos.y += ENEMY_FALLING_SPEED;
-	box = GetHitbox();
-	if (!map->TestCollisionGround(box, &pos.y))
-	{
-		state = hState::EFALLING;
+
+	pos.y -= dir.y;
+	if (type == hType::ZENCHAN) {
+		pos.y += ENEMY_FALLING_SPEED;
+		box = GetHitbox();
+		if (!map->TestCollisionGround(box, &pos.y))
+		{
+			state = hState::EFALLING;
+		}
+
 	}
+	else if (type == hType::INVADER) {
+		box = GetHitbox();
+				
+	}
+
+
+
 }
 
 //void Enemy::LogicJumping()
@@ -352,7 +395,12 @@ void Enemy::DrawDebug(const Color& col) const
 void Enemy::Release()
 {
 	ResourceManager& data = ResourceManager::Instance();
-	data.ReleaseTexture(Resource::IMG_PLAYER2);
+	if (type == hType::ZENCHAN) {
+		data.ReleaseTexture(Resource::IMG_ZENCHAN);
+	}
+	if (type == hType::INVADER) {
+		data.ReleaseTexture(Resource::IMG_INVADER);
+	}
 
 	render->Release();
 }

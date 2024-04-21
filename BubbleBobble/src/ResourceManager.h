@@ -8,6 +8,11 @@
 enum class Resource {
     IMG_MENU,
     IMG_INSERTCOIN,
+    IMG_CREDITS,
+    IMG_PROFESSORS,
+    IMG_ACLARATION,
+    IMG_GAMEWON,
+    IMG_GAMEOVER,
     IMG_PLAYER,
     IMG_PLAYER2,
     IMG_ZENCHAN,

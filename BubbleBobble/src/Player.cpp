@@ -3,6 +3,7 @@
 #include "Sprite.h"
 #include "TileMap.h"
 #include "Globals.h"
+#include "Game.h"
 #include <raymath.h>
 
 Sound playerSoundEffects[30];
@@ -17,8 +18,8 @@ Player::Player(const Point& p, State s, Look view) :
 	score = 0;
 	life = 3;
 	hasTakenDamage = false;
-	ptime = 3;
-	Timer damageTimer = { 0 };
+	pTime = 0;
+	damageTime = 2;
 }
 Player::~Player()
 {
@@ -26,8 +27,6 @@ Player::~Player()
 AppStatus Player::Initialise()
 {
 	int i;
-	Timer damageTimer = { 0 };
-	hasTakenDamage = false;
 	const int n = PLAYER_FRAME_SIZE;
 
 	ResourceManager& data = ResourceManager::Instance();
@@ -84,10 +83,10 @@ AppStatus Player::Initialise()
 	sprite->AddKeyFrame((int)PlayerAnim::CLIMBING_TOP, { 5 * n, 6 * n, n, n });
 	
 	sprite->SetAnimationDelay((int)PlayerAnim::DAMAGE_LEFT, ANIM_DELAY);
-	for (i = 0; i < 3; ++i)
+	for (i = 0; i < 2; ++i)
 		sprite->AddKeyFrame((int)PlayerAnim::DAMAGE_LEFT, { (float)i * n, n, n, n });
 	sprite->SetAnimationDelay((int)PlayerAnim::DAMAGE_RIGHT, ANIM_DELAY);
-	for (i = 0; i < 3; ++i)
+	for (i = 0; i < 2; ++i)
 		sprite->AddKeyFrame((int)PlayerAnim::DAMAGE_RIGHT, { (float)i * n, n, n, n });
 
 	sprite->SetAnimationDelay((int)PlayerAnim::SHOOTING, ANIM_DELAY);
@@ -113,36 +112,16 @@ void Player::InitLife() {
 }
 
 void Player::LifeManager() {
-	ReceiveDamage();
+	if (life <= 0) {
+		Die();
+		
+	}
 	life--;
 }
 
 int Player::getLife()
 {
 	return life;
-}
-
-void Player::StartTimer(Timer* timer, float lifetime)
-{
-	if (timer != NULL)
-		timer->Lifetime = lifetime;
-}
-
-void Player::UpdateTimer(Timer* timer)
-{
-	// subtract this frame from the timer if it's not allready expired
-	if (timer != NULL && timer->Lifetime > 0)
-		timer->Lifetime -= GetFrameTime();
-}
-
-bool Player::TimerDone(Timer* timer)
-{
-	if (timer != NULL) {
-		return timer->Lifetime <= 0;
-	}
-	
-
-	return false;
 }
 
 void Player::InitScore()
@@ -157,7 +136,7 @@ int Player::GetScore()
 {
 	return score;
 }
-bool Player::IsStompingAbove(const Point& p, int distance)
+bool Player::IsJumpingOnBubble(const Point& p, int distance)
 {
 	AABB playerHitbox = GetHitbox();
 
@@ -177,12 +156,12 @@ void Player::SetDir(Point p)
 {
 	dir += p;
 }
-bool Player::TestCollisionFromUp(const AABB& box, int* py)
+bool Player::TestUpCol(const AABB& box, int* py)
 {
 	Point p(box.pos.x, *py);
 	int tile_y;
 
-	if (pos.y < p.y && IsStompingAbove(p, box.width) /*&& pos.y +30 > p.y*/)
+	if (pos.y < p.y && IsJumpingOnBubble(p, box.width) /*&& pos.y +30 > p.y*/)
 	{
 		tile_y = (p.y + TILE_SIZE) / TILE_SIZE;
 
@@ -246,14 +225,16 @@ void Player::Stop()
 	if (IsLookingRight())	SetAnimation((int)PlayerAnim::IDLE_RIGHT);
 	else					SetAnimation((int)PlayerAnim::IDLE_LEFT);
 }
+
 void Player::ReceiveDamage()
 {
 	state = State::DAMAGED;
-		if (IsLookingRight())	SetAnimation((int)PlayerAnim::DAMAGE_RIGHT);
-		else					SetAnimation((int)PlayerAnim::DAMAGE_LEFT);
-		if (life <= 0) {
-			Die();
-		}
+	isReceivingDamage();
+	if (IsLookingRight())	SetAnimation((int)PlayerAnim::DAMAGE_RIGHT);
+	else					SetAnimation((int)PlayerAnim::DAMAGE_LEFT);
+	if (life <= 0) {
+		Die();
+	}
 				
 }
 void Player::Die()
@@ -337,11 +318,19 @@ void Player::ChangeAnimLeft()
 		case State::DEAD: SetAnimation((int)PlayerAnim::DIE_LEFT); break;
 	}
 }
+bool Player::isReceivingDamage()
+{
+	if (state == State::DAMAGED) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 void Player::Update()
 {
 	//Player doesn't use the "Entity::Update() { pos += dir; }" default behaviour.
 	//Instead, uses an independent behaviour for each axis.
-	UpdateTimer(&damageTimer);
 	Sprite* sprite = dynamic_cast<Sprite*>(render);
 		sprite->Update();
 	

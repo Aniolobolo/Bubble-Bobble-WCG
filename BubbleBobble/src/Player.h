@@ -53,11 +53,6 @@ enum class PlayerAnim {
 	NUM_ANIMATIONS
 };
 
-typedef struct
-{
-	float Lifetime;
-}Timer;
-
 class Player: public Entity
 {
 public:
@@ -69,11 +64,13 @@ public:
 
 	void InitLife();
 	void LifeManager();
+	int life;
 	int getLife();
-	void StartTimer(Timer* timer, float lifetime);
-	void UpdateTimer(Timer* timer);
-	bool TimerDone(Timer* timer);
-
+	void Die();
+	void ReceiveDamage();
+	bool isReceivingDamage();
+	
+	
 	void InitScore();
 	void IncrScore(int n);
 	int GetScore();
@@ -83,10 +80,10 @@ public:
 
 
 	bool BubbleIsBeingCreated = false;
-	bool IsStompingAbove(const Point& p, int distance);
+	bool IsJumpingOnBubble(const Point& p, int distance);
 	bool canJump;
 	void SetDir(Point p);
-	bool TestCollisionFromUp(const AABB& box, int* py);
+	bool TestUpCol(const AABB& box, int* py);
 	void SetState(State state);
 	void Update();
 	void DrawDebug(const Color& col) const;
@@ -110,8 +107,9 @@ private:
 	void SetAnimation(int id);
 	PlayerAnim GetAnimation();
 	void Stop();
-	void ReceiveDamage();
-	void Die();
+	
+
+	
 	void StartWalkingLeft();
 	void StartWalkingRight();
 	void StartFalling();
@@ -121,7 +119,9 @@ private:
 	void StartShooting();
 	void ChangeAnimRight();
 	void ChangeAnimLeft();
-
+	
+	
+	
 	//Jump steps
 	bool IsAscending() const;
 	bool IsLevitating() const;
@@ -138,9 +138,8 @@ private:
 	TileMap *map;
 
 	int score;
-	int life;
-	float ptime;
-	int damagedTime;
-	Timer damageTimer;
+	
+	float damageTime;
+	float pTime;
 };
 

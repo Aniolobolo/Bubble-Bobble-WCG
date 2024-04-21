@@ -1,8 +1,8 @@
 #pragma once
 #include "Entity.h"
 #include "TileMap.h"
-#include "Player.h"
-#include "PlayerBubble.h"
+#include "Player2.h"
+#include "Player2Bubble.h"
 
 #define BUBBLE_PHYSICAL_SIZE	14
 #define BUBBLE_FRAME_SIZE		16
@@ -11,25 +11,25 @@
 
 enum class Directions { LEFT, RIGHT };
 enum class BubbleAnim { INSHOOT, IDLE, POP, ENEMYIN, NUM_ANIMATIONS };
-enum class BubbleState { JUSTSHOT, WANDER, ISONCEILING, POP, ENEMYINSIDE};
-class PlayerBubble : public Entity
+enum class BubbleState { JUSTSHOT, WANDER, ISONCEILING, POP, ENEMYINSIDE };
+class Player2Bubble : public Entity
 {
 public:
-	PlayerBubble(const Point& p, Directions d);
-	~PlayerBubble();
+	Player2Bubble(const Point& p, Directions d);
+	~Player2Bubble();
 
 	void Update();
 
-	void Move(Directions d);
-	void Clamp();
+	void Movement(Directions d);
+	void ClampPos();
 	AppStatus Initialise();
 	bool isAlive();
 	void Release();
 	Directions direc;
 	int level;
 	void DrawDebug(const Color& col) const;
-	void JumpOnBubble();
-	void SetPlayer(Player* p);
+	void Stomp();
+	void SetPlayer(Player2* p);
 
 private:
 	//void DrawDebug(const Color& col) const;
@@ -49,5 +49,5 @@ private:
 	float jumpTime;
 	float timeAlive;
 	float speed;
-	Player* player;
+	Player2* player2;
 };

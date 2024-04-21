@@ -1,36 +1,60 @@
-Project executed on 20-04-2024 at 23:39:35.
+Project executed on 21-04-2024 at 20:29:14.
 main.cpp(13): Application start
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (21, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (22, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (21, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (22, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (21, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (22, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (21, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (23, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (19, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (20, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (19, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (20, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (19, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (20, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (18, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (20, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (21, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (22, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (21, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (22, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (21, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (22, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (21, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (23, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (19, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (20, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (19, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (20, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (19, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (20, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (18, -1)
-TileMap.cpp(167): Error: Index out of bounds. Tile map dimensions: 32x32. Given index: (20, -1)
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
+Object.cpp(44): Internal error: object creation of invalid type
 main.cpp(35): Application finish
 main.cpp(39): Bye :)

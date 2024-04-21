@@ -1,10 +1,10 @@
-#include "PlayerBubble.h"
+#include "Player2Bubble.h"
 #include "Sprite.h"
 #include "TileMap.h"
 #include "Globals.h"
 #include <raymath.h>
 
-PlayerBubble::PlayerBubble(const Point& p, Directions d) : Entity(p, BUBBLE_PHYSICAL_SIZE, BUBBLE_PHYSICAL_SIZE, BUBBLE_FRAME_SIZE, BUBBLE_FRAME_SIZE)
+Player2Bubble::Player2Bubble(const Point& p, Directions d) : Entity(p, BUBBLE_PHYSICAL_SIZE, BUBBLE_PHYSICAL_SIZE, BUBBLE_FRAME_SIZE, BUBBLE_FRAME_SIZE)
 {
 	direc = d;
 	speed = .3;
@@ -13,7 +13,7 @@ PlayerBubble::PlayerBubble(const Point& p, Directions d) : Entity(p, BUBBLE_PHYS
 	logPosXR = pos.x + SHOOT_RANGE;
 	bTime = 0;
 	spawnTime = 0;
-	player = nullptr;
+	player2 = nullptr;
 	timeAlive = GetRandomValue(3, 4);
 	Rectangle rc;
 	inShoot = true;
@@ -21,16 +21,16 @@ PlayerBubble::PlayerBubble(const Point& p, Directions d) : Entity(p, BUBBLE_PHYS
 
 
 }
-PlayerBubble::~PlayerBubble()
+Player2Bubble::~Player2Bubble()
 {
 }
-void PlayerBubble::SetAnimation(int id)
+void Player2Bubble::SetAnimation(int id)
 {
 	Sprite* sprite = dynamic_cast<Sprite*>(render);
 	sprite->SetAnimation(id);
 }
 
-AppStatus PlayerBubble::Initialise()
+AppStatus Player2Bubble::Initialise()
 {
 	Rectangle rc;
 	const int n = ITEM_BUBBLE_SIZE;
@@ -60,30 +60,30 @@ AppStatus PlayerBubble::Initialise()
 	return AppStatus::OK;
 
 }
-void PlayerBubble::Update()
+void Player2Bubble::Update()
 {
 	pos += dir;
-	Move(direc);
+	Movement(direc);
 	Sprite* sprite = dynamic_cast<Sprite*>(render);
 	sprite->Update();
 
 }
-void PlayerBubble::Shot()
+void Player2Bubble::Shot()
 {
 	state = BubbleState::JUSTSHOT;
 	SetAnimation((int)BubbleAnim::INSHOOT);
 }
-void PlayerBubble::Wander()
+void Player2Bubble::Wander()
 {
 	state = BubbleState::WANDER;
 	SetAnimation((int)BubbleAnim::IDLE);
 }
-void PlayerBubble::Ceiling()
+void Player2Bubble::Ceiling()
 {
 	state = BubbleState::ISONCEILING;
 	SetAnimation((int)BubbleAnim::IDLE);
 }
-bool PlayerBubble::isAlive()
+bool Player2Bubble::isAlive()
 {
 	bTime += GetFrameTime();
 	if (bTime >= timeAlive)
@@ -94,7 +94,7 @@ bool PlayerBubble::isAlive()
 		return true;
 	}
 }
-void PlayerBubble::Clamp()
+void Player2Bubble::ClampPos()
 {
 
 	if (pos.y < 32)
@@ -120,43 +120,43 @@ void PlayerBubble::Clamp()
 	}
 
 }
-void PlayerBubble::SetPlayer(Player* p)
+void Player2Bubble::SetPlayer(Player2* p)
 {
-	player = p;
+	player2 = p;
 }
-void PlayerBubble::JumpOnBubble()
+void Player2Bubble::Stomp()
 {
 	if (!inShoot)
 	{
 		AABB box = GetHitbox();
-		//if (player != nullptr && IsKeyDown(KEY_Q))
-		//{
-		//	if (jumpTime > 1)
-		//	{
-		//		if (player->TestCollisionFromUp(box, &pos.y))
-		//		{
-		//			player->SetPos(player->GetPos() += { 0, BUBBLEJUMP });
-		//			jumpTime = 0;
-		//		}
-		//	}
-		//}
+		/*if (player2 != nullptr && IsKeyDown(KEY_Q))
+		{
+			if (jumpTime > 1)
+			{
+				if (player2->TestCollisionFromUp(box, &pos.y))
+				{
+					player2->SetPos(player2->GetPos() += { 0, BUBBLEJUMP });
+					jumpTime = 0;
+				}
+			}
+		}*/
 	}
 	jumpTime += GetFrameTime();
 }
 
-void PlayerBubble::Move(Directions d)
+void Player2Bubble::Movement(Directions d)
 {
-	Clamp();
-	JumpOnBubble();
+	ClampPos();
+	Stomp();
 	if (pos.y > 32)
 	{
 		if (d == Directions::LEFT)
 		{
-			
+
 			switch (level) {
 				Shot();
 			case 1:
-				
+
 				if (pos.x < 20)
 				{
 					pos.x++;
@@ -212,11 +212,11 @@ void PlayerBubble::Move(Directions d)
 	}
 
 }
-void PlayerBubble::DrawDebug(const Color& col) const
+void Player2Bubble::DrawDebug(const Color& col) const
 {
 	Entity::DrawHitbox(pos.x, pos.y, width, height, col);
 }
-void PlayerBubble::Release()
+void Player2Bubble::Release()
 {
 
 	render->Release();

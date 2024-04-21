@@ -28,7 +28,7 @@
 #define GRAVITY_FORCE			1
 
 //Logic states
-enum class eState { EIDLE, EWALKING, EJUMPING, EFALLING, ECLIMBING, EDEAD };
+enum class eState { EIDLE, EWALKING, EJUMPING, EFALLING, ECLIMBING, EDAMAGED, ESHOOTING, EDEAD };
 enum class eLook { ERIGHT, ELEFT };
 
 //Rendering states
@@ -41,6 +41,9 @@ enum class Player2Anim {
 	CLIMBING, CLIMBING_PRE_TOP, CLIMBING_TOP,
 	SHOCK_LEFT, SHOCK_RIGHT,
 	TELEPORT_LEFT, TELEPORT_RIGHT,
+	DAMAGE_LEFT, DAMAGE_RIGHT,
+	SHOOTING,
+	DIE_LEFT, DIE_RIGHT,
 	NUM_ANIMATIONS
 };
 
@@ -56,6 +59,14 @@ public:
 	void InitScore();
 	void IncrScore(int n);
 	int GetScore();
+
+	void InitLife();
+	void LifeManager();
+	int life;
+	int getLife();
+	void Die();
+	void ReceiveDamage();
+	bool isReceivingDamage();
 
 	void Update();
 	void DrawDebug(const Color& col) const;
@@ -101,5 +112,7 @@ private:
 	TileMap* map;
 
 	int score;
+	float damageTime;
+	float pTime;
 };
 

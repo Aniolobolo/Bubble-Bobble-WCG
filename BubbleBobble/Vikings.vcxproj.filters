@@ -49,6 +49,9 @@
     <ClCompile Include="src\PlayerBubble.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
+    <ClCompile Include="src\Player2Bubble.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Globals.h">
@@ -100,6 +103,9 @@
       <Filter>Entities</Filter>
     </ClInclude>
     <ClInclude Include="src\PlayerBubble.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player2Bubble.h">
       <Filter>Entities</Filter>
     </ClInclude>
   </ItemGroup>

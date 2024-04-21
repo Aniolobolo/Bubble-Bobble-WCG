@@ -2,24 +2,26 @@
 #include <stdio.h>
 #include "Globals.h"
 
+Sound sfxs[30];
+
 Scene::Scene()
 {
+	isGameOver = false;
+	pBubble = nullptr;
 	player = nullptr;
-	player2 = nullptr;
+	//player2 = nullptr;
 	level = nullptr;
 	camera.target = { 0, 0 };				//Center of the screen
 	camera.offset = { 0, MARGIN_GUI_Y };	//Offset from the target (center of the screen)
 	camera.rotation = 0.0f;					//No rotation
 	camera.zoom = 1.0f;						//Default zoom
 	eBubblingTime = 0;
-	eTimeSpawnX = GetRandomValue(-1, 1);
-	eTimeSpawnY = GetRandomValue(-1, 1);
 	debug = DebugMode::OFF;
 
 	actualLevel = 1;
-	goal_score[0] = 100;
-	goal_score[1] = 150;
-	goal_score[2] = 200;
+	goal_score[0] = 1000;
+	goal_score[1] = 3000;
+	goal_score[2] = 5000;
 }
 Scene::~Scene()
 {
@@ -30,12 +32,12 @@ Scene::~Scene()
 		delete player;
 		player = nullptr;
 	}
-	if (player2 != nullptr)
-	{
-		player2->Release();
-		delete player2;
-		player2 = nullptr;
-	}
+	//if (player2 != nullptr)
+	//{
+	//	player2->Release();
+	//	delete player2;
+	//	player2 = nullptr;
+	//}
 	if (pBubble != nullptr)
 	{
 		pBubble->Release();
@@ -93,19 +95,19 @@ AppStatus Scene::Init()
 		return AppStatus::ERROR;
 	}
 
-	//Create player
-	player2 = new Player2({ 0,0 }, eState::EIDLE, eLook::ERIGHT);
-	if (player2 == nullptr)
-	{
-		LOG("Failed to allocate memory for Player2");
-		return AppStatus::ERROR;
-	}
-	//Initialise player
-	if (player2->Initialise() != AppStatus::OK)
-	{
-		LOG("Failed to initialise Player2");
-		return AppStatus::ERROR;
-	}
+	////Create player
+	//player2 = new Player2({ 0,0 }, eState::EIDLE, eLook::ERIGHT);
+	//if (player2 == nullptr)
+	//{
+	//	LOG("Failed to allocate memory for Player2");
+	//	return AppStatus::ERROR;
+	//}
+	////Initialise player
+	//if (player2->Initialise() != AppStatus::OK)
+	//{
+	//	LOG("Failed to initialise Player2");
+	//	return AppStatus::ERROR;
+	//}
 
 	//Create level 
     level = new TileMap();
@@ -136,7 +138,7 @@ AppStatus Scene::Init()
 
 	//Assign the tile map reference to the player to check collisions while navigating
 	player->SetTileMap(level);
-	player2->SetTileMap(level);
+	//player2->SetTileMap(level);
 
     return AppStatus::OK;
 }
@@ -165,32 +167,33 @@ AppStatus Scene::LoadLevel(int stage)
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
-			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
+			1,   1,   50,   0,   0,   0,   0,   154,   0,   0,   0,   154,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   102,   0,   0,   0,   0,   0,   0,   0,   102,   0,   0,   0,   0,   0,	  0,   0,   102,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   1,   1,   53,   0,   0,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,	  1,   1,   1,   1, 53, 0, 0, 1, 1, 1, 1,
 			1,   1,   51,  52,  54,   0,   0,   55,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52, 54, 0, 0, 55, 52, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
-			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
+			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   154,	  0,   0,   0,   154, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   1,   1,   53,   0,   0,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,	  1,   1,   1,   1, 53, 0, 0, 1, 1, 1, 1,
 			1,   1,   51,  52,  54,   0,   0,   55,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52, 54, 0, 0, 55, 52, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
-			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
+			1,   1,   50,   0,   0,   0,   0,   154,   0,   0,   0,   154,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   1,   1,   53,   0,   0,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,	  1,   1,   1,   1, 53, 0, 0, 1, 1, 1, 1,
 			1,   1,   51,  52,  54,   0,   0,   55,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52, 54, 0, 0, 55, 52, 1, 1,
 			1,   1,   50,  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 0,   0,   0,  0,   0, 0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
-			1,   1,   50,  100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,   0,   0,  0, 0, 0, 0, 101, 0, 1, 1,
+			1,   1,   50,  100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,   0,   0,  0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,	  1,   1,   1,  1, 1, 1, 1, 1, 1, 1, 1
 
 
 		};
 		player->InitScore();
 		player->InitLife();
+		//player2->InitScore();
+		//player2->InitLife();
 
-		player2->InitScore();
 	}
 	else if (stage == 2)
 	{
@@ -199,30 +202,31 @@ AppStatus Scene::LoadLevel(int stage)
 			2,   2,   24,   24,   24,   24,   24,   24,   24,   24,   24,   24,   24,   24,   24,   24,   24,   24,   24,   59,	  0,   0,   0,  24, 24, 24, 24, 24, 24, 24, 2, 2,
 			2,   2,   57,  58,  58,  58,  58,  58,  58,  58,  58,  58,  58,  58,  58,  58,  58, 58,  58,  60,  0,  0,  0,  61, 58,  58, 58, 58,  58, 58, 2, 2,
 			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 2, 2,
-			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 2, 2,
-			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   2,   59,	  0,   0,   2,   59, 0, 0, 0, 0, 0, 2, 2,
+			2,   2,   56,   103,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 2, 2,
+			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   154,   0,   0,   0,   2,   59,	  0,   0,   2,   59, 0, 0, 154, 0, 0, 2, 2,
 			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   2,   2,   2,   2,   2,   56,	  0,   0,   2,   2,  2, 2, 2, 59, 0, 2, 2,
-			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   2,   57,   58,   58,   58,   60,	  0,   0,   61,  58, 58, 58, 2, 56, 0, 2, 2,
+			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   103,   0,   0,   0,   0,   2,   57,   58,   58,   58,   60,	  0,   0,   61,  58, 58, 58, 2, 56, 0, 2, 2,
 			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   2,   2,   2,   2,   2,   59,	  0,   0,   2,   2,  2, 2, 2, 56, 0, 2, 2,
 			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   61,   58,   58,   58,   2,   56,	  0,   0,   2,   57, 58, 58, 58, 60, 0, 2, 2,
 			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   2,   2,   56,	  0,   0,   2,   2, 59, 0, 0, 0, 0, 2, 2,
 			2,   2,   56,   0,  0,   0,   0,    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   2,   57,   60,	  0,   0,   61,   2, 56, 0, 0, 0, 0, 2, 2,
 			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   2,   2,   59,	  0,   0,   2,   2, 56, 0, 0, 0, 0, 2, 2,
 			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   61,   2,   56,	  0,   0,   2,   57, 60, 0, 0, 0, 0, 2, 2,
-			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   2,   2,   56,	  0,   0,   2,   2, 59, 0, 0, 0, 0, 2, 2,
-			2,   2,   56,   0,   0,   0,   0,   0,   102,   0,   0,   0,   0,   0,   0,   0,   0,   2,   2,   57,   60,	  0,   0,   61,   2, 2, 59, 0, 0, 0, 2, 2,
+			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   2,   2,   56,	  0,   103,   2,   2, 59, 0, 0, 0, 0, 2, 2,
+			2,   2,   56,   0,   0,   0,   0,   0,   0,   154,   0,   0,   0,   0,   154,   0,   0,   2,   2,   57,   60,	  0,   0,   61,   2, 2, 59, 0, 0, 0, 2, 2,
 			2,   2,   56,  0,   0,   0,   2,   2,   2,   2,   2,   2,   2,   2,   2,   2,   2,   2,   57,   60,   0,	  0,   0,   0,   61, 2, 56, 0, 0, 0, 2, 2,
 			2,   2,   56,   0,   0,   2,   2,   57,   58,   58,   58,   58,   58,   58,   58,   58,   58,   58,  60,   0,   0,	  0,   0,   0,   0, 2, 56, 0, 0, 0, 2, 2,
 			2,   2,   56,   0,   2,   2,   57,   60,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 2, 56, 0, 0, 0, 2, 2,
-			2,   2,   56,   0,   2,   57,   60,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   2, 2, 56, 0, 0, 0, 2, 2,
+			2,   2,   56,   0,   2,   57,   60,   0,   0,   0,   0,   154,   0,   0,   0,   0,   154,   0,   0,   0,   0,	  0,   0,   0,   2, 2, 56, 0, 0, 0, 2, 2,
 			2,   2,   56,   0,   2,   56,   0,   0,   0,   2,   2,   2,   2,   2,   2,   2,   2,   2,   2,   2,   2,	  2,   2,   2,   2, 57, 60, 0, 0, 0, 2, 2,
 			2,   2,   56,   0,   2,   56,   0,   0,   2,   2,   57,   58,   58,   58,   58,   58,   58,   58,   58,   58,   58,	  58,   58,   58,   58, 60, 0, 0, 0, 0, 2, 2,
 			2,   2,   56,  0,   2,   56,   0,   0,   2,   57,   60,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 2, 2,
 			2,   2,   56,  0,   2,   56,   0,   0,   2,   56,   0,   0,   0,   0,   0,   0, 0,  0,   0,  0,   0, 0,   0,   0,   0, 0, 0, 0, 0, 0, 2, 2,
 			2,   2,   56,   0,   61,   60,   0,   0,   61,   60,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 2, 2,
-			2,   2,   56,  100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,   0,   0,  0, 0, 0, 0, 101, 0, 2, 2,
-			2,   2,   2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 59, 103, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+			2,   2,   56,  100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,   0,   0,  0, 0, 0, 0, 0, 0, 2, 2,
+			2,   2,   2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 59, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 		};
+
 	}
 	else if (stage == 3)
 	{
@@ -231,20 +235,20 @@ AppStatus Scene::LoadLevel(int stage)
 			8,   9,   25,   25,   25,   25,   25,   25,   25,   62,   0,   0,   0,   25,   25,   25,   25,   25,   25,   62,	  0,   0,   0,  25, 25, 25, 25, 25, 25, 25, 8, 9,
 			10,   11,   63,  64,  64,  64,  64,  64,  64,  66,  0,  0,  0,  67,  64,  64,  64, 64,  64,  66,  0,  0,  0,  67, 64,  64, 64, 64,  64, 64, 10, 11,
 			8,   9,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 8, 9,
-			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 8, 9,
+			10,   11,   62,   0,   103,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
+			8,   9,   62,   0,   0,   154,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 154, 0, 0, 0, 8, 9,
 			10,   11,   62,   0,   0,   7,   7,   7,   7,   65,   0,   0,   0,   0,   0,   7,   7,   65,   0,   0,   0,	  0,   0,   7,   7, 7, 7, 65, 0, 0, 10, 11,
 			8,   9,   62,   0,   0,   67,   64,   64,   64,   66,   0,   0,   0,   0,   0,   67,   64,   66,   0,   0,   0,	  0,   0,   67,   64, 64, 64, 66, 0, 0, 8, 9,
 			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 8, 9,
+			8,   9,   62,   0,   0,   154,   0,   0,   0,   0,   0,   0,   103,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 154, 0, 0, 0, 8, 9,
 			10,   11,   62,   0,   7,   7,   7,   7,   65,   0,   0,   0,   0,   0,   7,   7,   7,   7,   65,   0,   0,	  0,   0,   0,   7, 7, 7, 7, 65, 0, 10, 11,
 			8,   9,   62,   0,   67,   64,   64,   64,   66,   0,   0,   0,   0,   0,   67,   64,   64,   64,   66,   0,   0,	0,  0,   0,   67,  64, 64, 64, 66, 0, 8, 9,
 			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 8, 9,
+			8,   9,   62,   0,   0,   0,   0,   154,   0,   0,   0,   0,   0,   0,   154,   0,   0,   154,   0,   0,   0,	  0,   0,   0,   154, 0, 0, 0, 0, 0, 8, 9,
 			10,   11,   62,   0,   0,   7,   7,   7,   7,   65,   0,   0,   0,   7,   7,   7,   7,   7,   7,   65,   0,	  0,   0,   7,   7, 7, 7, 65, 0, 0, 10, 11,
 			8,   9,   62,   0,   0,   67,   64,   64,   64,   66,   0,   0,   0,   67,   64,   64,   64,   64,   64,   66,   0,	  0,   0,   67,   64, 64, 64, 66, 0, 0, 8, 9,
 			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 8, 9,
+			8,   9,   62,   0,   0,   0,   0,   102,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   102,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 8, 9,
 			10,   11,   62,   0,   0,   0,   7,   7,   7,   7,   65,   0,   7,   7,   7,   65,   0,   7,   7,   7,   65,	  0,   7,   7,   7, 7, 65, 0, 0, 0, 10, 11,
 			8,   9,   62,   0,   0,   0,   67,   64,   64,   64,   66,   0,   67,   64,   64,   66,   0,   67,   64,   64,   66,	  0,   67,   64,   64, 64, 66, 0, 0, 0, 8, 9,
 			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
@@ -252,7 +256,7 @@ AppStatus Scene::LoadLevel(int stage)
 			10,   11,   62,   0,   0,   0,   0,   0,   7,   7,   7,   7,   7,   7,   65,   0,   0,   0,   7,   7,   7,	  7,   7,   7,   65, 0, 0, 0, 0, 0, 10, 11,
 			8,   9,   62,   0,   0,   0,   0,   0,   67,   64,   64,   64,   64,   64,   66,   0,   0,   0,   67,   64,   64,	64,   64,   64,   66, 0, 0, 0, 0, 0, 8, 9,
 			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	 0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,  100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,   0,   0,  0, 0, 0, 0, 101, 0, 8, 9,
+			8,   9,   62,  100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,   0,   0,  0, 0, 0, 0, 0, 0, 8, 9,
 			10,   11,   7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 10, 11,
 		};
 	}
@@ -281,13 +285,13 @@ AppStatus Scene::LoadLevel(int stage)
 				player->SetPos(pos);
 				map[i] = 0;
 			}
-			else if (tile == Tile::PLAYER2)
-			{
-				ePos.x = x * TILE_SIZE;
-				ePos.y = y * TILE_SIZE + TILE_SIZE - 1;
-				player2->SetPos(ePos);
-				map[i] = 0;
-			}
+			//else if (tile == Tile::PLAYER2)
+			//{
+			//	ePos.x = x * TILE_SIZE;
+			//	ePos.y = y * TILE_SIZE + TILE_SIZE - 1;
+			//	player2->SetPos(ePos);
+			//	map[i] = 0;
+			//}
 			else if (tile == Tile::ZENCHAN)
 			{
 				pos.x = x * TILE_SIZE;
@@ -299,46 +303,57 @@ AppStatus Scene::LoadLevel(int stage)
 
 				map[i] = 0;
 			}
-			/*else if (tile == Tile::ITEM_APPLE)
+			else if (tile == Tile::INVADER)
 			{
 				pos.x = x * TILE_SIZE;
 				pos.y = y * TILE_SIZE + TILE_SIZE - 1;
-				obj = new Object(pos, ObjectType::APPLE);
+				e = new Enemy(pos, hState::EIDLE, hLook::ELEFT, hType::INVADER);
+				e->Initialise();
+				e->SetTileMap(level);
+				enemies.push_back(e);
+
+				map[i] = 0;
+			}
+			else if (tile == Tile::ITEM_CHERRY)
+			{
+				pos.x = x * TILE_SIZE;
+				pos.y = y * TILE_SIZE + TILE_SIZE - 1;
+				obj = new Object(pos, ObjectType::ITEM_CHERRY);
 				objects.push_back(obj);
 				map[i] = 0;
 			}
-			else if (tile == Tile::ITEM_CHILI)
+			else if (tile == Tile::ITEM_BEER)
 			{
 				pos.x = x * TILE_SIZE;
 				pos.y = y * TILE_SIZE + TILE_SIZE - 1;
-				obj = new Object(pos, ObjectType::CHILI);
+				obj = new Object(pos, ObjectType::ITEM_BEER);
 				objects.push_back(obj);
 				map[i] = 0;
 			}
-			else if (tile == Tile::ITEM_WOOPER)
+			else if (tile == Tile::ITEM_BANANA)
 			{
 				pos.x = x * TILE_SIZE;
 				pos.y = y * TILE_SIZE + TILE_SIZE - 1;
-				obj = new Object(pos, ObjectType::WOOPER);
+				obj = new Object(pos, ObjectType::ITEM_BANANA);
 				objects.push_back(obj);
 				map[i] = 0;
 			}
-			else if (tile == Tile::ITEM_GULPIN)
+			else if (tile == Tile::ITEM_BORGER)
 			{
 				pos.x = x * TILE_SIZE;
 				pos.y = y * TILE_SIZE + TILE_SIZE - 1;
-				obj = new Object(pos, ObjectType::GULPIN);
+				obj = new Object(pos, ObjectType::ITEM_BORGER);
 				objects.push_back(obj);
 				map[i] = 0;
 			}
-			else if (tile == Tile::ITEM_BAGON)
+			else if (tile == Tile::ITEM_WATERMELON)
 			{
 				pos.x = x * TILE_SIZE;
 				pos.y = y * TILE_SIZE + TILE_SIZE - 1;
-				obj = new Object(pos, ObjectType::BAGON);
+				obj = new Object(pos, ObjectType::ITEM_WATERMELON);
 				objects.push_back(obj);
 				map[i] = 0;
-			}*/
+			}
 
 			++i;
 		}
@@ -352,12 +367,14 @@ void Scene::PlayerBubbleSpawn()
 {
 	eBubblingTime += GetFrameTime();
 
-	if (IsKeyPressed(KEY_E) && eBubblingTime >= .3)
+	if (IsKeyPressed(KEY_E) && eBubblingTime >= .3 && !isGameOver)
 	{
 		if (player->IsLookingLeft())
 		{
 			PlayerBubble* bubble = new PlayerBubble(player->GetPos(), Directions::LEFT);
 			bubble->Initialise();
+			sfxs[0] = LoadSound("sound/SoundEffects/Characters/AttackFX.wav");
+			PlaySound(sfxs[0]);
 			playerBubbles.push_back(bubble);
 			PlayerBubble* pBubble = new PlayerBubble(player->GetPos(), Directions::LEFT);
 
@@ -366,6 +383,8 @@ void Scene::PlayerBubbleSpawn()
 		{
 			PlayerBubble* bubble = new PlayerBubble(player->GetPos(), Directions::RIGHT);
 			bubble->Initialise();
+			sfxs[0] = LoadSound("sound/SoundEffects/Characters/AttackFX.wav");
+			PlaySound(sfxs[0]);
 			playerBubbles.push_back(bubble);
 			PlayerBubble* pBubble = new PlayerBubble(player->GetPos(), Directions::LEFT);
 		}
@@ -375,11 +394,28 @@ void Scene::PlayerBubbleSpawn()
 
 
 }
+void Scene::deletePBubbles()
+{
+	auto check = playerBubbles.begin();
+	int bubble = 0;
+	while (check != playerBubbles.end() && bubble < playerBubbles.size()) {
+		if (!playerBubbles[bubble]->isAlive()) {
+			delete* check;
+			check = playerBubbles.erase(check);
+		}
+		else {
+			check++;
+			bubble++;
+		}
+	}
+
+}
 void Scene::Update()
 {
 	Point p1, p2;
 	AABB box;
 	PlayerBubbleSpawn();
+	deletePBubbles();
 	//Switch between the different debug modes: off, on (sprites & hitboxes), on (hitboxes) 
 	if (IsKeyPressed(KEY_F1))
 	{
@@ -387,25 +423,38 @@ void Scene::Update()
 	}
 	//Debug levels instantly
 	if (IsKeyPressed(KEY_ONE)) {
-		LoadLevel(1); 
+		LoadLevel(1);
+		player->InitLife();
 		actualLevel = 1;
 	}
 	else if (IsKeyPressed(KEY_TWO)) {
 		LoadLevel(2);
+		player->InitLife();
 		actualLevel = 2;
 	}
 	else if (IsKeyPressed(KEY_THREE)) {
 		LoadLevel(3);
+		player->InitLife();
 		actualLevel = 3;
 	}
 	if (player->GetScore() >= goal_score[actualLevel - 1])
 	{
 		actualLevel++;
 		
-		if (actualLevel > 3) actualLevel = 1;
-		player->InitScore();
+		if (actualLevel > 3) {
+			isGameWon = true;
+		}
+
 		LoadLevel(actualLevel);
 	}
+
+	if (IsKeyPressed(KEY_F2)) {
+		godMode = true;
+	}
+	else if (IsKeyPressed(KEY_F3)) {
+		godMode = false;
+	}
+
 	for (Enemy* e : enemies)
 	{
 		e->Update();
@@ -418,7 +467,7 @@ void Scene::Update()
 	UpdateBubbles();
 	level->Update();
 	player->Update();
-	player2->Update();
+	//player2->Update();
 
 
 	CheckCollisions();
@@ -432,13 +481,14 @@ void Scene::Render()
 	{
 		RenderObjects(); 
 		player->Draw();
-		player2->Draw();
+		//player2->Draw();
 	}
 	if (debug == DebugMode::SPRITES_AND_HITBOXES || debug == DebugMode::ONLY_HITBOXES)
 	{
 		RenderObjectsDebug(YELLOW);
 		player->DrawDebug(GREEN);
-		player2->DrawDebug(GREEN);
+		
+		//player2->DrawDebug(GREEN);
 	}
 
 	EndMode2D();
@@ -449,7 +499,7 @@ void Scene::Release()
 {
     level->Release();
 	player->Release();
-	player2->Release();
+	//player2->Release();
 	ClearLevel();
 }
 void Scene::CheckCollisions()
@@ -457,7 +507,7 @@ void Scene::CheckCollisions()
 	AABB player_box, player2_box, enemy_box, bubb_box, obj_box;
 	
 	player_box = player->GetHitbox();
-	player2_box = player2->GetHitbox();
+	//player2_box = player2->GetHitbox();
 	
 	auto it = objects.begin();
 	while (it != objects.end())
@@ -472,34 +522,49 @@ void Scene::CheckCollisions()
 			//Erase the object from the vector and get the iterator to the next valid element
 			it = objects.erase(it); 
 		}
-		else if (player2_box.TestAABB(obj_box))
-		{
-			player2->IncrScore((*it)->Points());
+		//else if (player2_box.TestAABB(obj_box))
+		//{
+		//	player2->IncrScore((*it)->Points());
 
-			//Delete the object
-			delete* it;
-			//Erase the object from the vector and get the iterator to the next valid element
-			it = objects.erase(it);
-		}
+		//	//Delete the object
+		//	delete* it;
+		//	//Erase the object from the vector and get the iterator to the next valid element
+		//	it = objects.erase(it);
+		//}
 		else
 		{
 			//Move to the next object
 			++it; 
 		}
 	}
-	//auto it_enemies = enemies.begin();
-	//while (it_enemies != enemies.end())
-	//{
-	//	enemy_box = (*it_enemies)->GetHitbox();
-	//	if (player_box.TestAABB(enemy_box))
-	//	{
-	//		/*player->LifeManager();*/
-	//	}
-	//	else
-	//	{
-	//		++it_enemies;
-	//	}
-	//}
+	
+	auto it_enemies = enemies.begin();
+	while (it_enemies != enemies.end())
+	{
+		enemy_box = (*it_enemies)->GetHitbox();
+		if (player_box.TestAABB(enemy_box) && !godMode)
+		{
+			player->LifeManager();
+			if (player->getLife() <= 0) {
+				isGameOver = true;
+			}
+			delete* it_enemies;
+			it_enemies = enemies.erase(it_enemies);
+		}
+		//if (player2_box.TestAABB(enemy_box) && !godMode)
+		//{
+		//	player2->LifeManager();
+		//	if (player2->getLife() <= 0) {
+		//		isGameOver = true;
+		//	}
+		//	delete* it_enemies;
+		//	it_enemies = enemies.erase(it_enemies);
+		//}
+		else
+		{
+			++it_enemies;
+		}
+	}
 }
 void Scene::ClearLevel()
 {
@@ -563,7 +628,9 @@ void Scene::RenderGUI() const
 	//Temporal approach
 	DrawText(TextFormat("1UP", player->GetScore()), 32, 0, 8, GREEN);
 	DrawText(TextFormat("%d", player->GetScore()), 32, 8, 8, WHITE);
-
-	DrawText(TextFormat("2UP", player2->GetScore()), 200, 0, 8, SKYBLUE);
-	DrawText(TextFormat("%d", player2->GetScore()), 200, 8, 8, WHITE);
+	DrawText(TextFormat("Lives", player->GetScore()), 64, 0, 8, GREEN);
+	DrawText(TextFormat("%d", player->getLife()), 64, 8, 10, WHITE);
+	
+	//DrawText(TextFormat("2UP", player2->GetScore()), 200, 0, 8, SKYBLUE);
+	//DrawText(TextFormat("%d", player2->GetScore()), 200, 8, 8, WHITE);
 }

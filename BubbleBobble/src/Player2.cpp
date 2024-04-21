@@ -200,17 +200,66 @@ void Player2::ChangeAnimLeft()
 		case eState::EFALLING: SetAnimation((int)Player2Anim::FALLING_LEFT); break;
 	}
 }
+
+void Player2::InitLife() {
+
+	life = 3;
+}
+
+void Player2::LifeManager() {
+	if (life <= 0) {
+		Die();
+
+	}
+	life--;
+}
+
+int Player2::getLife()
+{
+	return life;
+}
+
+void Player2::ReceiveDamage()
+{
+	state = eState::EDAMAGED;
+	isReceivingDamage();
+	if (IsLookingRight())	SetAnimation((int)Player2Anim::DAMAGE_RIGHT);
+	else					SetAnimation((int)Player2Anim::DAMAGE_LEFT);
+	if (life <= 0) {
+		Die();
+	}
+
+}
+void Player2::Die()
+{
+	state = eState::EDEAD;
+	if (IsLookingRight())	SetAnimation((int)Player2Anim::DIE_RIGHT);
+	else                    SetAnimation((int)Player2Anim::DIE_LEFT);
+	Sprite* sprite = dynamic_cast<Sprite*>(render);
+}
+
+bool Player2::isReceivingDamage()
+{
+	if (state == eState::EDAMAGED) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 void Player2::Update()
 {
 	//Player doesn't use the "Entity::Update() { pos += dir; }" default behaviour.
 	//Instead, uses an independent behaviour for each axis.
-	MoveX();
-	MoveY();
-	//ShootBubble();
-	Sprite* sprite = dynamic_cast<Sprite*>(render);
-	sprite->Update();
-	Warp();
-
+	if (state != eState::EDEAD) {
+		if (getLife() <= 0) {
+			Die();
+		}
+		MoveX();
+		MoveY();
+		Warp();
+	}
 	if (IsKeyPressed(KEY_ONE) || IsKeyPressed(KEY_TWO) || IsKeyPressed(KEY_THREE)) {
 		state = eState::EIDLE;
 		SetAnimation((int)Player2Anim::IDLE_LEFT);

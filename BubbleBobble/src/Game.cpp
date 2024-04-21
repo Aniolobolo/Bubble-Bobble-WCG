@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Globals.h"
+#include "Player.h"
 #include "ResourceManager.h"
 #include <stdio.h>
 
@@ -9,10 +10,9 @@ Music bossMusic;
 
 Game::Game()
 {
-    state = GameState::MAIN_MENU;
+    gState = GameState::ACLARATION;
     scene = nullptr;
     img_menu = nullptr;
-
     target = {};
     src = {};
     dst = {};
@@ -72,12 +72,42 @@ AppStatus Game::LoadResources()
     }
     img_menu = data.GetTexture(Resource::IMG_MENU);
     
+    if (data.LoadTexture(Resource::IMG_GAMEOVER, "images/gameOver.png") != AppStatus::OK)
+    {
+        return AppStatus::ERROR;
+    }
+    img_gameover = data.GetTexture(Resource::IMG_GAMEOVER);
+
+    if (data.LoadTexture(Resource::IMG_GAMEWON, "images/winScreen.png") != AppStatus::OK)
+    {
+        return AppStatus::ERROR;
+    }
+    img_win = data.GetTexture(Resource::IMG_GAMEWON);
+
     if (data.LoadTexture(Resource::IMG_INSERTCOIN, "images/insertCoin.png") != AppStatus::OK)
     {
         return AppStatus::ERROR;
     }
     img_insertcoin = data.GetTexture(Resource::IMG_INSERTCOIN);
+
+    if (data.LoadTexture(Resource::IMG_ACLARATION, "images/aclaration.png") != AppStatus::OK)
+    {
+        return AppStatus::ERROR;
+    }
+    img_aclaration = data.GetTexture(Resource::IMG_ACLARATION);
+
+    if (data.LoadTexture(Resource::IMG_CREDITS, "images/credits.png") != AppStatus::OK)
+    {
+        return AppStatus::ERROR;
+    }
+    img_credits = data.GetTexture(Resource::IMG_CREDITS);
     
+    if (data.LoadTexture(Resource::IMG_PROFESSORS, "images/professors.png") != AppStatus::OK)
+    {
+        return AppStatus::ERROR;
+    }
+    img_profs = data.GetTexture(Resource::IMG_PROFESSORS);
+
     return AppStatus::OK;
 }
 AppStatus Game::BeginPlay()
@@ -108,24 +138,54 @@ AppStatus Game::Update()
     //Check if user attempts to close the window, either by clicking the close button or by pressing Alt+F4
     if(WindowShouldClose()) return AppStatus::QUIT;
     UpdateMusicStream(levelMusic);
-    switch (state)
+    switch (gState)
     {
-        case GameState::MAIN_MENU: 
+    case GameState::ACLARATION:
+        if (IsKeyPressed(KEY_ESCAPE)) return AppStatus::QUIT;
+        if (IsKeyPressed(KEY_SPACE))
+        {
+            gState = GameState::CREDITS;
+        }
+        break;
+    case GameState::CREDITS:
+        if (IsKeyPressed(KEY_ESCAPE)) return AppStatus::QUIT;
+        if (IsKeyPressed(KEY_SPACE))
+        {
+            gState = GameState::PROFESSORS;
+        }
+        break;
+    case GameState::PROFESSORS:
+        if (IsKeyPressed(KEY_ESCAPE)) return AppStatus::QUIT;
+        if (IsKeyPressed(KEY_SPACE))
+        {
+            gState = GameState::MAIN_MENU;
+        }
+        break;
+    case GameState::MAIN_MENU: 
             if (IsKeyPressed(KEY_ESCAPE)) return AppStatus::QUIT;
             if (IsKeyPressed(KEY_SPACE))
             {
-                state = GameState::INSERT_COIN;
+                gState = GameState::INSERT_COIN;
             }
             break;
         case GameState::INSERT_COIN:
-            if (IsKeyPressed(KEY_ESCAPE)) state = GameState::MAIN_MENU;
+            if (IsKeyPressed(KEY_ESCAPE)) gState = GameState::MAIN_MENU;
             if (IsKeyPressed(KEY_SPACE))
             {
                 soundEffects[1] = LoadSound("sound/SoundEffects/Intro/CoinInsertedFX.wav");
                 PlaySound(soundEffects[1]);
                 if (BeginPlay() != AppStatus::OK) return AppStatus::ERROR;
-                state = GameState::PLAYING;
+                gState = GameState::PLAYING;
             }
+            break;
+
+        case GameState::GAMEOVER:
+            if (IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_SPACE)) gState = GameState::MAIN_MENU;
+
+            break;
+        case GameState::WIN:
+            if (IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_SPACE)) gState = GameState::MAIN_MENU;
+
             break;
 
         case GameState::PLAYING:  
@@ -133,13 +193,40 @@ AppStatus Game::Update()
             {
                 StopMusicStream(levelMusic);
                 FinishPlay();
-                state = GameState::MAIN_MENU;
+                gState = GameState::MAIN_MENU;
+            }
+            else if (IsKeyPressed(KEY_O))
+            {
+                StopMusicStream(levelMusic);
+                soundEffects[2] = LoadSound("sound/Music/9-Game-Over.ogg");
+                PlaySound(soundEffects[2]);
+                FinishPlay();
+                gState = GameState::GAMEOVER;
+                
+            }
+            else if (IsKeyPressed(KEY_P))
+            {
+                StopMusicStream(levelMusic);
+                FinishPlay();
+                gState = GameState::WIN;
+
+            }
+            else if (scene->isGameOver == true) {
+                StopMusicStream(levelMusic);
+                soundEffects[2] = LoadSound("sound/Music/9-Game-Over.ogg");
+                PlaySound(soundEffects[2]);
+                gState = GameState::GAMEOVER;
+            }
+            else if (scene->isGameWon == true) {
+                StopMusicStream(levelMusic);
+                gState = GameState::WIN;
             }
             else
             {
                 //Game logic
                 scene->Update();
             }
+            
             break;
     }
     return AppStatus::OK;
@@ -150,7 +237,7 @@ void Game::Render()
     BeginTextureMode(target);
     ClearBackground(BLACK);
     
-    switch (state)
+    switch (gState)
     {
         case GameState::MAIN_MENU:
             DrawTexture(*img_menu, 0, 0, WHITE);
@@ -158,6 +245,26 @@ void Game::Render()
 
         case GameState::INSERT_COIN:
             DrawTexture(*img_insertcoin, 0, 0, WHITE);
+            break;
+
+        case GameState::WIN:
+            DrawTexture(*img_win, 0, 0, WHITE);
+            break;
+
+        case GameState::GAMEOVER:
+            DrawTexture(*img_gameover, 0, 0, WHITE);
+            break;
+
+        case GameState::ACLARATION:
+            DrawTexture(*img_aclaration, 0, 0, WHITE);
+            break;
+
+        case GameState::CREDITS:
+            DrawTexture(*img_credits, 0, 0, WHITE);
+            break;
+
+        case GameState::PROFESSORS:
+            DrawTexture(*img_profs, 0, 0, WHITE);
             break;
 
         case GameState::PLAYING:
@@ -183,6 +290,11 @@ void Game::UnloadResources()
     ResourceManager& data = ResourceManager::Instance();
     data.ReleaseTexture(Resource::IMG_MENU);
     data.ReleaseTexture(Resource::IMG_INSERTCOIN);
+    data.ReleaseTexture(Resource::IMG_GAMEOVER);
+    data.ReleaseTexture(Resource::IMG_GAMEWON);
+    data.ReleaseTexture(Resource::IMG_ACLARATION);
+    data.ReleaseTexture(Resource::IMG_CREDITS);
+    data.ReleaseTexture(Resource::IMG_PROFESSORS);
 
     UnloadRenderTexture(target);
 }

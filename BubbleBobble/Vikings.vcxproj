@@ -28,6 +28,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Object.cpp" />
     <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\Player2Bubble.cpp" />
     <ClCompile Include="src\PlayerBubble.cpp" />
     <ClCompile Include="src\RenderComponent.cpp" />
     <ClCompile Include="src\ResourceManager.cpp" />
@@ -46,6 +47,7 @@
     <ClInclude Include="src\MemLeaks.h" />
     <ClInclude Include="src\Object.h" />
     <ClInclude Include="src\Player.h" />
+    <ClInclude Include="src\Player2Bubble.h" />
     <ClInclude Include="src\PlayerBubble.h" />
     <ClInclude Include="src\Point.h" />
     <ClInclude Include="src\RenderComponent.h" />
