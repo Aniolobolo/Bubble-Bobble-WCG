@@ -9,6 +9,8 @@ Scene::Scene()
 	isGameOver = false;
 	pBubble = nullptr;
 	player = nullptr;
+	enemies = nullptr;
+	shots = nullptr;
 	//player2 = nullptr;
 	level = nullptr;
 	camera.target = { 0, 0 };				//Center of the screen
@@ -53,16 +55,23 @@ Scene::~Scene()
 		level = nullptr;
 	}
 
-	for (Entity* enemy : enemies)
+	if (enemies != nullptr)
 	{
-		delete enemy;
+		enemies->Release();
+		delete enemies;
+		enemies = nullptr;
+	}
+	if (shots != nullptr)
+	{
+		delete shots;
+		shots = nullptr;
 	}
 
 	for (Entity* obj : objects)
 	{
 		delete obj;
 	}
-	enemies.clear();
+	
 
 	for (Entity* bubbles : playerBubbles)
 	{
@@ -128,17 +137,41 @@ AppStatus Scene::Init()
 		LOG("Failed to load Level 1");
 		return AppStatus::ERROR;
 	}
-	for (Enemy* enemy : enemies)
-	{
-		if (enemy != nullptr) {
-			enemy->SetTileMap(level);
 
-		}
+	//Create enemy manager
+	enemies = new EnemyManager();
+	if (enemies == nullptr)
+	{
+		LOG("Failed to allocate memory for Enemy Manager");
+		return AppStatus::ERROR;
+	}
+	//Initialise enemy manager
+	if (enemies->Initialise() != AppStatus::OK)
+	{
+		LOG("Failed to initialise Enemy Manager");
+		return AppStatus::ERROR;
+	}
+
+	//Create shot manager 
+	shots = new ShotManager();
+	if (shots == nullptr)
+	{
+		LOG("Failed to allocate memory for Shot Manager");
+		return AppStatus::ERROR;
+	}
+	//Initialise shot manager
+	if (shots->Initialise() != AppStatus::OK)
+	{
+		LOG("Failed to initialise Shot Manager");
+		return AppStatus::ERROR;
 	}
 
 	//Assign the tile map reference to the player to check collisions while navigating
 	player->SetTileMap(level);
 	//player2->SetTileMap(level);
+	shots->SetTileMap(level);
+	enemies->SetShotManager(shots);
+	
 
     return AppStatus::OK;
 }

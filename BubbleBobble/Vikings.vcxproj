@@ -19,8 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Shot.cpp" />
+    <ClCompile Include="ShotManager.cpp" />
     <ClCompile Include="src\AABB.cpp" />
     <ClCompile Include="src\Enemy.cpp" />
+    <ClCompile Include="src\EnemyManager.cpp" />
+    <ClCompile Include="src\Invader.cpp" />
+    <ClCompile Include="src\Mighta.cpp" />
     <ClCompile Include="src\Player2.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\Game.cpp" />
@@ -38,8 +43,13 @@
     <ClCompile Include="src\TileMap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Shot.h" />
+    <ClInclude Include="ShotManager.h" />
     <ClInclude Include="src\AABB.h" />
     <ClInclude Include="src\Enemy.h" />
+    <ClInclude Include="src\EnemyManager.h" />
+    <ClInclude Include="src\Invader.h" />
+    <ClInclude Include="src\MIghta.h" />
     <ClInclude Include="src\Player2.h" />
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\Game.h" />
@@ -119,8 +129,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\asier\OneDrive\Desktop\raylib\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\asier\OneDrive\Desktop\raylib\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\asierugo\Desktop\raylib\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\asierugo\Desktop\raylib\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>

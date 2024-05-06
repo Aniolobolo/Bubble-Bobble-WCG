@@ -15,8 +15,7 @@ enum class Resource {
     IMG_GAMEOVER,
     IMG_PLAYER,
     IMG_PLAYER2,
-    IMG_ZENCHAN,
-    IMG_INVADER,
+    IMG_ENEMIES,
     IMG_BUBBLE,
     IMG_TILES,
     IMG_ITEMS

@@ -11,6 +11,9 @@
 #define SHOOT_POS_X      18
 #define SHOOT_POS_Y      26
 
+enum class Look { RIGHT, LEFT };
+
+
 class Entity
 {
 public:
