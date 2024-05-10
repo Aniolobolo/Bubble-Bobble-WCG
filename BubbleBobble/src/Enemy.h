@@ -2,10 +2,10 @@
 #include "Entity.h"
 
 //Representation model size: 32x32
-#define SLIME_FRAME_SIZE		32
+#define MIGHTA_FRAME_SIZE		32
 //Logical model size: 24x30
-#define SLIME_PHYSICAL_WIDTH	24
-#define SLIME_PHYSICAL_HEIGHT	30
+#define MIGHTA_PHYSICAL_WIDTH	16
+#define MIGHTA_PHYSICAL_HEIGHT	16 
 
 //Representation model size: 32x32
 #define TURRET_FRAME_SIZE		32
@@ -13,7 +13,7 @@
 #define TURRET_PHYSICAL_WIDTH	32
 #define TURRET_PHYSICAL_HEIGHT	26
 
-enum class EnemyType { SLIME, TURRET };
+enum class EnemyType { MIGHTA, ZENCHAN, INVADER, DRUNK };
 
 class Enemy : public Entity
 {

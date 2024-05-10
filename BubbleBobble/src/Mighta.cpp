@@ -16,7 +16,7 @@ Mighta::~Mighta()
 AppStatus Mighta::Initialise(Look look, const AABB& area)
 {
 	int i;
-	const int n = SLIME_FRAME_SIZE;
+	const int n = MIGHTA_FRAME_SIZE;
 
 	ResourceManager& data = ResourceManager::Instance();
 	render = new Sprite(data.GetTexture(Resource::IMG_ENEMIES));
@@ -30,23 +30,32 @@ AppStatus Mighta::Initialise(Look look, const AABB& area)
 	sprite->SetNumberAnimations((int)MightaAnim::NUM_ANIMATIONS);
 
 	sprite->SetAnimationDelay((int)MightaAnim::IDLE_RIGHT, MIGHTA_ANIM_DELAY);
-	sprite->AddKeyFrame((int)MightaAnim::IDLE_RIGHT, { 0, 2 * n, n, n });
+	for (i = 0; i < 3; ++i)
+		sprite->AddKeyFrame((int)MightaAnim::IDLE_RIGHT, { float(i) * n, 3 * n, n, n });
+
 	sprite->SetAnimationDelay((int)MightaAnim::IDLE_LEFT, MIGHTA_ANIM_DELAY);
-	sprite->AddKeyFrame((int)MightaAnim::IDLE_LEFT, { 0, 2 * n, -n, n });
+	for (i = 0; i < 3; ++i)
+		sprite->AddKeyFrame((int)MightaAnim::IDLE_LEFT, { float(i) * n, 3 * n, -n, n });
 
 	sprite->SetAnimationDelay((int)MightaAnim::WALKING_RIGHT, MIGHTA_ANIM_DELAY);
-	for (i = 0; i < 3; ++i)
-		sprite->AddKeyFrame((int)MightaAnim::WALKING_RIGHT, { (float)i * n, 2 * n, n, n });
+	for (i = 0; i < 5; ++i)
+		sprite->AddKeyFrame((int)MightaAnim::WALKING_RIGHT, { (float)i * n, 3 * n, n, n });
 	sprite->SetAnimationDelay((int)MightaAnim::WALKING_LEFT, MIGHTA_ANIM_DELAY);
-	for (i = 0; i < 3; ++i)
-		sprite->AddKeyFrame((int)MightaAnim::WALKING_LEFT, { (float)i * n, 2 * n, -n, n });
+	for (i = 0; i < 5; ++i)
+		sprite->AddKeyFrame((int)MightaAnim::WALKING_LEFT, { (float)i * n, 3 * n, -n, n });
 
 	sprite->SetAnimationDelay((int)MightaAnim::ATTACK_RIGHT, MIGHTA_ANIM_DELAY);
 	sprite->AddKeyFrame((int)MightaAnim::ATTACK_RIGHT, { 0, 3 * n, n, n });
 	sprite->AddKeyFrame((int)MightaAnim::ATTACK_RIGHT, { n, 3 * n, n, n });
+	sprite->AddKeyFrame((int)MightaAnim::ATTACK_RIGHT, { n * 2, 3 * n, n, n });
+	sprite->AddKeyFrame((int)MightaAnim::ATTACK_RIGHT, { n * 3, 3 * n, n, n });
+	sprite->AddKeyFrame((int)MightaAnim::ATTACK_RIGHT, { n * 4, 3 * n, n, n });
 	sprite->SetAnimationDelay((int)MightaAnim::ATTACK_LEFT, MIGHTA_ANIM_DELAY);
 	sprite->AddKeyFrame((int)MightaAnim::ATTACK_LEFT, { 0, 3 * n, -n, n });
 	sprite->AddKeyFrame((int)MightaAnim::ATTACK_LEFT, { n, 3 * n, -n, n });
+	sprite->AddKeyFrame((int)MightaAnim::ATTACK_LEFT, { n * 2, 3 * n, -n, n });
+	sprite->AddKeyFrame((int)MightaAnim::ATTACK_LEFT, { n * 3, 3 * n, -n, n });
+	sprite->AddKeyFrame((int)MightaAnim::ATTACK_LEFT, { n * 4, 3 * n, -n, n });
 
 	this->look = look;
 	if (look == Look::LEFT)        sprite->SetAnimation((int)MightaAnim::IDLE_LEFT);

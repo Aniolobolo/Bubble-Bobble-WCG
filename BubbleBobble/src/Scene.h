@@ -27,7 +27,7 @@ public:
 
 private:
 
-    void CheckCollisions(); 
+    void CheckObjectCollisions();
     void ClearLevel();
     void UpdateBubbles();
     void RenderObjects() const;
@@ -48,6 +48,7 @@ private:
 
     //Shots thrown by enemies
     ShotManager* shots;
+
     std::vector<PlayerBubble*> playerBubbles;
     PlayerBubble* pBubble;
 

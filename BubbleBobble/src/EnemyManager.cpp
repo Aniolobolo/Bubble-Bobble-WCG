@@ -29,9 +29,9 @@ void EnemyManager::Add(const Point& pos, EnemyType type, const AABB& area, Look 
 {
 	Enemy* enemy;
 
-	if (type == EnemyType::SLIME)
+	if (type == EnemyType::MIGHTA)
 	{
-		enemy = new Slime(pos, SLIME_PHYSICAL_WIDTH, SLIME_PHYSICAL_HEIGHT, SLIME_FRAME_SIZE, SLIME_FRAME_SIZE);
+		enemy = new Mighta(pos, MIGHTA_PHYSICAL_WIDTH, MIGHTA_PHYSICAL_HEIGHT, MIGHTA_FRAME_SIZE, MIGHTA_FRAME_SIZE);
 	}
 	else
 	{
@@ -45,10 +45,10 @@ void EnemyManager::Add(const Point& pos, EnemyType type, const AABB& area, Look 
 AABB EnemyManager::GetEnemyHitBox(const Point& pos, EnemyType type) const
 {
 	int width, height;
-	if (type == EnemyType::SLIME)
+	if (type == EnemyType::MIGHTA)
 	{
-		width = SLIME_PHYSICAL_WIDTH;
-		height = SLIME_PHYSICAL_HEIGHT;
+		width = MIGHTA_PHYSICAL_WIDTH;
+		height = MIGHTA_PHYSICAL_HEIGHT;
 	}
 	//else if (type == EnemyType::TURRET)
 	//{
@@ -94,7 +94,14 @@ void EnemyManager::DrawDebug() const
 }
 void EnemyManager::Release()
 {
+	/*for (int i = 0; i<enemies.size(); ++i)
+	{
+		delete enemy[i]
+	}*/
 	for (Enemy* enemy : enemies)
-		delete enemy;
+	{
+		if (enemy != nullptr)
+			delete enemy;
+	}
 	enemies.clear();
 }

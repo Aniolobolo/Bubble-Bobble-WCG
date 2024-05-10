@@ -28,7 +28,7 @@ enum class Tile {
 	SHADOW_WALL4, SHADOW_WALLPLAT4, SHADOW_PLAT4, SHADOW_EDGE4, SHADOW_EDGEDOWN4, SHADOW_PLATLEFT4,
 
 	// id >= 100: entities' initial locations
-	PLAYER = 100, PLAYER2, ZENCHAN, INVADER, BUBBLE,
+	PLAYER = 100, PLAYER2, ZENCHAN, INVADER, MIGHTA, BUBBLE,
 	//id >= 150 items
 	ITEM_CHERRY = 150, ITEM_BEER, ITEM_BANANA, ITEM_BORGER, ITEM_WATERMELON,
 
@@ -65,6 +65,8 @@ public:
 	//Test if there is a ground tile one pixel below the given box
 	bool TestFalling(const AABB& box) const;
 	
+	//Given a hitbox, computes the maximum swept box model along the X-axis without solid tiles
+	AABB GetSweptAreaX(const AABB& hitboxbox) const;
 
 private:
 	void InitTileDictionary();

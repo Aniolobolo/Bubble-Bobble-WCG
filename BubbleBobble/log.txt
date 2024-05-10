@@ -1,4 +1,4 @@
-Project executed on 21-04-2024 at 20:29:14.
+Project executed on 10-05-2024 at 09:59:43.
 main.cpp(13): Application start
 Object.cpp(44): Internal error: object creation of invalid type
 Object.cpp(44): Internal error: object creation of invalid type
@@ -6,55 +6,65 @@ Object.cpp(44): Internal error: object creation of invalid type
 Object.cpp(44): Internal error: object creation of invalid type
 Object.cpp(44): Internal error: object creation of invalid type
 Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-main.cpp(35): Application finish
-main.cpp(39): Bye :)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (3, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (3, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (2, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (2, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (1, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (1, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (0, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (0, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (5, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (5, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (6, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (6, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (7, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (7, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (8, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (8, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (9, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (9, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (10, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (10, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (11, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (11, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (12, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (12, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (13, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (13, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (14, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (14, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (15, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (15, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (16, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (16, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (17, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (17, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (18, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (18, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (19, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (19, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (20, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (20, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (21, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (21, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (22, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (22, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (23, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (23, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (24, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (24, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (25, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (25, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (26, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (26, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (27, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (27, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (28, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (28, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (29, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (29, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (30, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (30, 25)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (31, 24)
+TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (31, 25)
