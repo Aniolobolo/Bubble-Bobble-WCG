@@ -35,7 +35,6 @@
 
 //Logic states
 enum class State { IDLE, WALKING, JUMPING, FALLING, CLIMBING, DAMAGED, SHOOTING, DEAD };
-enum class Look { RIGHT, LEFT };
 
 //Rendering states
 enum class PlayerAnim {

@@ -21,6 +21,9 @@
   <ItemGroup>
     <ClCompile Include="src\AABB.cpp" />
     <ClCompile Include="src\Enemy.cpp" />
+    <ClCompile Include="src\EnemyManager.cpp" />
+    <ClCompile Include="src\Invader.cpp" />
+    <ClCompile Include="src\Mighta.cpp" />
     <ClCompile Include="src\Player2.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\Game.cpp" />
@@ -33,6 +36,8 @@
     <ClCompile Include="src\RenderComponent.cpp" />
     <ClCompile Include="src\ResourceManager.cpp" />
     <ClCompile Include="src\Scene.cpp" />
+    <ClCompile Include="src\Shot.cpp" />
+    <ClCompile Include="src\ShotManager.cpp" />
     <ClCompile Include="src\Sprite.cpp" />
     <ClCompile Include="src\StaticImage.cpp" />
     <ClCompile Include="src\TileMap.cpp" />
@@ -40,6 +45,9 @@
   <ItemGroup>
     <ClInclude Include="src\AABB.h" />
     <ClInclude Include="src\Enemy.h" />
+    <ClInclude Include="src\EnemyManager.h" />
+    <ClInclude Include="src\Invader.h" />
+    <ClInclude Include="src\MIghta.h" />
     <ClInclude Include="src\Player2.h" />
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\Game.h" />
@@ -53,6 +61,8 @@
     <ClInclude Include="src\RenderComponent.h" />
     <ClInclude Include="src\ResourceManager.h" />
     <ClInclude Include="src\Scene.h" />
+    <ClInclude Include="src\Shot.h" />
+    <ClInclude Include="src\ShotManager.h" />
     <ClInclude Include="src\Sprite.h" />
     <ClInclude Include="src\StaticImage.h" />
     <ClInclude Include="src\TileMap.h" />
@@ -119,8 +129,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\asier\OneDrive\Desktop\raylib\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\asier\OneDrive\Desktop\raylib\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\asierugo\Desktop\raylib\raylib\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\asierugo\Desktop\raylib\raylib\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>

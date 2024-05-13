@@ -2,7 +2,8 @@
 #include <raylib.h>
 #include "Player.h"
 #include "Player2.h"
-#include "Enemy.h"
+#include "EnemyManager.h"
+#include "ShotManager.h"
 #include "TileMap.h"
 #include "Object.h"
 #include "PlayerBubble.h"
@@ -26,7 +27,7 @@ public:
 
 private:
 
-    void CheckCollisions(); 
+    void CheckObjectCollisions();
     void ClearLevel();
     void UpdateBubbles();
     void RenderObjects() const;
@@ -41,7 +42,13 @@ private:
     int goal_score[3];
     int actualLevel;
     std::vector<Object*> objects;
-    std::vector<Enemy*> enemies;
+    
+    //Enemies present in the level
+    EnemyManager* enemies;
+
+    //Shots thrown by enemies
+    ShotManager* shots;
+
     std::vector<PlayerBubble*> playerBubbles;
     PlayerBubble* pBubble;
 

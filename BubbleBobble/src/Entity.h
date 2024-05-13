@@ -11,19 +11,27 @@
 #define SHOOT_POS_X      18
 #define SHOOT_POS_Y      26
 
+enum class Look { RIGHT, LEFT };
+
+
 class Entity
 {
 public:
+	Entity();
 	Entity(const Point& p, int width, int height);
 	Entity(const Point& p, int width, int height, int frame_width, int frame_height);
 	virtual ~Entity();
 	AppStatus Initialise();
+	void Set(const Point& p, const Point& d, int w, int h, int framew, int frameh);
 	void SetPos(const Point& p);
 	void Warp();
 	void Update();
 	AABB GetHitbox() const;
 	Point GetPos();
-	void Init(Vector2 p, int w, int h, int s);
+
+	void SetAlive(bool b);
+	bool IsAlive() const;
+
 	//Draw representation model
 	void Draw() const;
 	void DrawTint(const Color& col) const;
@@ -43,4 +51,5 @@ protected:
 	int frame_width, frame_height;
 
 	RenderComponent *render;
+	bool alive;
 };

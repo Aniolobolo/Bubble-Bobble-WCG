@@ -9,6 +9,8 @@ Scene::Scene()
 	isGameOver = false;
 	pBubble = nullptr;
 	player = nullptr;
+	enemies = nullptr;
+	shots = nullptr;
 	//player2 = nullptr;
 	level = nullptr;
 	camera.target = { 0, 0 };				//Center of the screen
@@ -53,16 +55,23 @@ Scene::~Scene()
 		level = nullptr;
 	}
 
-	for (Entity* enemy : enemies)
+	if (enemies != nullptr)
 	{
-		delete enemy;
+		enemies->Release();
+		delete enemies;
+		enemies = nullptr;
+	}
+	if (shots != nullptr)
+	{
+		delete shots;
+		shots = nullptr;
 	}
 
 	for (Entity* obj : objects)
 	{
 		delete obj;
 	}
-	enemies.clear();
+	
 
 	for (Entity* bubbles : playerBubbles)
 	{
@@ -82,7 +91,7 @@ Scene::~Scene()
 AppStatus Scene::Init()
 {
 	//Create player
-	player = new Player({ 0,0 }, State::IDLE, Look::RIGHT);
+ 	player = new Player({ 0,0 }, State::IDLE, Look::RIGHT);
 	if (player == nullptr)
 	{
 		LOG("Failed to allocate memory for Player");
@@ -109,6 +118,35 @@ AppStatus Scene::Init()
 	//	return AppStatus::ERROR;
 	//}
 
+	//Create enemy manager
+	enemies = new EnemyManager();
+	if (enemies == nullptr)
+	{
+		LOG("Failed to allocate memory for Enemy Manager");
+		return AppStatus::ERROR;
+	}
+	//Initialise enemy manager
+	if (enemies->Initialise() != AppStatus::OK)
+	{
+		LOG("Failed to initialise Enemy Manager");
+		return AppStatus::ERROR;
+	}
+
+	//Create shot manager 
+	shots = new ShotManager();
+	if (shots == nullptr)
+	{
+		LOG("Failed to allocate memory for Shot Manager");
+		return AppStatus::ERROR;
+	}
+	//Initialise shot manager
+	if (shots->Initialise() != AppStatus::OK)
+	{
+		LOG("Failed to initialise Shot Manager");
+		return AppStatus::ERROR;
+	}
+
+
 	//Create level 
     level = new TileMap();
     if (level == nullptr)
@@ -128,17 +166,15 @@ AppStatus Scene::Init()
 		LOG("Failed to load Level 1");
 		return AppStatus::ERROR;
 	}
-	for (Enemy* enemy : enemies)
-	{
-		if (enemy != nullptr) {
-			enemy->SetTileMap(level);
 
-		}
-	}
+	
 
 	//Assign the tile map reference to the player to check collisions while navigating
 	player->SetTileMap(level);
 	//player2->SetTileMap(level);
+	shots->SetTileMap(level);
+	enemies->SetShotManager(shots);
+	
 
     return AppStatus::OK;
 }
@@ -150,8 +186,8 @@ AppStatus Scene::LoadLevel(int stage)
 	Point pos;
 	Point ePos;
 	int *map = nullptr;
+	AABB hitbox, area;
 	Object *obj;
-	Enemy *e;
 	
 	ClearLevel();
 
@@ -169,7 +205,7 @@ AppStatus Scene::LoadLevel(int stage)
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   154,   0,   0,   0,   154,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
-			1,   1,   50,   0,   0,   0,   0,   102,   0,   0,   0,   0,   0,   0,   0,   102,   0,   0,   0,   0,   0,	  0,   0,   102,   0, 0, 0, 0, 0, 0, 1, 1,
+			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   1,   1,   53,   0,   0,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,	  1,   1,   1,   1, 53, 0, 0, 1, 1, 1, 1,
 			1,   1,   51,  52,  54,   0,   0,   55,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52, 54, 0, 0, 55, 52, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
@@ -184,7 +220,7 @@ AppStatus Scene::LoadLevel(int stage)
 			1,   1,   51,  52,  54,   0,   0,   55,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52, 54, 0, 0, 55, 52, 1, 1,
 			1,   1,   50,  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 0,   0,   0,  0,   0, 0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
-			1,   1,   50,  100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,   0,   0,  0, 0, 0, 0, 0, 0, 1, 1,
+			1,   1,   50,  100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  104,  0,  0,  0,  0,  0, 0,   0,   0,  0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,	  1,   1,   1,  1, 1, 1, 1, 1, 1, 1, 1
 
 
@@ -202,17 +238,17 @@ AppStatus Scene::LoadLevel(int stage)
 			2,   2,   24,   24,   24,   24,   24,   24,   24,   24,   24,   24,   24,   24,   24,   24,   24,   24,   24,   59,	  0,   0,   0,  24, 24, 24, 24, 24, 24, 24, 2, 2,
 			2,   2,   57,  58,  58,  58,  58,  58,  58,  58,  58,  58,  58,  58,  58,  58,  58, 58,  58,  60,  0,  0,  0,  61, 58,  58, 58, 58,  58, 58, 2, 2,
 			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 2, 2,
-			2,   2,   56,   103,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 2, 2,
+			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 2, 2,
 			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   154,   0,   0,   0,   2,   59,	  0,   0,   2,   59, 0, 0, 154, 0, 0, 2, 2,
 			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   2,   2,   2,   2,   2,   56,	  0,   0,   2,   2,  2, 2, 2, 59, 0, 2, 2,
-			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   103,   0,   0,   0,   0,   2,   57,   58,   58,   58,   60,	  0,   0,   61,  58, 58, 58, 2, 56, 0, 2, 2,
+			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   2,   57,   58,   58,   58,   60,	  0,   0,   61,  58, 58, 58, 2, 56, 0, 2, 2,
 			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   2,   2,   2,   2,   2,   59,	  0,   0,   2,   2,  2, 2, 2, 56, 0, 2, 2,
 			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   61,   58,   58,   58,   2,   56,	  0,   0,   2,   57, 58, 58, 58, 60, 0, 2, 2,
 			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   2,   2,   56,	  0,   0,   2,   2, 59, 0, 0, 0, 0, 2, 2,
 			2,   2,   56,   0,  0,   0,   0,    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   2,   57,   60,	  0,   0,   61,   2, 56, 0, 0, 0, 0, 2, 2,
 			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   2,   2,   59,	  0,   0,   2,   2, 56, 0, 0, 0, 0, 2, 2,
 			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   61,   2,   56,	  0,   0,   2,   57, 60, 0, 0, 0, 0, 2, 2,
-			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   2,   2,   56,	  0,   103,   2,   2, 59, 0, 0, 0, 0, 2, 2,
+			2,   2,   56,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   2,   2,   56,	  0,   0,   2,   2, 59, 0, 0, 0, 0, 2, 2,
 			2,   2,   56,   0,   0,   0,   0,   0,   0,   154,   0,   0,   0,   0,   154,   0,   0,   2,   2,   57,   60,	  0,   0,   61,   2, 2, 59, 0, 0, 0, 2, 2,
 			2,   2,   56,  0,   0,   0,   2,   2,   2,   2,   2,   2,   2,   2,   2,   2,   2,   2,   57,   60,   0,	  0,   0,   0,   61, 2, 56, 0, 0, 0, 2, 2,
 			2,   2,   56,   0,   0,   2,   2,   57,   58,   58,   58,   58,   58,   58,   58,   58,   58,   58,  60,   0,   0,	  0,   0,   0,   0, 2, 56, 0, 0, 0, 2, 2,
@@ -235,12 +271,12 @@ AppStatus Scene::LoadLevel(int stage)
 			8,   9,   25,   25,   25,   25,   25,   25,   25,   62,   0,   0,   0,   25,   25,   25,   25,   25,   25,   62,	  0,   0,   0,  25, 25, 25, 25, 25, 25, 25, 8, 9,
 			10,   11,   63,  64,  64,  64,  64,  64,  64,  66,  0,  0,  0,  67,  64,  64,  64, 64,  64,  66,  0,  0,  0,  67, 64,  64, 64, 64,  64, 64, 10, 11,
 			8,   9,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 8, 9,
-			10,   11,   62,   0,   103,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
+			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
 			8,   9,   62,   0,   0,   154,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 154, 0, 0, 0, 8, 9,
 			10,   11,   62,   0,   0,   7,   7,   7,   7,   65,   0,   0,   0,   0,   0,   7,   7,   65,   0,   0,   0,	  0,   0,   7,   7, 7, 7, 65, 0, 0, 10, 11,
 			8,   9,   62,   0,   0,   67,   64,   64,   64,   66,   0,   0,   0,   0,   0,   67,   64,   66,   0,   0,   0,	  0,   0,   67,   64, 64, 64, 66, 0, 0, 8, 9,
 			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   154,   0,   0,   0,   0,   0,   0,   103,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 154, 0, 0, 0, 8, 9,
+			8,   9,   62,   0,   0,   154,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 154, 0, 0, 0, 8, 9,
 			10,   11,   62,   0,   7,   7,   7,   7,   65,   0,   0,   0,   0,   0,   7,   7,   7,   7,   65,   0,   0,	  0,   0,   0,   7, 7, 7, 7, 65, 0, 10, 11,
 			8,   9,   62,   0,   67,   64,   64,   64,   66,   0,   0,   0,   0,   0,   67,   64,   64,   64,   66,   0,   0,	0,  0,   0,   67,  64, 64, 64, 66, 0, 8, 9,
 			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
@@ -248,7 +284,7 @@ AppStatus Scene::LoadLevel(int stage)
 			10,   11,   62,   0,   0,   7,   7,   7,   7,   65,   0,   0,   0,   7,   7,   7,   7,   7,   7,   65,   0,	  0,   0,   7,   7, 7, 7, 65, 0, 0, 10, 11,
 			8,   9,   62,   0,   0,   67,   64,   64,   64,   66,   0,   0,   0,   67,   64,   64,   64,   64,   64,   66,   0,	  0,   0,   67,   64, 64, 64, 66, 0, 0, 8, 9,
 			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   0,   0,   102,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   102,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 8, 9,
+			8,   9,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 8, 9,
 			10,   11,   62,   0,   0,   0,   7,   7,   7,   7,   65,   0,   7,   7,   7,   65,   0,   7,   7,   7,   65,	  0,   7,   7,   7, 7, 65, 0, 0, 0, 10, 11,
 			8,   9,   62,   0,   0,   0,   67,   64,   64,   64,   66,   0,   67,   64,   64,   66,   0,   67,   64,   64,   66,	  0,   67,   64,   64, 64, 66, 0, 0, 0, 8, 9,
 			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
@@ -292,27 +328,12 @@ AppStatus Scene::LoadLevel(int stage)
 			//	player2->SetPos(ePos);
 			//	map[i] = 0;
 			//}
-			else if (tile == Tile::ZENCHAN)
+			else if (tile == Tile::MIGHTA)
 			{
-				pos.x = x * TILE_SIZE;
-				pos.y = y * TILE_SIZE + TILE_SIZE - 1;
-				e = new Enemy(pos, hState::EIDLE, hLook::ELEFT, hType::ZENCHAN);
-				e->Initialise();
-				e->SetTileMap(level);
-				enemies.push_back(e);
-
-				map[i] = 0;
-			}
-			else if (tile == Tile::INVADER)
-			{
-				pos.x = x * TILE_SIZE;
-				pos.y = y * TILE_SIZE + TILE_SIZE - 1;
-				e = new Enemy(pos, hState::EIDLE, hLook::ELEFT, hType::INVADER);
-				e->Initialise();
-				e->SetTileMap(level);
-				enemies.push_back(e);
-
-				map[i] = 0;
+				pos.x += (MIGHTA_FRAME_SIZE - MIGHTA_PHYSICAL_WIDTH) / 2;
+				hitbox = enemies->GetEnemyHitBox(pos, EnemyType::MIGHTA);
+				area = level->GetSweptAreaX(hitbox);
+				enemies->Add(pos, EnemyType::MIGHTA, area);
 			}
 			else if (tile == Tile::ITEM_CHERRY)
 			{
@@ -360,7 +381,7 @@ AppStatus Scene::LoadLevel(int stage)
 	}
 	//Tile map
 	level->Load(map, LEVEL_WIDTH, LEVEL_HEIGHT);
-	delete map;
+	delete[] map;
 	return AppStatus::OK;
 }
 void Scene::PlayerBubbleSpawn()
@@ -414,6 +435,7 @@ void Scene::Update()
 {
 	Point p1, p2;
 	AABB box;
+	AABB hitbox;
 	PlayerBubbleSpawn();
 	deletePBubbles();
 	//Switch between the different debug modes: off, on (sprites & hitboxes), on (hitboxes) 
@@ -455,10 +477,6 @@ void Scene::Update()
 		godMode = false;
 	}
 
-	for (Enemy* e : enemies)
-	{
-		e->Update();
-	}
 	for (PlayerBubble* bubble : playerBubbles)
 	{
 		bubble->SetPlayer(player);
@@ -468,9 +486,11 @@ void Scene::Update()
 	level->Update();
 	player->Update();
 	//player2->Update();
+	hitbox = player->GetHitbox();
+	enemies->Update(hitbox);
+	shots->Update(hitbox);
 
-
-	CheckCollisions();
+	CheckObjectCollisions();
 }
 void Scene::Render()
 {
@@ -480,14 +500,17 @@ void Scene::Render()
 	if (debug == DebugMode::OFF || debug == DebugMode::SPRITES_AND_HITBOXES)
 	{
 		RenderObjects(); 
+		enemies->Draw();
 		player->Draw();
+		shots->Draw();
 		//player2->Draw();
 	}
 	if (debug == DebugMode::SPRITES_AND_HITBOXES || debug == DebugMode::ONLY_HITBOXES)
 	{
 		RenderObjectsDebug(YELLOW);
+		enemies->DrawDebug();
 		player->DrawDebug(GREEN);
-		
+		shots->DrawDebug(GRAY);
 		//player2->DrawDebug(GREEN);
 	}
 
@@ -502,67 +525,28 @@ void Scene::Release()
 	//player2->Release();
 	ClearLevel();
 }
-void Scene::CheckCollisions()
+void Scene::CheckObjectCollisions()
 {
-	AABB player_box, player2_box, enemy_box, bubb_box, obj_box;
-	
+	AABB player_box, obj_box;
+
 	player_box = player->GetHitbox();
-	//player2_box = player2->GetHitbox();
-	
 	auto it = objects.begin();
 	while (it != objects.end())
 	{
 		obj_box = (*it)->GetHitbox();
-		if(player_box.TestAABB(obj_box))
+		if (player_box.TestAABB(obj_box))
 		{
 			player->IncrScore((*it)->Points());
-			
-			//Delete the object
-			delete* it; 
-			//Erase the object from the vector and get the iterator to the next valid element
-			it = objects.erase(it); 
-		}
-		//else if (player2_box.TestAABB(obj_box))
-		//{
-		//	player2->IncrScore((*it)->Points());
 
-		//	//Delete the object
-		//	delete* it;
-		//	//Erase the object from the vector and get the iterator to the next valid element
-		//	it = objects.erase(it);
-		//}
+			//Delete the object
+			delete* it;
+			//Erase the object from the vector and get the iterator to the next valid element
+			it = objects.erase(it);
+		}
 		else
 		{
 			//Move to the next object
-			++it; 
-		}
-	}
-	
-	auto it_enemies = enemies.begin();
-	while (it_enemies != enemies.end())
-	{
-		enemy_box = (*it_enemies)->GetHitbox();
-		if (player_box.TestAABB(enemy_box) && !godMode)
-		{
-			player->LifeManager();
-			if (player->getLife() <= 0) {
-				isGameOver = true;
-			}
-			delete* it_enemies;
-			it_enemies = enemies.erase(it_enemies);
-		}
-		//if (player2_box.TestAABB(enemy_box) && !godMode)
-		//{
-		//	player2->LifeManager();
-		//	if (player2->getLife() <= 0) {
-		//		isGameOver = true;
-		//	}
-		//	delete* it_enemies;
-		//	it_enemies = enemies.erase(it_enemies);
-		//}
-		else
-		{
-			++it_enemies;
+			++it;
 		}
 	}
 }
@@ -578,11 +562,10 @@ void Scene::ClearLevel()
 		delete buble;
 	}
 	playerBubbles.clear();
-	for (Enemy* enemy : enemies)
-	{
-		delete enemy;
-	}
-	enemies.clear();
+	enemies->Release();
+	shots->Clear();
+	
+
 }
 
 void Scene::UpdateBubbles()
@@ -606,20 +589,12 @@ void Scene::RenderObjects() const
 		(*it)->Draw();
 		++it;
 	}
-	for (Enemy* enemy : enemies)
-	{
-		enemy->Draw();
-	}
 }
 void Scene::RenderObjectsDebug(const Color& col) const
 {
 	for (Object* obj : objects)
 	{
 		obj->DrawDebug(col);
-	}
-	for (Enemy* enemi : enemies)
-	{
-		enemi->DrawDebug(col);
 	}
 
 }
