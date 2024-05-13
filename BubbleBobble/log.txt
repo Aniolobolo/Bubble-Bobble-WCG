@@ -1,11 +1,5 @@
-Project executed on 10-05-2024 at 09:59:43.
+Project executed on 13-05-2024 at 10:01:38.
 main.cpp(13): Application start
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
-Object.cpp(44): Internal error: object creation of invalid type
 TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (3, 24)
 TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (3, 25)
 TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (2, 24)
@@ -68,3 +62,5 @@ TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given in
 TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (30, 25)
 TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (31, 24)
 TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (31, 25)
+main.cpp(35): Application finish
+main.cpp(39): Bye :)

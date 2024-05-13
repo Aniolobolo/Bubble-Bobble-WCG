@@ -20,11 +20,11 @@ Object::Object(const Point& p, ObjectType t) : Entity(p, OBJECT_PHYSICAL_SIZE, O
 		case ObjectType::ITEM_ORANGEUMBRELLA: rc = { n * 6,2 * n, n, n };
 		case ObjectType::ITEM_REDUMBRELLA: rc = { n * 7,2 * n, n, n };
 		case ObjectType::ITEM_PINKUMBRELLA: rc = { n * 8,2 * n, n, n };*/
-		case ObjectType::ITEM_CHERRY: rc = { n * 9, 2 * n, n, n };
-		case ObjectType::ITEM_BEER: rc = { n * 10, 2 * n,n, n };
-		case ObjectType::ITEM_BANANA: rc = { n * 11, 2 * n,n, n };
-		case ObjectType::ITEM_BORGER: rc = { n * 12, 2 * n,n, n };
-		case ObjectType::ITEM_WATERMELON: rc = { n * 13, 2 * n,n, n };
+		case ObjectType::ITEM_CHERRY: rc = { n * 9, 2 * n, n, n }; break;
+		case ObjectType::ITEM_BEER: rc = { n * 10, 2 * n,n, n }; break;
+		case ObjectType::ITEM_BANANA: rc = { n * 11, 2 * n,n, n }; break;
+		case ObjectType::ITEM_BORGER: rc = { n * 12, 2 * n,n, n }; break;
+		case ObjectType::ITEM_WATERMELON: rc = { n * 13, 2 * n,n, n }; break;
 		/*case ObjectType::ITEM_BLUERING: rc = { n * 14,2 * n,n, n };
 		case ObjectType::ITEM_PINKRING: rc = { n * 15,2 * n,n, n };
 		case ObjectType::ITEM_REDRING: rc = { n * 16,2 * n,n, n };
