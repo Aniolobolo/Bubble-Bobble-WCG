@@ -126,7 +126,7 @@
     <ClInclude Include="src\Invader.h">
       <Filter>Entities\Enemies</Filter>
     </ClInclude>
-    <ClInclude Include="src\MIghta.h">
+    <ClInclude Include="src\Mighta.h">
       <Filter>Entities\Enemies</Filter>
     </ClInclude>
     <ClInclude Include="src\Enemy.h">

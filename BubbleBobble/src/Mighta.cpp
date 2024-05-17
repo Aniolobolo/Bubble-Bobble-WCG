@@ -45,17 +45,11 @@ AppStatus Mighta::Initialise(Look look, const AABB& area)
 		sprite->AddKeyFrame((int)MightaAnim::WALKING_LEFT, { (float)i * n, 3 * n, -n, n });
 
 	sprite->SetAnimationDelay((int)MightaAnim::ATTACK_RIGHT, MIGHTA_ANIM_DELAY);
-	sprite->AddKeyFrame((int)MightaAnim::ATTACK_RIGHT, { 0, 3 * n, n, n });
-	sprite->AddKeyFrame((int)MightaAnim::ATTACK_RIGHT, { n, 3 * n, n, n });
-	sprite->AddKeyFrame((int)MightaAnim::ATTACK_RIGHT, { n * 2, 3 * n, n, n });
-	sprite->AddKeyFrame((int)MightaAnim::ATTACK_RIGHT, { n * 3, 3 * n, n, n });
-	sprite->AddKeyFrame((int)MightaAnim::ATTACK_RIGHT, { n * 4, 3 * n, n, n });
+	for (i = 5; i < 10; ++i)
+		sprite->AddKeyFrame((int)MightaAnim::ATTACK_RIGHT, { (float)i * n, 3 * n, n, n });
 	sprite->SetAnimationDelay((int)MightaAnim::ATTACK_LEFT, MIGHTA_ANIM_DELAY);
-	sprite->AddKeyFrame((int)MightaAnim::ATTACK_LEFT, { 0, 3 * n, -n, n });
-	sprite->AddKeyFrame((int)MightaAnim::ATTACK_LEFT, { n, 3 * n, -n, n });
-	sprite->AddKeyFrame((int)MightaAnim::ATTACK_LEFT, { n * 2, 3 * n, -n, n });
-	sprite->AddKeyFrame((int)MightaAnim::ATTACK_LEFT, { n * 3, 3 * n, -n, n });
-	sprite->AddKeyFrame((int)MightaAnim::ATTACK_LEFT, { n * 4, 3 * n, -n, n });
+	for (i = 5; i < 10; ++i)
+		sprite->AddKeyFrame((int)MightaAnim::ATTACK_LEFT, { (float)i * n, 3 * n, -n, n });
 
 	this->look = look;
 	if (look == Look::LEFT)        sprite->SetAnimation((int)MightaAnim::IDLE_LEFT);
@@ -139,11 +133,11 @@ bool Mighta::Update(const AABB& box)
 			attack_delay--;
 			if (attack_delay == 0)
 			{
-				shoot = true;
-
 				//The attack animation consists of 2 frames. Wait for a complete loop
 				//before shooting again
-				attack_delay = 2 * MIGHTA_ANIM_DELAY;
+				attack_delay = 76; //CAMBIAR Y HACERLO BIEN
+				shoot = true;
+
 			}
 		}
 	}
@@ -151,6 +145,15 @@ bool Mighta::Update(const AABB& box)
 
 	return shoot;
 }
+
+bool Mighta::AnimationChecker()
+{
+	Sprite* sprite = dynamic_cast<Sprite*>(render);
+	sprite->Update();
+
+	return sprite->IsAnimationComplete();
+}
+
 void Mighta::UpdateLook(int anim_id)
 {
 	MightaAnim anim = (MightaAnim)anim_id;

@@ -6,6 +6,7 @@ Sprite::Sprite(const Texture2D *texture)
     current_anim = -1;
     current_frame = 0;
     current_delay = 0;
+    animation_complete = false;
     mode = AnimMode::AUTOMATIC;
 }
 Sprite::~Sprite()
@@ -51,6 +52,10 @@ void Sprite::SetManualMode()
 void Sprite::SetAutomaticMode()
 {
     mode = AnimMode::AUTOMATIC;
+}
+bool Sprite::IsAnimationComplete() const
+{
+    return animation_complete;
 }
 void Sprite::Update()
 {

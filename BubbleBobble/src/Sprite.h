@@ -25,7 +25,8 @@ public:
 
     void SetManualMode();
     void SetAutomaticMode();
-    
+    bool IsAnimationComplete() const;
+
     void Update();
     void NextFrame();
     void PrevFrame();
@@ -39,6 +40,7 @@ private:
     int current_anim;
     int current_frame;
     int current_delay;
+    bool animation_complete;
 
     const Texture2D *img;
     std::vector<Animation> animations;

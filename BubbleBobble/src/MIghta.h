@@ -4,11 +4,11 @@
 #define MIGHTA_SPEED			1
 #define MIGHTA_ANIM_DELAY	(4*ANIM_DELAY)
 
-#define MIGHTA_SHOT_OFFSET_X_LEFT	-14
-#define MIGHTA_SHOT_OFFSET_X_RIGHT	 26
-#define MIGHTA_SHOT_OFFSET_Y			-22
+#define MIGHTA_SHOT_OFFSET_X_LEFT	-4
+#define MIGHTA_SHOT_OFFSET_X_RIGHT	 12
+#define MIGHTA_SHOT_OFFSET_Y			0
 
-#define MIGHTA_SHOT_SPEED	4
+#define MIGHTA_SHOT_SPEED	2
 
 enum class MightaState { ROAMING, ATTACK };
 enum class MightaAnim {
@@ -34,7 +34,7 @@ public:
 
 	//Update the enemy according to its logic, return true if the enemy must shoot
 	bool Update(const AABB& box) override;
-
+	bool AnimationChecker();
 	//Retrieve the position and direction of the shot to be thrown
 	void GetShootingPosDir(Point* pos, Point* dir) const override;
 
