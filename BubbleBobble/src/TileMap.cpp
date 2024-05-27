@@ -167,7 +167,7 @@ void TileMap::Update()
 }
 Tile TileMap::GetTileIndex(int x, int y) const
 {
-	int idx = x + y*width;
+ 	int idx = x + y*width;
 	if(idx < 0 || idx >= size)
 	{
 		LOG("Error: Index out of bounds. Tile map dimensions: %dx%d. Given index: (%d, %d)", width, height, x, y)

@@ -1,5 +1,6 @@
 #include "EnemyManager.h"
 #include "Mighta.h"
+#include "Zenchan.h"
 
 
 EnemyManager::EnemyManager()
@@ -36,6 +37,10 @@ void EnemyManager::Add(const Point& pos, EnemyType type, const AABB& area, Look 
 	if (type == EnemyType::MIGHTA)
 	{
 		enemy = new Mighta(pos, MIGHTA_PHYSICAL_WIDTH, MIGHTA_PHYSICAL_HEIGHT, MIGHTA_FRAME_SIZE, MIGHTA_FRAME_SIZE, map);
+	}
+	else if (type == EnemyType::ZENCHAN)
+	{
+		enemy = new Mighta(pos, ZENCHAN_PHYSICAL_WIDTH, ZENCHAN_PHYSICAL_HEIGHT, ZENCHAN_FRAME_SIZE, ZENCHAN_FRAME_SIZE, map);
 	}
 	else
 	{

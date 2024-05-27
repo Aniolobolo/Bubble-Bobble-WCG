@@ -210,7 +210,7 @@ AppStatus Scene::LoadLevel(int stage)
 			1,   1,   51,  52,  54,   0,   0,   55,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52, 54, 0, 0, 55, 52, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   152,	  0,   0,   0,   154, 0, 0, 0, 0, 0, 1, 1,
-			1,   1,   50,   0,   0,   0,   0,   0,   0,   104,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
+			1,   1,   50,   0,   0,   0,   0,   0,   0,   102,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   1,   1,   53,   0,   0,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,	  1,   1,   1,   1, 53, 0, 0, 1, 1, 1, 1,
 			1,   1,   51,  52,  54,   0,   0,   55,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52, 54, 0, 0, 55, 52, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
@@ -328,13 +328,13 @@ AppStatus Scene::LoadLevel(int stage)
 			//	player2->SetPos(ePos);
 			//	map[i] = 0;
 			//}
-			else if (tile == Tile::MIGHTA)
+			else if (tile == Tile::ZENCHAN)
 			{
-				pos.x += (MIGHTA_FRAME_SIZE - MIGHTA_PHYSICAL_WIDTH) / 2;
+				pos.x += (ZENCHAN_FRAME_SIZE - ZENCHAN_PHYSICAL_WIDTH) / 2;
 				pos.y = y * TILE_SIZE + TILE_SIZE - 1;
-				hitbox = enemies->GetEnemyHitBox(pos, EnemyType::MIGHTA);
+				hitbox = enemies->GetEnemyHitBox(pos, EnemyType::ZENCHAN);
 				area = level->GetSweptAreaX(hitbox);
-				enemies->Add(pos, EnemyType::MIGHTA, area);
+				enemies->Add(pos, EnemyType::ZENCHAN, area);
 			}
 			else if (tile == Tile::ITEM_CHERRY)
 			{

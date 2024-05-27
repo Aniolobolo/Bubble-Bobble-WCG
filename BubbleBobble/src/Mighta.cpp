@@ -211,6 +211,7 @@ void Mighta::MoveX()
 		}
 	}
 }
+
 EnemyType Mighta::GetEnemyType() const
 {
 	return EnemyType::MIGHTA;

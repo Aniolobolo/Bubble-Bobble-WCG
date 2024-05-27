@@ -2,6 +2,7 @@
 #include "Enemy.h"
 #include "TileMap.h"
 #include "PlayerBubble.h"
+#include "EnemyManager.h"
 
 #define MIGHTA_SPEED			1
 #define MIGHTA_ANIM_DELAY	(4*ANIM_DELAY)
@@ -92,6 +93,7 @@ private:
 	int attack_delay;	//delay between attacks
 	MightaState state;
 	TileMap* map;
+	EnemyManager* mighta;
 	int current_step;	//current step of the pattern
 	int current_frames;	//number of frames in the current step
 	std::vector<Step> pattern;

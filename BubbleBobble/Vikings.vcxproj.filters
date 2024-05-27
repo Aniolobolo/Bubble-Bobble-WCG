@@ -67,6 +67,9 @@
     <ClCompile Include="src\ShotManager.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
+    <ClCompile Include="src\Zenchan.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Globals.h">
@@ -137,6 +140,9 @@
     </ClInclude>
     <ClInclude Include="src\ShotManager.h">
       <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Zenchan.h">
+      <Filter>Entities\Enemies</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

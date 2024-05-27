@@ -8,16 +8,18 @@ Entity::Entity() :
 	pos({ 0,0 }), dir({ 0,0 }), width(0), height(0), frame_width(0), frame_height(0), render(nullptr)
 {
 	alive = false;
+	NoHitbox = false;
+
 }
-Entity::Entity(const Point& p, int w, int h) :
-	pos(p), dir({ 0,0 }), width(w), height(h), frame_width(w), frame_height(h), render(nullptr)
+Entity::Entity(const Point& p, int w, int h) : pos(p), dir({ 0,0 }), width(w), height(h), frame_width(w), frame_height(h), render(nullptr)
 {
 	alive = true;
+	NoHitbox = false;
 }
-Entity::Entity(const Point& p, int w, int h, int frame_w, int frame_h) :
-	pos(p), dir({ 0,0 }), width(w), height(h), frame_width(frame_w), frame_height(frame_h), render(nullptr)
+Entity::Entity(const Point& p, int w, int h, int frame_w, int frame_h) : pos(p), dir({ 0,0 }), width(w), height(h), frame_width(frame_w), frame_height(frame_h), render(nullptr)
 {
 	alive = true;
+	NoHitbox = false;
 }
 Entity::~Entity()
 {
@@ -67,9 +69,19 @@ void Entity::Update()
 
 AABB Entity::GetHitbox() const
 {
-	Point p(pos.x, pos.y - (height - 1));
-	AABB hitbox(p, width, height);
-	return hitbox;
+	if (NoHitbox == false)
+	{
+		Point p(pos.x, pos.y - (height - 1));
+		AABB hitbox(p, width, height);
+		return hitbox;
+	}
+	else
+	{
+		Point p(pos.x, pos.y - (height - 1));
+		Point d(-100, -100);
+		AABB hitbox(d, width, height);
+		return hitbox;
+	}
 }
 Point Entity::GetPos()
 {

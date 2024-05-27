@@ -46,7 +46,7 @@ protected:
 	//Logical/physical model
 	Point pos, dir;
 	int width, height;				
-
+	bool NoHitbox;
 	//Representation model
 	int frame_width, frame_height;
 
