@@ -248,9 +248,9 @@ void Enemy::MoveX()
 {
 	AABB box;
 	int prev_x = pos.x;
-	
+
 	//Enemy walking
-	
+
 	if (type == hType::ZENCHAN) {
 		pos.x += dir.x;
 		box = GetHitbox();
@@ -299,9 +299,7 @@ void Enemy::MoveX()
 			}
 		}
 	}
-	
-	
-	
+
 }
 void Enemy::MoveY()
 {
@@ -319,11 +317,22 @@ void Enemy::MoveY()
 	}
 	else if (type == hType::INVADER) {
 		box = GetHitbox();
-				
+		eTimeLerp += GetFrameTime();
+		if (eTimeLerp <= 5.0f)
+		{
+			state = hState::EWALKING;
+		}
+		else if (eTimeLerp > 5.0f && eTimeLerp < 5.1f)
+		{
+			state = hState::EFALLING;
+			pos.y += ENEMY_FALLING_SPEED;
+		}
+		else if (eTimeLerp > 5.1f)
+		{
+			eTimeLerp = 0;
+			lerping = false;
+		}
 	}
-
-
-
 }
 
 //void Enemy::LogicJumping()

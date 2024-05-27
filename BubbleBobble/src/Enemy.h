@@ -56,7 +56,7 @@ public:
 	void InitScore();
 	void IncrScore(int n);
 	int GetScore();
-
+	bool lerping;
 	void Update();
 	void DrawDebug(const Color& col) const;
 	void Release();
@@ -85,6 +85,8 @@ protected:
 	void ChangeAnimRight();
 	void ChangeAnimLeft();
 
+	
+
 	//Jump steps
 	bool IsAscending() const;
 	bool IsLevitating() const;
@@ -98,7 +100,7 @@ protected:
 	hLook look;
 	hType type;
 	int direction;
-
+	float eTimeLerp = 0;
 	TileMap* map;
 
 	int score;
