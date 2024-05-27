@@ -4,6 +4,8 @@
 #include "Globals.h"
 #include <raymath.h>
 
+Sound sfx[10];
+
 PlayerBubble::PlayerBubble(const Point& p, Directions d) : Entity(p, BUBBLE_PHYSICAL_SIZE, BUBBLE_PHYSICAL_SIZE, BUBBLE_FRAME_SIZE, BUBBLE_FRAME_SIZE)
 {
 	direc = d;
@@ -17,7 +19,15 @@ PlayerBubble::PlayerBubble(const Point& p, Directions d) : Entity(p, BUBBLE_PHYS
 	timeAlive = GetRandomValue(3, 4);
 	Rectangle rc;
 	inShoot = true;
-	jumpTime = 0;
+	eTimePogo = 0;
+	canCollide = true;
+	issAlive = true;
+	poped = false;
+	framecounter = 0;
+	fruit = false;
+
+	sfx[0] = LoadSound("sound/SoundEffects/Characters/AttackFX.wav");
+
 
 
 }
@@ -50,11 +60,80 @@ AppStatus PlayerBubble::Initialise()
 
 	sprite->SetAnimationDelay((int)BubbleAnim::IDLE, ANIM_DELAY + 3);
 	for (int i = 0; i < 3; ++i)
-		sprite->AddKeyFrame((int)BubbleAnim::IDLE, { (float)i * n, n, n, n });
+		sprite->AddKeyFrame((int)BubbleAnim::IDLE, { (float)i * n, 2 * n, n, n });
 
 	sprite->SetAnimationDelay((int)BubbleAnim::INSHOOT, ANIM_DELAY + 6);
 	for (int i = 0; i < 6; ++i)
 		sprite->AddKeyFrame((int)BubbleAnim::INSHOOT, { (float)i * n, 0, n, n });
+
+	//Zenchan bubbles
+	sprite->SetAnimationDelay((int)BubbleAnim::DEADZENCHAN, ANIM_DELAY);
+	for (int i = 0; i < 4; ++i)
+		sprite->AddKeyFrame((int)BubbleAnim::DEADZENCHAN, { (float)i * n, n * 2, n, n });
+
+	sprite->SetAnimationDelay((int)BubbleAnim::GREENZENCHAN, ANIM_DELAY);
+	for (int i = 0; i < 3; ++i)
+		sprite->AddKeyFrame((int)BubbleAnim::GREENZENCHAN, { (float)i * n, n * 3, n, n });
+
+	sprite->SetAnimationDelay((int)BubbleAnim::YELLOWZENCHAN, ANIM_DELAY);
+	for (int i = 3; i < 6; ++i)
+		sprite->AddKeyFrame((int)BubbleAnim::YELLOWZENCHAN, { (float)i * n, n * 3, n, n });
+
+	sprite->SetAnimationDelay((int)BubbleAnim::REDZENCHAN, ANIM_DELAY);
+	for (int i = 6; i < 9; ++i)
+		sprite->AddKeyFrame((int)BubbleAnim::REDZENCHAN, { (float)i * n, n * 3, n, n });
+
+	//Invader bubbles
+	sprite->SetAnimationDelay((int)BubbleAnim::DEADINVADER, ANIM_DELAY);
+	for (int i = 0; i < 4; ++i)
+		sprite->AddKeyFrame((int)BubbleAnim::DEADINVADER, { (float)i * n, n * 2, n, n });
+
+	sprite->SetAnimationDelay((int)BubbleAnim::GREENINVADER, ANIM_DELAY);
+	for (int i = 0; i < 3; ++i)
+		sprite->AddKeyFrame((int)BubbleAnim::GREENINVADER, { (float)i * n, n * 3, n, n });
+
+	sprite->SetAnimationDelay((int)BubbleAnim::YELLOWINVADER, ANIM_DELAY);
+	for (int i = 3; i < 6; ++i)
+		sprite->AddKeyFrame((int)BubbleAnim::YELLOWINVADER, { (float)i * n, n * 3, n, n });
+
+	sprite->SetAnimationDelay((int)BubbleAnim::REDINVADER, ANIM_DELAY);
+	for (int i = 6; i < 9; ++i)
+		sprite->AddKeyFrame((int)BubbleAnim::REDINVADER, { (float)i * n, n * 3, n, n });
+
+	//Mighta bubbles
+	sprite->SetAnimationDelay((int)BubbleAnim::DEADMIGHTA, ANIM_DELAY);
+	for (int i = 0; i < 4; ++i)
+		sprite->AddKeyFrame((int)BubbleAnim::DEADMIGHTA, { (float)i * n, n * 2, n, n });
+
+	sprite->SetAnimationDelay((int)BubbleAnim::GREENMIGHTA, ANIM_DELAY);
+	for (int i = 0; i < 3; ++i)
+		sprite->AddKeyFrame((int)BubbleAnim::GREENMIGHTA, { (float)i * n, n * 3, n, n });
+
+	sprite->SetAnimationDelay((int)BubbleAnim::YELLOWMIGHTA, ANIM_DELAY);
+	for (int i = 3; i < 6; ++i)
+		sprite->AddKeyFrame((int)BubbleAnim::YELLOWMIGHTA, { (float)i * n, n * 3, n, n });
+
+	sprite->SetAnimationDelay((int)BubbleAnim::REDMIGHTA, ANIM_DELAY);
+	for (int i = 6; i < 9; ++i)
+		sprite->AddKeyFrame((int)BubbleAnim::REDMIGHTA, { (float)i * n, n * 3, n, n });
+
+	//Drunk bubbles
+	sprite->SetAnimationDelay((int)BubbleAnim::DEADDRUNK, ANIM_DELAY);
+	for (int i = 0; i < 4; ++i)
+		sprite->AddKeyFrame((int)BubbleAnim::DEADDRUNK, { (float)i * n, n * 2, n, n });
+
+	sprite->SetAnimationDelay((int)BubbleAnim::GREENDRUNK, ANIM_DELAY);
+	for (int i = 0; i < 3; ++i)
+		sprite->AddKeyFrame((int)BubbleAnim::GREENDRUNK, { (float)i * n, n * 3, n, n });
+
+	sprite->SetAnimationDelay((int)BubbleAnim::YELLOWDRUNK, ANIM_DELAY);
+	for (int i = 3; i < 6; ++i)
+		sprite->AddKeyFrame((int)BubbleAnim::YELLOWDRUNK, { (float)i * n, n * 3, n, n });
+
+	sprite->SetAnimationDelay((int)BubbleAnim::REDDRUNK, ANIM_DELAY);
+	for (int i = 6; i < 9; ++i)
+		sprite->AddKeyFrame((int)BubbleAnim::REDDRUNK, { (float)i * n, n * 3, n, n });
+
 
 	sprite->SetAnimation((int)BubbleAnim::INSHOOT);
 	return AppStatus::OK;
