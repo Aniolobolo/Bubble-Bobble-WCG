@@ -5,6 +5,7 @@
 EnemyManager::EnemyManager()
 {
 	shots = nullptr;
+	map = nullptr;
 }
 EnemyManager::~EnemyManager()
 {
@@ -25,13 +26,16 @@ void EnemyManager::SetShotManager(ShotManager* shots)
 {
 	this->shots = shots;
 }
+void EnemyManager::SetTileMap(TileMap* level) {
+	map = level;
+}
 void EnemyManager::Add(const Point& pos, EnemyType type, const AABB& area, Look look)
 {
 	Enemy* enemy;
 
 	if (type == EnemyType::MIGHTA)
 	{
-		enemy = new Mighta(pos, MIGHTA_PHYSICAL_WIDTH, MIGHTA_PHYSICAL_HEIGHT, MIGHTA_FRAME_SIZE, MIGHTA_FRAME_SIZE);
+		enemy = new Mighta(pos, MIGHTA_PHYSICAL_WIDTH, MIGHTA_PHYSICAL_HEIGHT, MIGHTA_FRAME_SIZE, MIGHTA_FRAME_SIZE, map);
 	}
 	else
 	{

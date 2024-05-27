@@ -13,6 +13,8 @@ public:
 	//Set the ShotManager reference for managing enemy shots
 	void SetShotManager(ShotManager* shots);
 
+	void SetTileMap(TileMap* level);
+
 	//Add a new enemy with the given position, type, action area and looking direction
 	void Add(const Point& pos, EnemyType type, const AABB& area, Look look = Look::RIGHT);
 
@@ -34,7 +36,7 @@ public:
 
 private:
 	std::vector<Enemy*> enemies;
-
+	TileMap* map;
 	//Reference to the ShotManager object
 	//This class does not own the object, it only holds a reference to it
 	ShotManager* shots;

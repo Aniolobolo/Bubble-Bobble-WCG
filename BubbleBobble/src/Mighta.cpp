@@ -1,12 +1,12 @@
 #include "Mighta.h"
 #include "Sprite.h"
 
-Mighta::Mighta(const Point& p, int width, int height, int frame_width, int frame_height) :
+Mighta::Mighta(const Point& p, int width, int height, int frame_width, int frame_height, TileMap* mapp) :
 	Enemy(p, width, height, frame_width, frame_height)
 {
 	attack_delay = 0;
 	state = MightaState::ROAMING;
-
+	map = mapp;
 	current_step = 0;
 	current_frames = 0;
 }
@@ -57,109 +57,121 @@ AppStatus Mighta::Initialise(Look look, const AABB& area)
 
 	visibility_area = area;
 
-	InitPattern();
-
 	return AppStatus::OK;
+
 }
-void Mighta::InitPattern()
-{
-	//Multiplying by 3 ensures sufficient time for displaying all 3 frames of the
-	//walking animation, resulting in smoother transitions and preventing the animation
-	//from appearing rushed or incomplete
-	const int n = MIGHTA_ANIM_DELAY * 3;
-
-	pattern.push_back({ {0, 0}, 2 * n, (int)MightaAnim::IDLE_RIGHT });
-	pattern.push_back({ {MIGHTA_SPEED, 0}, n, (int)MightaAnim::WALKING_RIGHT });
-	pattern.push_back({ {0, 0}, n, (int)MightaAnim::IDLE_RIGHT });
-	pattern.push_back({ {MIGHTA_SPEED, 0}, n, (int)MightaAnim::WALKING_RIGHT });
-	pattern.push_back({ {0, 0}, n, (int)MightaAnim::IDLE_RIGHT });
-
-	pattern.push_back({ {0, 0}, 2 * n, (int)MightaAnim::IDLE_LEFT });
-	pattern.push_back({ {-MIGHTA_SPEED, 0}, n, (int)MightaAnim::WALKING_LEFT });
-	pattern.push_back({ {0, 0}, n, (int)MightaAnim::IDLE_LEFT });
-	pattern.push_back({ {-MIGHTA_SPEED, 0}, n, (int)MightaAnim::WALKING_LEFT });
-	pattern.push_back({ {0, 0}, n, (int)MightaAnim::IDLE_LEFT });
-
-	current_step = 0;
-	current_frames = 0;
-}
+//void Mighta::BubbleSetter(PlayerBubble* bub)
+//{
+//	for (PlayerBubbl* buble : bubbles) {
+//		bubbles.push_back(bub);
+//	}
+//}
 bool Mighta::Update(const AABB& box)
 {
 	Sprite* sprite = dynamic_cast<Sprite*>(render);
 	bool shoot = false;
 	int anim_id;
 
-	if (state == MightaState::ROAMING)
-	{
-		if (IsVisible(box))
-		{
-			state = MightaState::ATTACK;
-			//The attack animation consists of 2 frames, with the second one being when
-			//we throw the shot. Wait for a frame before initiating the attack.
-			attack_delay = MIGHTA_ANIM_DELAY;
-
-			if (look == Look::LEFT)	sprite->SetAnimation((int)MightaAnim::ATTACK_LEFT);
-			else					sprite->SetAnimation((int)MightaAnim::ATTACK_RIGHT);
-		}
-		else
-		{
-			pos += pattern[current_step].speed;
-			current_frames++;
-
-			if (current_frames == pattern[current_step].frames)
-			{
-				current_step++;
-				current_step %= pattern.size();
-				current_frames = 0;
-
-				anim_id = pattern[current_step].anim;
-				sprite->SetAnimation(anim_id);
-				UpdateLook(anim_id);
-			}
-		}
-	}
-	else if (state == MightaState::ATTACK)
-	{
-		if (!IsVisible(box))
-		{
-			state = MightaState::ROAMING;
-
-			//Continue with the previous animation pattern before initiating the attack
-			anim_id = pattern[current_step].anim;
-			sprite->SetAnimation(anim_id);
-		}
-		else
-		{
-			attack_delay--;
-			if (attack_delay == 0)
-			{
-				//The attack animation consists of 2 frames. Wait for a complete loop
-				//before shooting again
-				attack_delay = 76; //CAMBIAR Y HACERLO BIEN
-				shoot = true;
-
-			}
-		}
-	}
+	MoveX();
+	MoveY();
+	StartFalling();
+	Warp();
 	sprite->Update();
 
 	return shoot;
 }
 
-bool Mighta::AnimationChecker()
+void Mighta::MoveX()
+{
+	AABB box;
+	int prev_x = pos.x;
+	box = GetHitbox();
+	if (look == Look::RIGHT && state != MightaState::FALLING && map->TestCollisionGround(box, &pos.y))
+	{
+		pos.x += MIGHTA_SPEED;
+		if (map->TestCollisionWallRight(box))
+		{
+			pos.x = prev_x;
+			look = Look::LEFT;
+			SetAnimation((int)MightaAnim::WALKING_LEFT);
+		}
+		else if (map->TestCollisionWallLeft(box)) {
+			pos.x = prev_x;
+			look = Look::LEFT;
+			SetAnimation((int)MightaAnim::WALKING_RIGHT);
+
+
+		}
+
+	}
+	else if (look == Look::LEFT && state != MightaState::FALLING && map->TestCollisionGround(box, &pos.y))
+	{
+		pos.x += -MIGHTA_SPEED;
+		if (map->TestCollisionWallLeft(box))
+		{
+			pos.x = prev_x;
+			look = Look::RIGHT;
+			SetAnimation((int)MightaAnim::WALKING_RIGHT);
+		}
+		else if (map->TestCollisionWallRight(box)) {
+			pos.x = prev_x;
+			look = Look::RIGHT;
+			SetAnimation((int)MightaAnim::WALKING_RIGHT);
+
+		}
+	}
+}
+EnemyType Mighta::GetEnemyType() const
+{
+	return EnemyType::MIGHTA;
+}
+void Mighta::SetAnimation(int id)
 {
 	Sprite* sprite = dynamic_cast<Sprite*>(render);
-	sprite->Update();
+	sprite->SetAnimation(id);
+}
+void Mighta::StartFalling()
+{
+	dir.y = 1;
+}
+void Mighta::Stop()
+{
+	dir = { 0,0 };
+	state = MightaState::ROAMING;
+}
+void Mighta::MoveY()
+{
+	AABB box, prev_box;
+	int prev_x = pos.x;
+	int prev_y = pos.y;
 
-	return sprite->IsAnimationComplete();
+
+	if (state != MightaState::JUMPING)
+	{
+		pos.y += 1;
+
+		box = GetHitbox();
+		if (map->TestCollisionGround(box, &pos.y))
+		{
+			if (state == MightaState::FALLING) Stop();
+			if (IsKeyPressed(KEY_X))
+				dir.y = -1;
+		}
+		else
+		{
+			if (state != MightaState::FALLING) StartFalling();
+		}
+
+
+	}
+
+
 }
 
 void Mighta::UpdateLook(int anim_id)
 {
 	MightaAnim anim = (MightaAnim)anim_id;
-	look = (anim == MightaAnim::IDLE_LEFT ||
-		anim == MightaAnim::WALKING_LEFT ||
-		anim == MightaAnim::ATTACK_LEFT) ? Look::LEFT : Look::RIGHT;
+	look = (anim == MightaAnim::WALKING_LEFT || anim == MightaAnim::WALKING_LEFT || anim == MightaAnim::WALKING_LEFT) ? Look::LEFT : Look::RIGHT;
 }
 void Mighta::GetShootingPosDir(Point* p, Point* d) const
 {
