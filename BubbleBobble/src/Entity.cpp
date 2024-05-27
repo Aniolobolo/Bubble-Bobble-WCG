@@ -1,4 +1,3 @@
-
 #include "Entity.h"
 #include "Sprite.h"
 #include <cmath>
@@ -39,6 +38,27 @@ void Entity::Warp() {
 void Entity::Update()
 {
 	pos += dir;
+}
+
+void Entity::SetAlive(bool b)
+{
+	isAlive = b;
+}
+
+bool Entity::IsAlive() const
+{
+	return isAlive;
+}
+
+void Entity::Set(const Point& p, const Point& d, int w, int h, int framew, int frameh)
+{
+	pos = p;
+	dir = d;
+	width = w;
+	height = h;
+	frame_width = framew;
+	frame_height = frameh;
+	isAlive = true;
 }
 
 AABB Entity::GetHitbox() const

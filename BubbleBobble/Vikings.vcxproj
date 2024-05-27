@@ -33,6 +33,8 @@
     <ClCompile Include="src\RenderComponent.cpp" />
     <ClCompile Include="src\ResourceManager.cpp" />
     <ClCompile Include="src\Scene.cpp" />
+    <ClCompile Include="src\Shot.cpp" />
+    <ClCompile Include="src\ShotManager.cpp" />
     <ClCompile Include="src\Sprite.cpp" />
     <ClCompile Include="src\StaticImage.cpp" />
     <ClCompile Include="src\TileMap.cpp" />
@@ -53,6 +55,8 @@
     <ClInclude Include="src\RenderComponent.h" />
     <ClInclude Include="src\ResourceManager.h" />
     <ClInclude Include="src\Scene.h" />
+    <ClInclude Include="src\Shot.h" />
+    <ClInclude Include="src\ShotManager.h" />
     <ClInclude Include="src\Sprite.h" />
     <ClInclude Include="src\StaticImage.h" />
     <ClInclude Include="src\TileMap.h" />

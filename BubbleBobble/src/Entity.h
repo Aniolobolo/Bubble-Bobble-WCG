@@ -14,6 +14,7 @@
 class Entity
 {
 public:
+	Entity() { isAlive = false; }
 	Entity(const Point& p, int width, int height);
 	Entity(const Point& p, int width, int height, int frame_width, int frame_height);
 	virtual ~Entity();
@@ -21,8 +22,11 @@ public:
 	void SetPos(const Point& p);
 	void Warp();
 	void Update();
+	void SetAlive(bool b);
+	bool IsAlive() const;
 	AABB GetHitbox() const;
 	Point GetPos();
+	void Set(const Point& p, const Point& d, int w, int h, int framew, int frameh);
 	void Init(Vector2 p, int w, int h, int s);
 	//Draw representation model
 	void Draw() const;
@@ -34,7 +38,7 @@ public:
 
 protected:
 	Point GetRenderingPosition() const;
-
+	bool isAlive;
 	//Logical/physical model
 	Point pos, dir;
 	int width, height;				

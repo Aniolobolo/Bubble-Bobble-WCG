@@ -43,14 +43,20 @@
     <ClCompile Include="src\Player2.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
-    <ClCompile Include="src\Enemy.cpp">
-      <Filter>Entities</Filter>
-    </ClCompile>
     <ClCompile Include="src\PlayerBubble.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
     <ClCompile Include="src\Player2Bubble.cpp">
       <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Enemy.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shot.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShotManager.cpp">
+      <Filter>Entities\Enemies</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -99,14 +105,20 @@
     <ClInclude Include="src\Player2.h">
       <Filter>Entities</Filter>
     </ClInclude>
-    <ClInclude Include="src\Enemy.h">
-      <Filter>Entities</Filter>
-    </ClInclude>
     <ClInclude Include="src\PlayerBubble.h">
       <Filter>Entities</Filter>
     </ClInclude>
     <ClInclude Include="src\Player2Bubble.h">
       <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Enemy.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shot.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ShotManager.h">
+      <Filter>Entities\Enemies</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -124,6 +136,9 @@
     </Filter>
     <Filter Include="Geometry">
       <UniqueIdentifier>{781b1539-620c-4c36-8898-bab26c32aca3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entities\Enemies">
+      <UniqueIdentifier>{a6a791b2-3405-418c-9f32-47231ec66812}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
