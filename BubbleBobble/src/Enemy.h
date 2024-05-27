@@ -30,7 +30,7 @@
 //Logic states
 enum class hState { EIDLE, EWALKING, EJUMPING, EFALLING, ECLIMBING, EDEAD };
 enum class hLook { ERIGHT, ELEFT };
-enum class hType { ZENCHAN, INVADER};
+enum class hType { ZENCHAN, INVADER, MIGHTA, DRUNK};
 //Rendering states
 enum class EnemyAnim {
 	IDLE_LEFT, IDLE_RIGHT,

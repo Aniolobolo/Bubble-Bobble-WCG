@@ -14,7 +14,12 @@ Enemy::Enemy(const Point& p, hState s, hLook view, hType t):
 	look = view;
 	map = nullptr;
 	score = 0;
-	dir = { -1,0 };
+	if (type == hType::DRUNK) {
+		dir = { -2, 0 };
+	}
+	else {
+		dir = { -1,0 };
+	}
 }
 Enemy::~Enemy()
 {
@@ -35,10 +40,20 @@ AppStatus Enemy::Initialise()
 	{
 		return AppStatus::ERROR;
 	}
+	if (data.LoadTexture(Resource::IMG_MIGHTA, "images/mighta.png") != AppStatus::OK)
+	{
+		return AppStatus::ERROR;
+	}
+	if (data.LoadTexture(Resource::IMG_DRUNK, "images/drunk.png") != AppStatus::OK)
+	{
+		return AppStatus::ERROR;
+	}
 	switch (type)
 	{
 	case hType::ZENCHAN:render = new Sprite(data.GetTexture(Resource::IMG_ZENCHAN)); break;
 	case hType::INVADER:render = new Sprite(data.GetTexture(Resource::IMG_INVADER)); break;
+	case hType::MIGHTA:render = new Sprite(data.GetTexture(Resource::IMG_MIGHTA)); break;
+	case hType::DRUNK:render = new Sprite(data.GetTexture(Resource::IMG_DRUNK)); break;
 
 	default: LOG("Internal error: enemy creation of invalid type");
 	}
@@ -81,17 +96,17 @@ AppStatus Enemy::Initialise()
 
 	sprite->SetAnimationDelay((int)EnemyAnim::WALKING_RIGHT, ANIM_DELAY);
 	for (i = 0; i < 4; ++i)
-		sprite->AddKeyFrame((int)EnemyAnim::WALKING_RIGHT, { (float)i * n, 4 * n, n, n });
+		sprite->AddKeyFrame((int)EnemyAnim::WALKING_RIGHT, { (float)i * n, 5 * n, n, n });
 	sprite->SetAnimationDelay((int)EnemyAnim::WALKING_LEFT, ANIM_DELAY);
 	for (i = 0; i < 4; ++i)
-		sprite->AddKeyFrame((int)EnemyAnim::WALKING_LEFT, { (float)i * n, 4 * n, -n, n });
+		sprite->AddKeyFrame((int)EnemyAnim::WALKING_LEFT, { (float)i * n, 5 * n, -n, n });
 
 	sprite->SetAnimationDelay((int)EnemyAnim::FALLING_RIGHT, ANIM_DELAY);
-	sprite->AddKeyFrame((int)EnemyAnim::FALLING_RIGHT, { 2 * n, 5 * n, n, n });
-	sprite->AddKeyFrame((int)EnemyAnim::FALLING_RIGHT, { 3 * n, 5 * n, n, n });
+	sprite->AddKeyFrame((int)EnemyAnim::FALLING_RIGHT, { 2 * n, 6 * n, n, n });
+	sprite->AddKeyFrame((int)EnemyAnim::FALLING_RIGHT, { 3 * n, 6 * n, n, n });
 	sprite->SetAnimationDelay((int)EnemyAnim::FALLING_LEFT, ANIM_DELAY);
-	sprite->AddKeyFrame((int)EnemyAnim::FALLING_LEFT, { 2 * n, 5 * n, -n, n });
-	sprite->AddKeyFrame((int)EnemyAnim::FALLING_LEFT, { 3 * n, 5 * n, -n, n });
+	sprite->AddKeyFrame((int)EnemyAnim::FALLING_LEFT, { 2 * n, 6 * n, -n, n });
+	sprite->AddKeyFrame((int)EnemyAnim::FALLING_LEFT, { 3 * n, 6 * n, -n, n });
 
 	sprite->SetAnimationDelay((int)EnemyAnim::JUMPING_RIGHT, ANIM_DELAY);
 	sprite->AddKeyFrame((int)EnemyAnim::JUMPING_RIGHT, { 0, 5 * n, n, n });
@@ -299,6 +314,54 @@ void Enemy::MoveX()
 			}
 		}
 	}
+	if (type == hType::MIGHTA) {
+		pos.x += dir.x;
+		box = GetHitbox();
+
+		if (hasStartedWalking == false) {
+			StartWalkingLeft();
+			state = hState::EWALKING;
+			hasStartedWalking = true;
+		}
+
+		if (hasStartedWalking) {
+			if (map->TestCollisionWallLeft(box))
+			{
+				pos.x = prev_x;
+				StartWalkingRight();
+				dir.x = 1;
+			}
+			else if (map->TestCollisionWallRight(box)) {
+				pos.x = prev_x;
+				StartWalkingLeft();
+				dir.x = -1;
+			}
+		}
+	}
+	if (type == hType::DRUNK) {
+		pos.x += dir.x;
+		box = GetHitbox();
+
+		if (hasStartedWalking == false) {
+			StartWalkingLeft();
+			state = hState::EWALKING;
+			hasStartedWalking = true;
+		}
+
+		if (hasStartedWalking) {
+			if (map->TestCollisionWallLeft(box))
+			{
+				pos.x = prev_x;
+				StartWalkingRight();
+				dir.x = 2;
+			}
+			else if (map->TestCollisionWallRight(box)) {
+				pos.x = prev_x;
+				StartWalkingLeft();
+				dir.x = -2;
+			}
+		}
+	}
 
 }
 void Enemy::MoveY()
@@ -313,7 +376,21 @@ void Enemy::MoveY()
 		{
 			state = hState::EFALLING;
 		}
-
+		eTimeLerp += GetFrameTime();
+		if (eTimeLerp <= 5.0f)
+		{
+			state = hState::EWALKING;
+		}
+		else if (eTimeLerp > 5.0f && eTimeLerp < 5.1f)
+		{
+			state = hState::EJUMPING;
+			pos.y -= 3;
+		}
+		else if (eTimeLerp > 5.1f)
+		{
+			eTimeLerp = 0;
+			lerping = false;
+		}
 	}
 	else if (type == hType::INVADER) {
 		box = GetHitbox();
@@ -328,6 +405,37 @@ void Enemy::MoveY()
 			pos.y += ENEMY_FALLING_SPEED;
 		}
 		else if (eTimeLerp > 5.1f)
+		{
+			eTimeLerp = 0;
+			lerping = false;
+		}
+	}
+	if (type == hType::MIGHTA) {
+		pos.y += ENEMY_FALLING_SPEED;
+		box = GetHitbox();
+		if (!map->TestCollisionGround(box, &pos.y))
+		{
+			state = hState::EFALLING;
+		}
+	}
+	if (type == hType::DRUNK) {
+		pos.y += ENEMY_FALLING_SPEED;
+		box = GetHitbox();
+		if (!map->TestCollisionGround(box, &pos.y))
+		{
+			state = hState::EFALLING;
+		}
+		eTimeLerp += GetFrameTime();
+		if (eTimeLerp <= 3.0f)
+		{
+			state = hState::EWALKING;
+		}
+		else if (eTimeLerp > 3.0f && eTimeLerp < 3.1f)
+		{
+			state = hState::EJUMPING;
+			pos.y -= 7;
+		}
+		else if (eTimeLerp > 3.1f)
 		{
 			eTimeLerp = 0;
 			lerping = false;
@@ -409,6 +517,12 @@ void Enemy::Release()
 	}
 	if (type == hType::INVADER) {
 		data.ReleaseTexture(Resource::IMG_INVADER);
+	}
+	if (type == hType::MIGHTA) {
+		data.ReleaseTexture(Resource::IMG_MIGHTA);
+	}
+	if (type == hType::DRUNK) {
+		data.ReleaseTexture(Resource::IMG_DRUNK);
 	}
 
 	render->Release();
