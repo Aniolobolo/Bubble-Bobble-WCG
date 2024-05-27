@@ -1,4 +1,4 @@
-Project executed on 27-05-2024 at 12:51:22.
+Project executed on 27-05-2024 at 14:49:03.
 main.cpp(13): Application start
 TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (24, 14)
 TileMap.cpp(173): Error: Index out of bounds. Tile map dimensions: 0x0. Given index: (24, 15)

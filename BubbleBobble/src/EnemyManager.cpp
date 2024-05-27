@@ -31,7 +31,7 @@ void EnemyManager::SetTileMap(TileMap* level) {
 }
 void EnemyManager::Add(const Point& pos, EnemyType type, const AABB& area, Look look)
 {
-	Enemy* enemy;
+	Enemy* enemy = nullptr;
 
 	if (type == EnemyType::MIGHTA)
 	{
@@ -41,6 +41,16 @@ void EnemyManager::Add(const Point& pos, EnemyType type, const AABB& area, Look 
 	{
 		LOG("Internal error: trying to add a new enemy with invalid type");
 		return;
+	}
+
+	if (enemy)
+	{
+		enemy->Initialise(look, area);
+		enemies.push_back(enemy);
+	}
+	else
+	{
+		LOG("Failed to create enemy");
 	}
 
 	enemy->Initialise(look, area);
@@ -70,9 +80,9 @@ AABB EnemyManager::GetEnemyHitBox(const Point& pos, EnemyType type) const
 }
 void EnemyManager::Update(const AABB& player_hitbox)
 {
+	AABB box;
 	bool shoot;
 	Point p, d;
-
 	for (Enemy* enemy : enemies)
 	{
 		shoot = enemy->Update(player_hitbox);
