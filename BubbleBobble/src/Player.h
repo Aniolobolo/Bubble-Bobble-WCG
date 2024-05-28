@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "TileMap.h"
 
+
 //Representation model size: 32x32
 #define PLAYER_FRAME_SIZE		32
 
@@ -66,9 +67,15 @@ public:
 	void LifeManager();
 	int life;
 	int getLife();
+	bool godMode;
 	void Die();
 	void ReceiveDamage();
-	bool isReceivingDamage();
+	void isReceivingDamage();
+	bool wasHit = false;
+	bool isDead = false;
+	bool gameOver = false;
+	void SetDeathAnim();
+	bool Ikilleable = true;
 	
 	
 	void InitScore();
@@ -101,6 +108,8 @@ private:
 	void MoveY();
 	void LogicJumping();
 	void LogicClimbing();
+	float eTimeHitted = 0;
+	float eTimeDead = 0;
 	//void ShootBubble();
 
 	//Animation management
@@ -134,6 +143,7 @@ private:
 	State state;
 	Look look;
 	int jump_delay;
+	int immuneThreshold = 2;
 
 	TileMap *map;
 

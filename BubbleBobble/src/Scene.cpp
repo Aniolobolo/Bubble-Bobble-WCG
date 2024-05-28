@@ -474,13 +474,6 @@ void Scene::Update()
 		LoadLevel(actualLevel);
 	}
 
-	if (IsKeyPressed(KEY_F2)) {
-		godMode = true;
-	}
-	else if (IsKeyPressed(KEY_F3)) {
-		godMode = false;
-	}
-
 	for (Enemy* e : enemies)
 	{
 		e->Update();
@@ -530,68 +523,112 @@ void Scene::Release()
 }
 void Scene::CheckCollisions()
 {
-	AABB player_box, player2_box, enemy_box, bubb_box, obj_box;
+	AABB player_box = player->GetHitbox();
+	AABB player2_box;
+	// if (player2) player2_box = player2->GetHitbox(); // Descomentar si player2 está definido
+
+	CheckPlayerObjectCollisions(player_box);
+	// CheckPlayerObjectCollisions(player2_box); // Descomentar si player2 está definido
+
+	CheckBubbleEnemyCollisions();
+	CheckPlayerEnemyCollisions(player_box);
+	// CheckPlayerEnemyCollisions(player2_box); // Descomentar si player2 está definido
+
 	
-	player_box = player->GetHitbox();
-	//player2_box = player2->GetHitbox();
-	
+}
+
+void Scene::CheckPlayerObjectCollisions(const AABB& player_box)
+{
 	auto it = objects.begin();
 	while (it != objects.end())
 	{
-		obj_box = (*it)->GetHitbox();
-		if(player_box.TestAABB(obj_box))
+		AABB obj_box = (*it)->GetHitbox();
+		if (player_box.TestAABB(obj_box))
 		{
 			player->IncrScore((*it)->Points());
-			
-			//Delete the object
-			delete* it; 
-			//Erase the object from the vector and get the iterator to the next valid element
-			it = objects.erase(it); 
-		}
-		//else if (player2_box.TestAABB(obj_box))
-		//{
-		//	player2->IncrScore((*it)->Points());
 
-		//	//Delete the object
-		//	delete* it;
-		//	//Erase the object from the vector and get the iterator to the next valid element
-		//	it = objects.erase(it);
-		//}
+			// Delete the object
+			delete* it;
+			// Erase the object from the vector and get the iterator to the next valid element
+			it = objects.erase(it);
+		}
 		else
 		{
-			//Move to the next object
-			++it; 
+			// Move to the next object
+			++it;
 		}
 	}
-	
+}
+
+void Scene::CheckBubbleEnemyCollisions()
+{
+	auto it_bubbles = playerBubbles.begin();
+	while (it_bubbles != playerBubbles.end())
+	{
+		AABB bubb_box = (*it_bubbles)->GetHitbox();
+
+		auto it_enemies = enemies.begin();
+		while (it_enemies != enemies.end())
+		{
+			AABB enemy_box = (*it_enemies)->GetHitbox();
+			if (enemy_box.TestAABB(bubb_box))
+			{
+				// Define the action when a bubble collides with an enemy
+				// For example, capture the enemy, pop the bubble, etc.
+
+				// Example action: Delete enemy and bubble
+				delete* it_enemies;
+				it_enemies = enemies.erase(it_enemies);
+				/*delete* it_bubbles;
+				it_bubbles = playerBubbles.erase(it_bubbles);*/
+
+				break; // Exit the inner loop since the current bubble is deleted
+			}
+			else
+			{
+				++it_enemies;
+			}
+		}
+
+		if (it_bubbles != playerBubbles.end()) ++it_bubbles; // Move to the next bubble if not deleted
+	}
+}
+
+void Scene::CheckPlayerEnemyCollisions(const AABB& player_box)
+{
 	auto it_enemies = enemies.begin();
 	while (it_enemies != enemies.end())
 	{
-		enemy_box = (*it_enemies)->GetHitbox();
-		if (player_box.TestAABB(enemy_box) && !godMode)
+		AABB enemy_box = (*it_enemies)->GetHitbox();
+		if (player_box.TestAABB(enemy_box))
 		{
 			player->LifeManager();
-			if (player->getLife() <= 0) {
-				isGameOver = true;
+			if (player->getLife() <= 0)
+			{
+				player->Die();
+				StartDying();
+				
 			}
-			delete* it_enemies;
-			it_enemies = enemies.erase(it_enemies);
+			break;
 		}
-		//if (player2_box.TestAABB(enemy_box) && !godMode)
-		//{
-		//	player2->LifeManager();
-		//	if (player2->getLife() <= 0) {
-		//		isGameOver = true;
-		//	}
-		//	delete* it_enemies;
-		//	it_enemies = enemies.erase(it_enemies);
-		//}
 		else
 		{
 			++it_enemies;
 		}
+
+		
 	}
 }
+
+void Scene::StartDying()
+{
+	timeToDie += GetFrameTime();
+	if (timeToDie >= 0.5f) {
+		isGameOver = true;
+
+	}
+}
+
 void Scene::ClearLevel()
 {
 	for (Object* obj : objects)
@@ -646,6 +683,10 @@ void Scene::RenderObjectsDebug(const Color& col) const
 	for (Enemy* enemi : enemies)
 	{
 		enemi->DrawDebug(col);
+	}
+	for (PlayerBubble* pbubb : playerBubbles)
+	{
+		pbubb->DrawDebug(col);
 	}
 
 }

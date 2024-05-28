@@ -26,7 +26,11 @@ public:
 
 private:
 
-    void CheckCollisions(); 
+    void CheckCollisions();
+    void CheckPlayerObjectCollisions(const AABB& player_box);
+    void CheckBubbleEnemyCollisions();
+    void CheckPlayerEnemyCollisions(const AABB& player_box);
+    void StartDying();
     void ClearLevel();
     void UpdateBubbles();
     void RenderObjects() const;
@@ -36,7 +40,6 @@ private:
 
     Player *player;
     //Player2 *player2;
-    bool godMode;
     TileMap *level;
     int goal_score[3];
     int actualLevel;
@@ -44,8 +47,9 @@ private:
     std::vector<Enemy*> enemies;
     std::vector<PlayerBubble*> playerBubbles;
     PlayerBubble* pBubble;
-
+    int collisionCount;
     float eBubblingTime;
+    float timeToDie = 0;
     Camera2D camera;
     DebugMode debug;
 };

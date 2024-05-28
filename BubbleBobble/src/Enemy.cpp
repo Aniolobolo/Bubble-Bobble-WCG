@@ -138,6 +138,15 @@ void Enemy::SetTileMap(TileMap* tilemap)
 {
 	map = tilemap;
 }
+void Enemy::DestroyEnemy(Enemy* enemy)
+{
+	auto it = std::find(enemies.begin(), enemies.end(), enemy);
+	if (it != enemies.end())
+	{
+		delete* it;
+		enemies.erase(it);
+	}
+}
 bool Enemy::IsLookingRight() const
 {
 	return look == hLook::ERIGHT;

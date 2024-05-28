@@ -19,12 +19,7 @@ PlayerBubble::PlayerBubble(const Point& p, Directions d) : Entity(p, BUBBLE_PHYS
 	timeAlive = GetRandomValue(3, 4);
 	Rectangle rc;
 	inShoot = true;
-	eTimePogo = 0;
-	canCollide = true;
-	issAlive = true;
-	poped = false;
-	framecounter = 0;
-	fruit = false;
+
 
 	sfx[0] = LoadSound("sound/SoundEffects/Characters/AttackFX.wav");
 

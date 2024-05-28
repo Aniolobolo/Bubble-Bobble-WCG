@@ -22,6 +22,7 @@ public:
     void AddKeyFrame(int id, const Rectangle& rect);
     void SetAnimation(int id);
     int GetAnimation();
+    bool IsAnimationComplete() const;
 
     void SetManualMode();
     void SetAutomaticMode();
@@ -42,7 +43,9 @@ private:
 
     const Texture2D *img;
     std::vector<Animation> animations;
+    bool animation_complete;
 
     AnimMode mode;
+
 };
 

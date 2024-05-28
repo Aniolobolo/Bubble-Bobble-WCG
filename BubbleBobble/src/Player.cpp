@@ -84,7 +84,8 @@ AppStatus Player::Initialise()
 	
 	sprite->SetAnimationDelay((int)PlayerAnim::DAMAGE_LEFT, ANIM_DELAY);
 	for (i = 0; i < 2; ++i)
-		sprite->AddKeyFrame((int)PlayerAnim::DAMAGE_LEFT, { (float)i * n, n, n, n });
+		sprite->AddKeyFrame((int)PlayerAnim::DAMAGE_LEFT, { (float)i * n, n, -n, n });
+
 	sprite->SetAnimationDelay((int)PlayerAnim::DAMAGE_RIGHT, ANIM_DELAY);
 	for (i = 0; i < 2; ++i)
 		sprite->AddKeyFrame((int)PlayerAnim::DAMAGE_RIGHT, { (float)i * n, n, n, n });
@@ -112,11 +113,15 @@ void Player::InitLife() {
 }
 
 void Player::LifeManager() {
-	if (life <= 0) {
-		Die();
-		
+	if (!godMode && !wasHit) {
+		if (life > 0) {
+			life--;
+			ReceiveDamage();
+		}
+		else {
+			Die();
+		}
 	}
-	life--;
 }
 
 int Player::getLife()
@@ -211,7 +216,9 @@ bool Player::IsInSecondHalfTile() const
 void Player::SetAnimation(int id)
 {
 	Sprite* sprite = dynamic_cast<Sprite*>(render);
-	sprite->SetAnimation(id);
+	if (state != State::DAMAGED || id == (int)PlayerAnim::DAMAGE_RIGHT || id == (int)PlayerAnim::DAMAGE_LEFT) {
+		sprite->SetAnimation(id);
+	}
 }
 PlayerAnim Player::GetAnimation()
 {
@@ -228,21 +235,52 @@ void Player::Stop()
 
 void Player::ReceiveDamage()
 {
-	state = State::DAMAGED;
-	isReceivingDamage();
-	if (IsLookingRight())	SetAnimation((int)PlayerAnim::DAMAGE_RIGHT);
-	else					SetAnimation((int)PlayerAnim::DAMAGE_LEFT);
-	if (life <= 0) {
-		Die();
+	eTimeHitted += GetFrameTime();
+
+	if (!wasHit) {
+		state = State::DAMAGED;
+		if (IsLookingRight()) {
+			SetAnimation((int)PlayerAnim::DAMAGE_RIGHT);
+		}
+		else {
+			SetAnimation((int)PlayerAnim::DAMAGE_LEFT);
+		}
+
+		wasHit = true;
+		Ikilleable = false;
+		godMode = true;
 	}
-				
+
+	if (eTimeHitted >= 1.25f) {
+		wasHit = false;
+		godMode = false;
+		eTimeHitted = 0;
+		Stop();
+		Ikilleable = true;
+		state = State::IDLE;  // Regresar al estado IDLE después del daño
+	}
 }
+
 void Player::Die()
 {
-	state = State::DEAD;
-	if (IsLookingRight())	SetAnimation((int)PlayerAnim::DIE_RIGHT);
-	else                    SetAnimation((int)PlayerAnim::DIE_LEFT);
-	Sprite* sprite = dynamic_cast<Sprite*>(render);
+	eTimeDead += GetFrameTime(); // Ajuste: Utiliza eTimeDead para controlar la duración de la animación de muerte
+
+	if (!isDead) {
+		state = State::DEAD;
+		if (IsLookingRight()) {
+			SetAnimation((int)PlayerAnim::DIE_RIGHT);
+		}
+		else {
+			SetAnimation((int)PlayerAnim::DIE_LEFT);
+		}
+
+		isDead = true;
+	}
+
+	// Ajuste: Utiliza eTimeDead para controlar la duración de la animación de muerte
+	if (eTimeDead >= 5.0f) {
+		gameOver = true;
+	}
 }
 void Player::StartWalkingLeft()
 {
@@ -318,34 +356,57 @@ void Player::ChangeAnimLeft()
 		case State::DEAD: SetAnimation((int)PlayerAnim::DIE_LEFT); break;
 	}
 }
-bool Player::isReceivingDamage()
+void Player::isReceivingDamage()
 {
-	if (state == State::DAMAGED) {
-		return true;
+	wasHit = true;
+}
+void Player::SetDeathAnim()
+{
+	if (IsLookingLeft()) {
+		SetAnimation((int)PlayerAnim::DIE_LEFT);
 	}
 	else {
-		return false;
+		SetAnimation((int)PlayerAnim::DIE_RIGHT);
 	}
+	
 }
 void Player::Update()
 {
 	//Player doesn't use the "Entity::Update() { pos += dir; }" default behaviour.
 	//Instead, uses an independent behaviour for each axis.
 	Sprite* sprite = dynamic_cast<Sprite*>(render);
-		sprite->Update();
-	
+	sprite->Update();
+
+
 	if (state != State::DEAD) {
-		if (getLife() <= 0) {
-			Die();
+		if (wasHit) {
+			ReceiveDamage();
 		}
-		MoveX();
-		MoveY();
-		Warp();
+		else {
+			// Solo permitir otras acciones si no está en estado de daño
+			MoveY();
+			if (state != State::DAMAGED) {
+				MoveX();
+				
+				Warp();
+
+				if (IsKeyPressed(KEY_F2)) {
+					godMode = !godMode;
+				}
+
+				if (IsKeyPressed(KEY_ONE) || IsKeyPressed(KEY_TWO) || IsKeyPressed(KEY_THREE)) {
+					state = State::IDLE;
+					SetAnimation((int)PlayerAnim::IDLE_RIGHT);
+				}
+
+				// Estado de daño no debe permitir cambiar a otra animación
+				if (sprite->IsAnimationComplete() && !wasHit) {
+					Stop();
+				}
+			}
+		}
 	}
-	if (IsKeyPressed(KEY_ONE) || IsKeyPressed(KEY_TWO) || IsKeyPressed(KEY_THREE)) {
-			state = State::IDLE;
-			SetAnimation((int)PlayerAnim::IDLE_RIGHT);
-		}
+	
 }
 void Player::MoveX()
 {

@@ -53,9 +53,12 @@ public:
 	AppStatus Initialise();
 	void SetTileMap(TileMap* tilemap);
 
+	void DestroyEnemy(Enemy* enemy);
+
 	void InitScore();
 	void IncrScore(int n);
 	int GetScore();
+
 	bool lerping;
 	void Update();
 	void DrawDebug(const Color& col) const;
@@ -102,6 +105,7 @@ protected:
 	int direction;
 	float eTimeLerp = 0;
 	TileMap* map;
+	std::vector<Enemy*> enemies;
 
 	int score;
 };
