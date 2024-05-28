@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Player2.h"
 #include "Enemy.h"
+#include "EnemyManager.h"
 #include "TileMap.h"
 #include "Object.h"
 #include "PlayerBubble.h"
@@ -20,13 +21,13 @@ public:
     void Release();
     AppStatus LoadLevel(int stage);
     void PlayerBubbleSpawn();
-    void deletePBubbles();
     bool isGameOver;
     bool isGameWon;
 
 private:
 
     void CheckCollisions(); 
+    void BubbleDespawn();
     void ClearLevel();
     void UpdateBubbles();
     void RenderObjects() const;
@@ -42,6 +43,7 @@ private:
     int actualLevel;
     std::vector<Object*> objects;
     std::vector<Enemy*> enemies;
+    EnemyManager* eM;
     std::vector<PlayerBubble*> playerBubbles;
     PlayerBubble* pBubble;
 

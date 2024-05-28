@@ -61,6 +61,12 @@ void Entity::Set(const Point& p, const Point& d, int w, int h, int framew, int f
 	isAlive = true;
 }
 
+void Entity::SetAnimationE(int id)
+{
+	Sprite* sprite = dynamic_cast<Sprite*>(render);
+	sprite->SetAnimation(id);
+}
+
 AABB Entity::GetHitbox() const
 {
 	Point p(pos.x, pos.y - (height - 1));

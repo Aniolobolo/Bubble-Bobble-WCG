@@ -36,7 +36,7 @@ enum class Tile {
 	STATIC_FIRST = BLOCK_L1,
 	STATIC_LAST = DECOR_L5_4,
 	SOLID_FIRST = BLOCK_L1,
-	SOLID_LAST = NOTHING_SOLID,
+	SOLID_LAST = DECOR_L5_4,
 	ENTITY_FIRST = PLAYER,
 	ENTITY_LAST = BUBBLE
 };
@@ -56,6 +56,7 @@ public:
 	//Test for collisions with walls
 	bool TestCollisionWallLeft(const AABB& box) const;
 	bool TestCollisionWallRight(const AABB& box) const;
+	bool TestCollisionAir(const AABB& box) const;
 	
 	//Test collision with the ground and update 'py' with the maximum y-position to prevent
 	//penetration of the grounded tile, that is, the pixel y-position above the grounded tile.
@@ -64,15 +65,19 @@ public:
 	
 	//Test if there is a ground tile one pixel below the given box
 	bool TestFalling(const AABB& box) const;
-	
+	AABB GetSweptAreaX(const AABB& hitboxbox) const;
 
 private:
 	void InitTileDictionary();
 
 	Tile GetTileIndex(int x, int y) const;
 	bool IsTileSolid(Tile tile) const;
+	bool IsTileAir(Tile tile) const;
+	bool IsTileFloor(Tile tile) const;
+	bool IsTileFloorNCeiling(Tile tile) const;
 	bool CollisionX(const Point& p, int distance) const;
 	bool CollisionY(const Point& p, int distance) const;
+	bool CollisionAir(const Point& p, int distance) const;
 
 	//Tile map
 	Tile *map;
