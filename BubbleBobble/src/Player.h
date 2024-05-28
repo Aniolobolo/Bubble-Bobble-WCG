@@ -70,7 +70,7 @@ public:
 	void ReceiveDamage();
 	bool isReceivingDamage();
 	
-	bool IsMoving() const;
+	
 	void InitScore();
 	void IncrScore(int n);
 	int GetScore();
@@ -107,6 +107,8 @@ private:
 	void SetAnimation(int id);
 	PlayerAnim GetAnimation();
 	void Stop();
+	
+
 	
 	void StartWalkingLeft();
 	void StartWalkingRight();

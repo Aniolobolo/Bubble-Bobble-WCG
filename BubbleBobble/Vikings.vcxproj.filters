@@ -58,9 +58,6 @@
     <ClCompile Include="src\ShotManager.cpp">
       <Filter>Entities\Enemies</Filter>
     </ClCompile>
-    <ClCompile Include="src\EnemyManager.cpp">
-      <Filter>Entities\Enemies</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Globals.h">
@@ -121,9 +118,6 @@
       <Filter>Entities\Enemies</Filter>
     </ClInclude>
     <ClInclude Include="src\ShotManager.h">
-      <Filter>Entities\Enemies</Filter>
-    </ClInclude>
-    <ClInclude Include="src\EnemyManager.h">
       <Filter>Entities\Enemies</Filter>
     </ClInclude>
   </ItemGroup>

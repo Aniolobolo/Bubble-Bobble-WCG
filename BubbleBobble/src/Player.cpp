@@ -136,19 +136,6 @@ int Player::GetScore()
 {
 	return score;
 }
-
-bool Player::IsMoving() const
-{
-	if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_RIGHT))
-	{
-		return true;
-	}
-	else {
-		return false;
-	}
-
-}
-
 bool Player::IsJumpingOnBubble(const Point& p, int distance)
 {
 	AABB playerHitbox = GetHitbox();

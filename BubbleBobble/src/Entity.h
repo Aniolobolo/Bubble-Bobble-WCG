@@ -27,7 +27,6 @@ public:
 	AABB GetHitbox() const;
 	Point GetPos();
 	void Set(const Point& p, const Point& d, int w, int h, int framew, int frameh);
-	void SetAnimationE(int id);
 	void Init(Vector2 p, int w, int h, int s);
 	//Draw representation model
 	void Draw() const;
