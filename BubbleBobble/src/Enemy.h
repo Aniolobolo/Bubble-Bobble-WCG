@@ -11,18 +11,23 @@
 
 //Horizontal speed and vertical speed while falling down
 #define ENEMY_SPEED			    1
+#define DRUNK_SPEED				2
 
 //When jumping, initial jump speed and maximum falling speed
 #define ENEMY_JUMP_FORCE		5
+#define DRUNK_JUMP_FORCE		9
 
 //Frame delay for updating the jump velocity
 #define ENEMY_JUMP_DELAY		2
 
-#define ENEMY_FALLING_SPEED	1
+#define ENEMY_FALLING_SPEED		1
 #define ENEMY_ENDJUMPING_SPEED	1
+#define DRUNK_FALLING_SPEED		2
+#define DRUNK_ENDJUMPING_SPEED	2
 
 //Player is levitating when abs(speed) <= this value
 #define ENEMY_LEVITATING_SPEED	1
+#define DRUNK_LEVITATING_SPEED	2
 
 //Gravity affects jumping velocity when jump_delay is 0
 #define GRAVITY_FORCE			1
@@ -102,6 +107,7 @@ protected:
 	hState state;
 	hLook look;
 	hType type;
+	int jump_delay;
 	int direction;
 	float eTimeLerp = 0;
 	TileMap* map;

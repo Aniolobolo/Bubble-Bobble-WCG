@@ -157,15 +157,30 @@ bool Enemy::IsLookingLeft() const
 }
 bool Enemy::IsAscending() const
 {
-	return dir.y < -ENEMY_LEVITATING_SPEED;
+	if (type != hType::DRUNK) {
+		return dir.y < -ENEMY_LEVITATING_SPEED;
+	}
+	else {
+		return dir.y < -DRUNK_LEVITATING_SPEED;
+	}
 }
 bool Enemy::IsLevitating() const
 {
-	return abs(dir.y) <= ENEMY_LEVITATING_SPEED;
+	if (type != hType::DRUNK) {
+		return abs(dir.y) <= ENEMY_LEVITATING_SPEED;
+	}
+	else {
+		return abs(dir.y) <= DRUNK_LEVITATING_SPEED;
+	}
 }
 bool Enemy::IsDescending() const
 {
-	return dir.y > ENEMY_LEVITATING_SPEED;
+	if (type != hType::DRUNK) {
+		return dir.y > ENEMY_LEVITATING_SPEED;
+	}
+	else {
+		return dir.y > DRUNK_LEVITATING_SPEED;
+	}
 }
 bool Enemy::IsInFirstHalfTile() const
 {
@@ -194,34 +209,54 @@ void Enemy::Stop()
 }
 void Enemy::StartWalkingLeft()
 {
-	pos.x += -ENEMY_SPEED;
+	if (type != hType::DRUNK) {
+		pos.x += -ENEMY_SPEED;
+	}
+	else {
+		pos.x += -DRUNK_SPEED;
+	}
 	state = hState::EWALKING;
 	look = hLook::ELEFT;
 	SetAnimation((int)EnemyAnim::WALKING_LEFT);
 }
 void Enemy::StartWalkingRight()
 {
-	pos.x += ENEMY_SPEED;
+	if (type != hType::DRUNK) {
+		pos.x += ENEMY_SPEED;
+	}
+	else {
+		pos.x += DRUNK_SPEED;
+	}
 	state = hState::EWALKING;
 	look = hLook::ERIGHT;
 	SetAnimation((int)EnemyAnim::WALKING_RIGHT);
 }
 void Enemy::StartFalling()
 {
-	dir.y = ENEMY_FALLING_SPEED;
+	if (type == hType::ZENCHAN) {
+		dir.y = ENEMY_FALLING_SPEED;
+	}
+	else if (type == hType::DRUNK) {
+		dir.y = DRUNK_FALLING_SPEED;
+	}
 	state = hState::EFALLING;
 	if (IsLookingRight())	SetAnimation((int)EnemyAnim::FALLING_RIGHT);
 	else					SetAnimation((int)EnemyAnim::FALLING_LEFT);
 }
-//void Enemy::StartJumping()
-//{
-//	dir.y = -ENEMY_JUMP_FORCE;
-//	state = hState::EJUMPING;
-//	if (IsLookingRight())	SetAnimation((int)EnemyAnim::JUMPING_RIGHT);
-//	else					SetAnimation((int)EnemyAnim::JUMPING_LEFT);
-//	jump_delay = ENEMY_JUMP_DELAY;
-//	
-//}
+void Enemy::StartJumping()
+{
+	if (type == hType::ZENCHAN) {
+		dir.y = -ENEMY_JUMP_FORCE;
+	}
+	else if (type == hType::DRUNK) {
+		dir.y = -DRUNK_JUMP_FORCE;
+	}
+	state = hState::EJUMPING;
+	if (IsLookingRight())	SetAnimation((int)EnemyAnim::JUMPING_RIGHT);
+	else					SetAnimation((int)EnemyAnim::JUMPING_LEFT);
+	jump_delay = ENEMY_JUMP_DELAY;
+	
+}
 void Enemy::StartClimbingUp()
 {
 	state = hState::ECLIMBING;
@@ -290,12 +325,12 @@ void Enemy::MoveX()
 			{
 				pos.x = prev_x;
 				StartWalkingRight();
-				dir.x = 1;
+				dir.x = ENEMY_SPEED;
 			}
 			else if (map->TestCollisionWallRight(box)) {
 				pos.x = prev_x;
 				StartWalkingLeft();
-				dir.x = -1;
+				dir.x = -ENEMY_SPEED;
 			}
 		}
 	}
@@ -314,12 +349,12 @@ void Enemy::MoveX()
 			{
 				pos.x = prev_x;
 				StartWalkingRight();
-				dir.x = 1;
+				dir.x = ENEMY_SPEED;
 			}
 			else if (map->TestCollisionWallRight(box)) {
 				pos.x = prev_x;
 				StartWalkingLeft();
-				dir.x = -1;
+				dir.x = -ENEMY_SPEED;
 			}
 		}
 	}
@@ -327,6 +362,7 @@ void Enemy::MoveX()
 		pos.x += dir.x;
 		box = GetHitbox();
 
+
 		if (hasStartedWalking == false) {
 			StartWalkingLeft();
 			state = hState::EWALKING;
@@ -338,12 +374,12 @@ void Enemy::MoveX()
 			{
 				pos.x = prev_x;
 				StartWalkingRight();
-				dir.x = 1;
+				dir.x = ENEMY_SPEED;
 			}
 			else if (map->TestCollisionWallRight(box)) {
 				pos.x = prev_x;
 				StartWalkingLeft();
-				dir.x = -1;
+				dir.x = -ENEMY_SPEED;
 			}
 		}
 	}
@@ -351,6 +387,7 @@ void Enemy::MoveX()
 		pos.x += dir.x;
 		box = GetHitbox();
 
+
 		if (hasStartedWalking == false) {
 			StartWalkingLeft();
 			state = hState::EWALKING;
@@ -362,12 +399,12 @@ void Enemy::MoveX()
 			{
 				pos.x = prev_x;
 				StartWalkingRight();
-				dir.x = 2;
+				dir.x = DRUNK_SPEED;
 			}
 			else if (map->TestCollisionWallRight(box)) {
 				pos.x = prev_x;
 				StartWalkingLeft();
-				dir.x = -2;
+				dir.x = -DRUNK_SPEED;
 			}
 		}
 	}
@@ -377,28 +414,29 @@ void Enemy::MoveY()
 {
 	AABB box;
 
-	pos.y -= dir.y;
 	if (type == hType::ZENCHAN) {
-		pos.y += ENEMY_FALLING_SPEED;
-		box = GetHitbox();
-		if (!map->TestCollisionGround(box, &pos.y))
-		{
-			state = hState::EFALLING;
-		}
 		eTimeLerp += GetFrameTime();
-		if (eTimeLerp <= 5.0f)
+
+		if (state == hState::EJUMPING)
 		{
-			state = hState::EWALKING;
+			LogicJumping();
 		}
-		else if (eTimeLerp > 5.0f && eTimeLerp < 5.1f)
+		else //idle, walking, falling
 		{
-			state = hState::EJUMPING;
-			pos.y -= 3;
-		}
-		else if (eTimeLerp > 5.1f)
-		{
-			eTimeLerp = 0;
-			lerping = false;
+			pos.y += ENEMY_SPEED;
+			box = GetHitbox();
+			if (map->TestCollisionGround(box, &pos.y))
+			{
+				if (eTimeLerp > 3)
+				{
+					StartJumping();
+					eTimeLerp = 0;
+				}
+			}
+			else if (!map->TestCollisionGround(box, &pos.y))
+			{
+				state = hState::EFALLING;
+			}
 		}
 	}
 	else if (type == hType::INVADER) {
@@ -428,88 +466,89 @@ void Enemy::MoveY()
 		}
 	}
 	if (type == hType::DRUNK) {
-		pos.y += ENEMY_FALLING_SPEED;
-		box = GetHitbox();
-		if (!map->TestCollisionGround(box, &pos.y))
-		{
-			state = hState::EFALLING;
-		}
 		eTimeLerp += GetFrameTime();
-		if (eTimeLerp <= 3.0f)
+		if (state == hState::EJUMPING)
 		{
-			state = hState::EWALKING;
+			LogicJumping();
 		}
-		else if (eTimeLerp > 3.0f && eTimeLerp < 3.1f)
+		else //idle, walking, falling
 		{
-			state = hState::EJUMPING;
-			pos.y -= 7;
-		}
-		else if (eTimeLerp > 3.1f)
-		{
-			eTimeLerp = 0;
-			lerping = false;
+			pos.y += DRUNK_SPEED;
+			box = GetHitbox();
+			if (map->TestCollisionGround(box, &pos.y))
+			{
+				if (eTimeLerp > 1)
+				{
+					StartJumping();
+					eTimeLerp = 0;
+				}
+			}
+			else if (!map->TestCollisionGround(box, &pos.y))
+			{
+				state = hState::EFALLING;
+			}
 		}
 	}
 }
 
-//void Enemy::LogicJumping()
-//{
-//	AABB box, prev_box;
-//	int prev_y;
-//
-//	jump_delay--;
-//	if (jump_delay == 0)
-//	{
-//		prev_y = pos.y;
-//		prev_box = GetHitbox();
-//
-//		pos.y += dir.y;
-//		dir.y += GRAVITY_FORCE;
-//		jump_delay = ENEMY_JUMP_DELAY;
-//
-//		//Is the jump finished?
-//		if (dir.y > ENEMY_JUMP_FORCE - 6)
-//		{
-//			dir.y = ENEMY_ENDJUMPING_SPEED;
-//			StartFalling();
-//		}
-//		else
-//		{
-//			//Jumping is represented with 3 different states
-//			if (IsAscending())
-//			{
-//				if (IsLookingRight())	SetAnimation((int)EnemyAnim::JUMPING_RIGHT);
-//				else					SetAnimation((int)EnemyAnim::JUMPING_LEFT);
-//			}
-//			else if (IsLevitating())
-//			{
-//				if (IsLookingRight())	SetAnimation((int)EnemyAnim::LEVITATING_RIGHT);
-//				else					SetAnimation((int)EnemyAnim::LEVITATING_LEFT);
-//			}
-//			else if (IsDescending())
-//			{
-//				if (IsLookingRight())	SetAnimation((int)EnemyAnim::FALLING_RIGHT);
-//				else					SetAnimation((int)EnemyAnim::FALLING_LEFT);
-//			}
-//		}
-//		//We check ground collision when jumping down
-//		if (dir.y >= 0)
-//		{
-//			box = GetHitbox();
-//
-//			//A ground collision occurs if we were not in a collision state previously.
-//			//This prevents scenarios where, after levitating due to a previous jump, we found
-//			//ourselves inside a tile, and the entity would otherwise be placed above the tile,
-//			//crossing it.
-//			if (!map->TestCollisionGround(prev_box, &prev_y) &&
-//				map->TestCollisionGround(box, &pos.y))
-//			{
-//				Stop();
-//
-//			}
-//		}
-//	}
-//}
+void Enemy::LogicJumping()
+{
+	AABB box, prev_box;
+	int prev_y;
+	eTimeLerp = 0;
+	jump_delay--;
+	if (jump_delay == 0)
+	{
+		prev_y = pos.y;
+		prev_box = GetHitbox();
+
+		pos.y += dir.y;
+		dir.y += GRAVITY_FORCE;
+		jump_delay = ENEMY_JUMP_DELAY;
+
+		//Is the jump finished?
+		if (dir.y > ENEMY_JUMP_FORCE)
+		{
+			dir.y = ENEMY_SPEED;
+			StartFalling();
+		}
+		else
+		{
+			//Jumping is represented with 3 different states
+			if (IsAscending())
+			{
+				if (IsLookingRight())	SetAnimation((int)EnemyAnim::JUMPING_RIGHT);
+				else					SetAnimation((int)EnemyAnim::JUMPING_LEFT);
+			}
+			else if (IsLevitating())
+			{
+				if (IsLookingRight())	SetAnimation((int)EnemyAnim::LEVITATING_RIGHT);
+				else					SetAnimation((int)EnemyAnim::LEVITATING_LEFT);
+			}
+			else if (IsDescending())
+			{
+				if (IsLookingRight())	SetAnimation((int)EnemyAnim::FALLING_RIGHT);
+				else					SetAnimation((int)EnemyAnim::FALLING_LEFT);
+			}
+
+		}
+		//We check ground collision when jumping down
+		if (dir.y >= 0)
+		{
+			box = GetHitbox();
+
+			//A ground collision occurs if we were not in a collision state previously.
+			//This prevents scenarios where, after levitating due to a previous jump, we found
+			//ourselves inside a tile, and the entity would otherwise be placed above the tile,
+			//crossing it.
+			if (!map->TestCollisionGround(prev_box, &prev_y) &&
+				map->TestCollisionGround(box, &pos.y))
+			{
+				Stop();
+			}
+		}
+	}
+}
 
 void Enemy::DrawDebug(const Color& col) const
 {
