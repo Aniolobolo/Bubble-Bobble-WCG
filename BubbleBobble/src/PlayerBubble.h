@@ -30,6 +30,7 @@ public:
 	void DrawDebug(const Color& col) const;
 	void JumpOnBubble();
 	void SetPlayer(Player* p);
+	bool isJustShot();
 
 private:
 	//void DrawDebug(const Color& col) const;

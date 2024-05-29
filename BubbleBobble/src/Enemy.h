@@ -15,8 +15,8 @@
 #define DRUNK_SPEED				2
 
 //When jumping, initial jump speed and maximum falling speed
-#define ENEMY_JUMP_FORCE		5
-#define DRUNK_JUMP_FORCE		9
+#define ENEMY_JUMP_FORCE		9
+#define DRUNK_JUMP_FORCE		10
 
 //Frame delay for updating the jump velocity
 #define ENEMY_JUMP_DELAY		2
@@ -58,6 +58,7 @@ public:
 
 	AppStatus Initialise();
 	void SetTileMap(TileMap* tilemap);
+	void SetPlayer(Player* play);
 
 	void DestroyEnemy(Enemy* enemy);
 

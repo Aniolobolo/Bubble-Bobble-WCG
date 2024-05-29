@@ -198,6 +198,16 @@ void PlayerBubble::SetPlayer(Player* p)
 {
 	player = p;
 }
+bool PlayerBubble::isJustShot()
+{
+	if (state == BubbleState::JUSTSHOT) {
+		return true;
+	}
+	else {
+		return false;
+	}
+	
+}
 void PlayerBubble::JumpOnBubble()
 {
 	if (!inShoot)

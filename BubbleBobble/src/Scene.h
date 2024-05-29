@@ -6,6 +6,7 @@
 #include "TileMap.h"
 #include "Object.h"
 #include "PlayerBubble.h"
+#include "Text.h"
 
 enum class DebugMode { OFF, SPRITES_AND_HITBOXES, ONLY_HITBOXES, SIZE };
 
@@ -42,6 +43,7 @@ private:
     bool isPlayerDead = false;
     //Player2 *player2;
     TileMap *level;
+    Text* font1;
     int goal_score[3];
     int actualLevel;
     std::vector<Object*> objects;

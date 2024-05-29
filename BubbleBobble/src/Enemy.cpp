@@ -12,6 +12,7 @@ Enemy::Enemy(const Point& p, hState s, hLook view, hType t):
 	hasStartedWalking = false;
 	state = s;
 	look = view;
+	player = nullptr;
 	map = nullptr;
 	score = 0;
 	if (type == hType::DRUNK) {
@@ -137,6 +138,10 @@ int Enemy::GetScore()
 void Enemy::SetTileMap(TileMap* tilemap)
 {
 	map = tilemap;
+}
+void Enemy::SetPlayer(Player* play)
+{
+	player = play;
 }
 void Enemy::DestroyEnemy(Enemy* enemy)
 {
@@ -311,26 +316,28 @@ void Enemy::MoveX()
 	//Enemy walking
 
 	if (type == hType::ZENCHAN) {
-		pos.x += dir.x;
-		box = GetHitbox();
+		if (state != hState::EJUMPING || state != hState::EFALLING) {
+			pos.x += dir.x;
+			box = GetHitbox();
 
-		if (hasStartedWalking == false) {
-			StartWalkingLeft();
-			state = hState::EWALKING;
-			hasStartedWalking = true;
-		}
-
-		if (hasStartedWalking) {
-			if (map->TestCollisionWallLeft(box))
-			{
-				pos.x = prev_x;
-				StartWalkingRight();
-				dir.x = ENEMY_SPEED;
-			}
-			else if (map->TestCollisionWallRight(box)) {
-				pos.x = prev_x;
+			if (hasStartedWalking == false) {
 				StartWalkingLeft();
-				dir.x = -ENEMY_SPEED;
+				state = hState::EWALKING;
+				hasStartedWalking = true;
+			}
+
+			if (hasStartedWalking) {
+				if (map->TestCollisionWallLeft(box))
+				{
+					pos.x = prev_x;
+					StartWalkingRight();
+					dir.x = ENEMY_SPEED;
+				}
+				else if (map->TestCollisionWallRight(box)) {
+					pos.x = prev_x;
+					StartWalkingLeft();
+					dir.x = -ENEMY_SPEED;
+				}
 			}
 		}
 	}
@@ -384,27 +391,28 @@ void Enemy::MoveX()
 		}
 	}
 	if (type == hType::DRUNK) {
-		pos.x += dir.x;
-		box = GetHitbox();
+		if (state != hState::EJUMPING || state != hState::EFALLING) {
+			pos.x += dir.x;
+			box = GetHitbox();
 
-
-		if (!hasStartedWalking) {
-			StartWalkingLeft();
-			state = hState::EWALKING;
-			hasStartedWalking = true;
-		}
-
-		if (hasStartedWalking) {
-			if (map->TestCollisionWallLeft(box))
-			{
-				pos.x = prev_x;
-				StartWalkingRight();
-				dir.x = (type == hType::DRUNK) ? DRUNK_SPEED : ENEMY_SPEED;
-			}
-			else if (map->TestCollisionWallRight(box)) {
-				pos.x = prev_x;
+			if (hasStartedWalking == false) {
 				StartWalkingLeft();
-				dir.x = (type == hType::DRUNK) ? -DRUNK_SPEED : -ENEMY_SPEED;
+				state = hState::EWALKING;
+				hasStartedWalking = true;
+			}
+
+			if (hasStartedWalking) {
+				if (map->TestCollisionWallLeft(box))
+				{
+					pos.x = prev_x;
+					StartWalkingRight();
+					dir.x = DRUNK_SPEED;
+				}
+				else if (map->TestCollisionWallRight(box)) {
+					pos.x = prev_x;
+					StartWalkingLeft();
+					dir.x = -DRUNK_SPEED;
+				}
 			}
 		}
 	}
@@ -415,8 +423,8 @@ void Enemy::MoveY()
 	AABB box;
 
 	if (type == hType::ZENCHAN) {
+		
 		eTimeLerp += GetFrameTime();
-
 		if (state == hState::EJUMPING)
 		{
 			LogicJumping();
@@ -425,18 +433,18 @@ void Enemy::MoveY()
 		{
 			pos.y += ENEMY_SPEED;
 			box = GetHitbox();
+			Point playerpos = player->GetPos();
 			if (map->TestCollisionGround(box, &pos.y))
 			{
-				if (eTimeLerp > 3)
+				
+				if (playerpos.y < pos.y && eTimeLerp > 1.5f)
 				{
 					StartJumping();
 					eTimeLerp = 0;
+					
 				}
 			}
-			else if (!map->TestCollisionGround(box, &pos.y))
-			{
-				state = hState::EFALLING;
-			}
+
 		}
 	}
 	else if (type == hType::INVADER) {
@@ -475,17 +483,15 @@ void Enemy::MoveY()
 		{
 			pos.y += DRUNK_SPEED;
 			box = GetHitbox();
+			Point playerpos = player->GetPos();
 			if (map->TestCollisionGround(box, &pos.y))
 			{
-				if (eTimeLerp > 1)
+				if (playerpos.y < pos.y && eTimeLerp > 0.75f)
 				{
 					StartJumping();
 					eTimeLerp = 0;
+
 				}
-			}
-			else if (!map->TestCollisionGround(box, &pos.y))
-			{
-				state = hState::EFALLING;
 			}
 		}
 	}
@@ -529,6 +535,7 @@ void Enemy::LogicJumping()
 			{
 				if (IsLookingRight())	SetAnimation((int)EnemyAnim::FALLING_RIGHT);
 				else					SetAnimation((int)EnemyAnim::FALLING_LEFT);
+				state = hState::EFALLING;
 			}
 
 		}

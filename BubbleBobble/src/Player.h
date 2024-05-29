@@ -49,7 +49,7 @@ enum class PlayerAnim {
 	SHOCK_LEFT, SHOCK_RIGHT,
 	TELEPORT_LEFT, TELEPORT_RIGHT,
 	DAMAGE_LEFT, DAMAGE_RIGHT,
-	SHOOTING,
+	SHOOTING_LEFT, SHOOTING_RIGHT,
 	DIE_LEFT, DIE_RIGHT,
 	NUM_ANIMATIONS
 };
@@ -74,6 +74,7 @@ public:
 	bool wasHit = false;
 	bool isDead;
 	bool gameOver = false;
+	bool isJumping = false;
 	void SetDeathAnim();
 	
 	
@@ -95,7 +96,8 @@ public:
 	void DrawDebug(const Color& col) const;
 	void Release();
 
-
+	void StartShooting();
+	bool CanStartShooting();
 private:
 	//Entity* Shots[MAX_SHOTS];
 	//int idx_shot;
@@ -124,7 +126,7 @@ private:
 	void StartJumping();
 	void StartClimbingUp();
 	void StartClimbingDown();
-	void StartShooting();
+	
 	void ChangeAnimRight();
 	void ChangeAnimLeft();
 	

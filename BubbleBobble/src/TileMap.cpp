@@ -94,7 +94,10 @@ void TileMap::InitTileDictionary()
 	dict_rect[(int)Tile::SHADOW_EDGEDOWN4] = { 14 * n,  5 * n, n, n };
 	dict_rect[(int)Tile::SHADOW_PLATLEFT4] = { 15 * n,  5 * n, n, n };
 
-
+	dict_rect[(int)Tile::PLAT_L1] = { 0,  0, n, n };
+	dict_rect[(int)Tile::PLAT_L2] = { 4 * n,  0, n, n };
+	dict_rect[(int)Tile::PLAT_L3] = { 8 * n,  0, n, n };
+	dict_rect[(int)Tile::PLAT_L4] = { 12 * n,  0, n, n };
 
 	//dict_rect[(int)Tile::LADDER_L] = { 2 * n, 2 * n, n, n };
 	//dict_rect[(int)Tile::LADDER_R] = { 3 * n, 2 * n, n, n };
@@ -179,6 +182,10 @@ bool TileMap::IsTileSolid(Tile tile) const
 {
 	return (Tile::SOLID_FIRST <= tile && tile <= Tile::SOLID_LAST);
 }
+bool TileMap::IsTilePlatform(Tile tile) const
+{
+	return(Tile::PLAT_FIRST <= tile && tile <= Tile::PLAT_LAST);
+}
 //bool TileMap::IsTileLadderTop(Tile tile) const
 //{
 //	return tile == Tile::LADDER_TOP_L || tile == Tile::LADDER_TOP_R;
@@ -247,7 +254,7 @@ bool TileMap::CollisionY(const Point& p, int distance) const
 		tile = GetTileIndex(x, y);
 
 		//One solid or laddertop tile is sufficient
-		if (IsTileSolid(tile)/* || IsTileLadderTop(tile)*/)
+		if (IsTileSolid(tile) || IsTilePlatform(tile))
 			return true;
 	}
 	return false;

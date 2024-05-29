@@ -91,9 +91,13 @@ AppStatus Player::Initialise()
 	for (i = 0; i < 2; ++i)
 		sprite->AddKeyFrame((int)PlayerAnim::DAMAGE_RIGHT, { (float)i * n, n, n, n });
 
-	sprite->SetAnimationDelay((int)PlayerAnim::SHOOTING, ANIM_DELAY);
-	for (i = 0; i < 4; ++i)
-		sprite->AddKeyFrame((int)PlayerAnim::SHOOTING, { (float)i * n, 7 * n, n, n });
+	sprite->SetAnimationDelay((int)PlayerAnim::SHOOTING_LEFT, ANIM_DELAY);
+	for (i = 3; i < 6; ++i)
+		sprite->AddKeyFrame((int)PlayerAnim::SHOOTING_LEFT, { (float)i * n, 7 * n, -n, n });
+
+	sprite->SetAnimationDelay((int)PlayerAnim::SHOOTING_RIGHT, ANIM_DELAY);
+	for (i = 3; i < 6; ++i)
+		sprite->AddKeyFrame((int)PlayerAnim::SHOOTING_RIGHT, { (float)i * n, 7 * n, n, n });
 
 	sprite->SetAnimationDelay((int)PlayerAnim::DIE_LEFT, ANIM_DELAY);
 	for (i = 0; i < 4; ++i)
@@ -269,8 +273,8 @@ void Player::ReceiveDamage()
 	if (eTimeHitted >= 0.625f) {
 		
 		Point pos;
-		pos.x = 4 * TILE_SIZE;
-		pos.y = 26 * TILE_SIZE;
+		pos.x = 3 * TILE_SIZE;
+		pos.y = 25 * TILE_SIZE + 7;
 		SetPos(pos);
 	}
 	if (eTimeHitted >= 2) {
@@ -316,6 +320,7 @@ void Player::StartFalling()
 {
 	dir.y = PLAYER_FALLING_SPEED;
 	state = State::FALLING;
+	isJumping = false;
 	if (IsLookingRight())	SetAnimation((int)PlayerAnim::FALLING_RIGHT);
 	else					SetAnimation((int)PlayerAnim::FALLING_LEFT);
 }
@@ -327,6 +332,7 @@ void Player::StartJumping()
 	state = State::JUMPING;
 	if (IsLookingRight())	SetAnimation((int)PlayerAnim::JUMPING_RIGHT);
 	else					SetAnimation((int)PlayerAnim::JUMPING_LEFT);
+	isJumping = true;
 	jump_delay = PLAYER_JUMP_DELAY;
 }
 void Player::StartClimbingUp()
@@ -345,8 +351,23 @@ void Player::StartClimbingDown()
 }
 void Player::StartShooting()
 {
-	state = State::SHOOTING;
-	SetAnimation((int)PlayerAnim::SHOOTING);
+	if (CanStartShooting()) {
+		state = State::SHOOTING;
+		if (IsLookingRight())	SetAnimation((int)PlayerAnim::SHOOTING_RIGHT);
+		else					SetAnimation((int)PlayerAnim::SHOOTING_LEFT);
+	}
+}
+bool Player::CanStartShooting()
+{
+	if (state == State::DAMAGED) {
+		return false;
+	}
+	else if (state == State::DEAD) {
+		return false;
+	}
+	else {
+		return true;
+	}
 }
 void Player::ChangeAnimRight()
 {
@@ -399,7 +420,7 @@ void Player::Update()
 		if (eTimeDead >= 1.25f) {
 			gameOver = true;
 		}
-		return;  // No hacer nada más si el jugador está muerto
+		return;
 	}
 
 	if (wasHit) {
@@ -411,12 +432,12 @@ void Player::Update()
 	}
 
 	else {
-		// Solo permitir otras acciones si no está en estado de daño
 		
 		if (state != State::DAMAGED) {
 			MoveX();
 			MoveY();
 			Warp();
+
 
 			if (IsKeyPressed(KEY_F2)) {
 				godMode = !godMode;
@@ -427,7 +448,6 @@ void Player::Update()
 				SetAnimation((int)PlayerAnim::IDLE_RIGHT);
 			}
 
-			// Estado de daño no debe permitir cambiar a otra animación
 			if (sprite->IsAnimationComplete() && !wasHit) {
 				Stop();
 			}
