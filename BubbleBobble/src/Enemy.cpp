@@ -388,7 +388,7 @@ void Enemy::MoveX()
 		box = GetHitbox();
 
 
-		if (hasStartedWalking == false) {
+		if (!hasStartedWalking) {
 			StartWalkingLeft();
 			state = hState::EWALKING;
 			hasStartedWalking = true;
@@ -399,12 +399,12 @@ void Enemy::MoveX()
 			{
 				pos.x = prev_x;
 				StartWalkingRight();
-				dir.x = DRUNK_SPEED;
+				dir.x = (type == hType::DRUNK) ? DRUNK_SPEED : ENEMY_SPEED;
 			}
 			else if (map->TestCollisionWallRight(box)) {
 				pos.x = prev_x;
 				StartWalkingLeft();
-				dir.x = -DRUNK_SPEED;
+				dir.x = (type == hType::DRUNK) ? -DRUNK_SPEED : -ENEMY_SPEED;
 			}
 		}
 	}

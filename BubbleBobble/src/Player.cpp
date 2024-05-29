@@ -20,6 +20,7 @@ Player::Player(const Point& p, State s, Look view) :
 	hasTakenDamage = false;
 	pTime = 0;
 	damageTime = 2;
+	isDead = false;
 }
 Player::~Player()
 {
@@ -96,7 +97,7 @@ AppStatus Player::Initialise()
 
 	sprite->SetAnimationDelay((int)PlayerAnim::DIE_LEFT, ANIM_DELAY);
 	for (i = 0; i < 4; ++i)
-		sprite->AddKeyFrame((int)PlayerAnim::DIE_LEFT, { (float)i * n, 2 * n, n, n });
+		sprite->AddKeyFrame((int)PlayerAnim::DIE_LEFT, { (float)i * n, 2 * n, -n, n });
 	sprite->SetAnimationDelay((int)PlayerAnim::DIE_RIGHT, ANIM_DELAY);
 	for (i = 0; i < 4; ++i)
 		sprite->AddKeyFrame((int)PlayerAnim::DIE_RIGHT, { (float)i * n, 2 * n, n, n });
@@ -113,13 +114,15 @@ void Player::InitLife() {
 }
 
 void Player::LifeManager() {
-	if (!godMode && !wasHit) {
+	if (!godMode && !wasHit && state != State::DEAD) {  // No reducir vida si está muerto
 		if (life > 0) {
 			life--;
 			ReceiveDamage();
 		}
 		else {
+			isDead = true;
 			Die();
+			
 		}
 	}
 }
@@ -235,53 +238,68 @@ void Player::Stop()
 
 void Player::ReceiveDamage()
 {
+	if (state == State::DEAD) return;  // No recibir daño si está muerto
+
+	
 	eTimeHitted += GetFrameTime();
 
 	if (!wasHit) {
-		state = State::DAMAGED;
-		if (IsLookingRight()) {
-			SetAnimation((int)PlayerAnim::DAMAGE_RIGHT);
+		if (life <= 0) {
+			Die();
 		}
 		else {
-			SetAnimation((int)PlayerAnim::DAMAGE_LEFT);
+			state = State::DAMAGED;
+			if (IsLookingRight()) {
+				SetAnimation((int)PlayerAnim::DAMAGE_RIGHT);
+			}
+			else {
+				SetAnimation((int)PlayerAnim::DAMAGE_LEFT);
+			}
+			playerSoundEffects[3] = LoadSound("sound/SoundEffects/Characters/DeathFX.wav");
+			PlaySound(playerSoundEffects[3]);
+
+			if (getLife() <= 0) {
+				Die();
+			}
+			hasTakenDamage = true;
+			wasHit = true;
+			godMode = true;
 		}
-
-		wasHit = true;
-		Ikilleable = false;
-		godMode = true;
 	}
-
-	if (eTimeHitted >= 1.25f) {
+	if (eTimeHitted >= 0.625f) {
+		
+		Point pos;
+		pos.x = 4 * TILE_SIZE;
+		pos.y = 26 * TILE_SIZE;
+		SetPos(pos);
+	}
+	if (eTimeHitted >= 2) {
 		wasHit = false;
 		godMode = false;
 		eTimeHitted = 0;
 		Stop();
-		Ikilleable = true;
 		state = State::IDLE;  // Regresar al estado IDLE después del daño
 	}
 }
 
 void Player::Die()
 {
-	eTimeDead += GetFrameTime(); // Ajuste: Utiliza eTimeDead para controlar la duración de la animación de muerte
+    if (state == State::DEAD) return;  // No hacer nada si ya está muerto
+	
+	isDead = true;
+    state = State::DEAD;
+    eTimeDead = 0;  // Reiniciar el temporizador de muerto
 
-	if (!isDead) {
-		state = State::DEAD;
-		if (IsLookingRight()) {
-			SetAnimation((int)PlayerAnim::DIE_RIGHT);
-		}
-		else {
-			SetAnimation((int)PlayerAnim::DIE_LEFT);
-		}
-
-		isDead = true;
-	}
-
-	// Ajuste: Utiliza eTimeDead para controlar la duración de la animación de muerte
-	if (eTimeDead >= 5.0f) {
-		gameOver = true;
-	}
+    // Establecer la animación de muerte
+    if (IsLookingRight()) {
+        SetAnimation((int)PlayerAnim::DIE_RIGHT);
+    } else {
+        SetAnimation((int)PlayerAnim::DIE_LEFT);
+    }
+	playerSoundEffects[3] = LoadSound("sound/SoundEffects/Characters/DeathFX.wav");
+	PlaySound(playerSoundEffects[3]);
 }
+
 void Player::StartWalkingLeft()
 {
 	state = State::WALKING;
@@ -372,42 +390,51 @@ void Player::SetDeathAnim()
 }
 void Player::Update()
 {
-	//Player doesn't use the "Entity::Update() { pos += dir; }" default behaviour.
-	//Instead, uses an independent behaviour for each axis.
+	// Actualizar sprite
 	Sprite* sprite = dynamic_cast<Sprite*>(render);
 	sprite->Update();
 
-
-	if (state != State::DEAD) {
-		if (wasHit) {
-			ReceiveDamage();
+	if (state == State::DEAD) {
+		eTimeDead += GetFrameTime(); 
+		if (eTimeDead >= 1.25f) {
+			gameOver = true;
 		}
-		else {
-			// Solo permitir otras acciones si no está en estado de daño
+		return;  // No hacer nada más si el jugador está muerto
+	}
+
+	if (wasHit) {
+		ReceiveDamage();
+	}
+
+	if (life <= 0 && state != State::DEAD) {
+		Die();
+	}
+
+	else {
+		// Solo permitir otras acciones si no está en estado de daño
+		
+		if (state != State::DAMAGED) {
+			MoveX();
 			MoveY();
-			if (state != State::DAMAGED) {
-				MoveX();
-				
-				Warp();
+			Warp();
 
-				if (IsKeyPressed(KEY_F2)) {
-					godMode = !godMode;
-				}
+			if (IsKeyPressed(KEY_F2)) {
+				godMode = !godMode;
+			}
 
-				if (IsKeyPressed(KEY_ONE) || IsKeyPressed(KEY_TWO) || IsKeyPressed(KEY_THREE)) {
-					state = State::IDLE;
-					SetAnimation((int)PlayerAnim::IDLE_RIGHT);
-				}
+			if (IsKeyPressed(KEY_ONE) || IsKeyPressed(KEY_TWO) || IsKeyPressed(KEY_THREE)) {
+				state = State::IDLE;
+				SetAnimation((int)PlayerAnim::IDLE_RIGHT);
+			}
 
-				// Estado de daño no debe permitir cambiar a otra animación
-				if (sprite->IsAnimationComplete() && !wasHit) {
-					Stop();
-				}
+			// Estado de daño no debe permitir cambiar a otra animación
+			if (sprite->IsAnimationComplete() && !wasHit) {
+				Stop();
 			}
 		}
 	}
-	
 }
+
 void Player::MoveX()
 {
 	AABB box;

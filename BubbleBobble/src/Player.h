@@ -72,10 +72,9 @@ public:
 	void ReceiveDamage();
 	void isReceivingDamage();
 	bool wasHit = false;
-	bool isDead = false;
+	bool isDead;
 	bool gameOver = false;
 	void SetDeathAnim();
-	bool Ikilleable = true;
 	
 	
 	void InitScore();

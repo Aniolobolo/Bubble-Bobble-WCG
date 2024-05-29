@@ -1,6 +1,7 @@
 #pragma once
 #include "Entity.h"
 #include "TileMap.h"
+#include "Player.h"
 
 //Representation model size: 32x32
 #define ENEMY_FRAME_SIZE		32
@@ -107,10 +108,12 @@ protected:
 	hState state;
 	hLook look;
 	hType type;
+	bool hasJumped = false;
 	int jump_delay;
 	int direction;
 	float eTimeLerp = 0;
 	TileMap* map;
+	Player* player;
 	std::vector<Enemy*> enemies;
 
 	int score;

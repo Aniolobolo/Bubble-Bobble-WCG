@@ -39,6 +39,7 @@ private:
     void RenderGUI() const;
 
     Player *player;
+    bool isPlayerDead = false;
     //Player2 *player2;
     TileMap *level;
     int goal_score[3];

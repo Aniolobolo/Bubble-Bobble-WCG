@@ -488,6 +488,9 @@ void Scene::Update()
 	player->Update();
 	//player2->Update();
 
+	if (isPlayerDead) {
+		StartDying();
+	}
 
 	CheckCollisions();
 }
@@ -603,11 +606,8 @@ void Scene::CheckPlayerEnemyCollisions(const AABB& player_box)
 		if (player_box.TestAABB(enemy_box))
 		{
 			player->LifeManager();
-			if (player->getLife() <= 0)
-			{
-				player->Die();
-				StartDying();
-				
+			if(player->isDead) {
+				isPlayerDead = true;
 			}
 			break;
 		}
@@ -623,10 +623,8 @@ void Scene::CheckPlayerEnemyCollisions(const AABB& player_box)
 void Scene::StartDying()
 {
 	timeToDie += GetFrameTime();
-	if (timeToDie >= 0.5f) {
-		isGameOver = true;
 
-	}
+	if(timeToDie > 2) isGameOver = true;
 }
 
 void Scene::ClearLevel()
