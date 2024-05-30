@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "TileMap.h"
 #include "Player.h"
+#include "Player2.h"
 
 //Representation model size: 32x32
 #define ENEMY_FRAME_SIZE		32
@@ -59,17 +60,20 @@ public:
 	AppStatus Initialise();
 	void SetTileMap(TileMap* tilemap);
 	void SetPlayer(Player* play);
+	void SetPlayer2(Player2* play2);
 
 	void DestroyEnemy(Enemy* enemy);
 
 	void InitScore();
 	void IncrScore(int n);
 	int GetScore();
+	hType GetType() const;
 
-	bool lerping;
 	void Update();
 	void DrawDebug(const Color& col) const;
 	void Release();
+
+	hType type;
 
 protected:
 	bool hasStartedWalking;
@@ -108,13 +112,14 @@ protected:
 
 	hState state;
 	hLook look;
-	hType type;
+	
 	bool hasJumped = false;
 	int jump_delay;
 	int direction;
-	float eTimeLerp = 0;
+	float timerTime = 0;
 	TileMap* map;
 	Player* player;
+	Player2* player2;
 	std::vector<Enemy*> enemies;
 
 	int score;

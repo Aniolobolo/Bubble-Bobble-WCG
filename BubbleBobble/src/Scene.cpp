@@ -9,13 +9,13 @@ Scene::Scene()
 	isGameOver = false;
 	pBubble = nullptr;
 	player = nullptr;
-	//player2 = nullptr;
+	player2 = nullptr;
 	level = nullptr;
 	camera.target = { 0, 0 };				//Center of the screen
 	camera.offset = { 0, MARGIN_GUI_Y };	//Offset from the target (center of the screen)
 	camera.rotation = 0.0f;					//No rotation
 	camera.zoom = 1.0f;						//Default zoom
-	eBubblingTime = 0;
+	bubbleCooldown = 0;
 	debug = DebugMode::OFF;
 
 	actualLevel = 1;
@@ -32,12 +32,13 @@ Scene::~Scene()
 		delete player;
 		player = nullptr;
 	}
-	//if (player2 != nullptr)
-	//{
-	//	player2->Release();
-	//	delete player2;
-	//	player2 = nullptr;
-	//}
+
+	if (player2 != nullptr)
+	{
+		player2->Release();
+		delete player2;
+		player2 = nullptr;
+	}
 	if (pBubble != nullptr)
 	{
 		pBubble->Release();
@@ -95,19 +96,19 @@ AppStatus Scene::Init()
 		return AppStatus::ERROR;
 	}
 
-	////Create player
-	//player2 = new Player2({ 0,0 }, eState::EIDLE, eLook::ERIGHT);
-	//if (player2 == nullptr)
-	//{
-	//	LOG("Failed to allocate memory for Player2");
-	//	return AppStatus::ERROR;
-	//}
-	////Initialise player
-	//if (player2->Initialise() != AppStatus::OK)
-	//{
-	//	LOG("Failed to initialise Player2");
-	//	return AppStatus::ERROR;
-	//}
+	//Create player
+	player2 = new Player2({ 0,0 }, eState::IDLE, eLook::LEFT);
+	if (player2 == nullptr)
+	{
+		LOG("Failed to allocate memory for Player2");
+		return AppStatus::ERROR;
+	}
+	//Initialise player
+	if (player2->Initialise() != AppStatus::OK)
+	{
+		LOG("Failed to initialise Player2");
+		return AppStatus::ERROR;
+	}
 
 	//Create level 
     level = new TileMap();
@@ -150,8 +151,9 @@ AppStatus Scene::Init()
 	}
 
 	//Assign the tile map reference to the player to check collisions while navigating
+	player2->SetTileMap(level);
 	player->SetTileMap(level);
-	//player2->SetTileMap(level);
+	
 
     return AppStatus::OK;
 }
@@ -197,15 +199,15 @@ AppStatus Scene::LoadLevel(int stage)
 			1,   1,   51,  52,  54,   0,   0,   55,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52, 54, 0, 0, 55, 52, 1, 1,
 			1,   1,   50,  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 0,   0,   0,  0,   0, 0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
-			1,   1,   50,  100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,   0,   0,  0, 0, 0, 0, 0, 0, 1, 1,
+			1,   1,   50,  100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,   0,   0,  0, 0, 0, 0, 101, 0, 1, 1,
 			1, 1, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80,	80, 80, 80, 80, 80, 80, 80, 80, 80, 1, 1
 
 
 		};
 		player->InitScore();
 		player->InitLife();
-		//player2->InitScore();
-		//player2->InitLife();
+		player2->InitScore();
+		player2->InitLife();
 
 	}
 	else if (stage == 2)
@@ -236,7 +238,7 @@ AppStatus Scene::LoadLevel(int stage)
 			2, 2, 56, 0, 2, 56, 0, 0, 2, 57, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2,
 			2, 2, 56, 0, 2, 56, 0, 0, 2, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2,
 			2, 2, 56, 0, 61, 60, 0, 0, 61, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2,
-			2, 2, 56, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2,
+			2, 2, 56, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 101, 0, 2, 2,
 			2, 2, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 59, 0, 0, 0, 81, 81, 81, 81, 81, 81, 81, 2, 2,
 		};
 
@@ -244,34 +246,66 @@ AppStatus Scene::LoadLevel(int stage)
 	else if (stage == 3)
 	{
 		map = new int[size] {
-			22,   22,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 22, 22,
-			8,   9,   25,   25,   25,   25,   25,   25,   25,   62,   0,   0,   0,   25,   25,   25,   25,   25,   25,   62,	  0,   0,   0,  25, 25, 25, 25, 25, 25, 25, 8, 9,
+			22,   22,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  0,   0,   0,   0, 0, 0, 0, 0, 0, 22, 22,
+			8,   9,   25,   25,   25,   25,   25,   25,   25,   62,   0,   0,   0,   25,   25,   25,   25,   25,   25,   62,  0,   0,   0,  25, 25, 25, 25, 25, 25, 25, 8, 9,
 			10,   11,   63,  64,  64,  64,  64,  64,  64,  66,  0,  0,  0,  67,  64,  64,  64, 64,  64,  66,  0,  0,  0,  67, 64,  64, 64, 64,  64, 64, 10, 11,
-			8,   9,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 8, 9,
-			10,   11,   62,   0,   103,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   154,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   105,   0,   0,   0,	  0,   0,   0,   0, 0, 154, 0, 0, 0, 8, 9,
-			10,   11,   62,   0,   0,   7,   7,   7,   7,   65,   0,   0,   0,   0,   0,   7,   7,   65,   0,   0,   0,	  0,   0,   7,   7, 7, 7, 65, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   67,   64,   64,   64,   66,   0,   0,   0,   0,   0,   67,   64,   66,   0,   0,   0,	  0,   0,   67,   64, 64, 64, 66, 0, 0, 8, 9,
-			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   154,   0,   0,   0,   0,   0,   0,   103,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 154, 0, 0, 0, 8, 9,
-			10,   11,   62,   0,   7,   7,   7,   7,   65,   0,   0,   0,   0,   0,   7,   7,   7,   7,   65,   0,   0,	  0,   0,   0,   7, 7, 7, 7, 65, 0, 10, 11,
-			8,   9,   62,   0,   67,   64,   64,   64,   66,   0,   0,   0,   0,   0,   67,   64,   64,   64,   66,   0,   0,	0,  0,   0,   67,  64, 64, 64, 66, 0, 8, 9,
-			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   0,   0,   154,   0,   0,   0,   0,   0,   0,   154,   0,   0,   154,   0,   0,   0,	  0,   0,   0,   154, 0, 0, 0, 0, 0, 8, 9,
-			10,   11,   62,   0,   0,   7,   7,   7,   7,   65,   0,   0,   0,   7,   7,   7,   7,   7,   7,   65,   0,	  0,   0,   7,   7, 7, 7, 65, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   67,   64,   64,   64,   66,   0,   0,   0,   67,   64,   64,   64,   64,   64,   66,   0,	  0,   0,   67,   64, 64, 64, 66, 0, 0, 8, 9,
-			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   0,   0,   102,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   102,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 8, 9,
-			10,   11,   62,   0,   0,   0,   7,   7,   7,   7,   65,   0,   7,   7,   7,   65,   0,   7,   7,   7,   65,	  0,   7,   7,   7, 7, 65, 0, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   0,   67,   64,   64,   64,   66,   0,   67,   64,   64,   66,   0,   67,   64,   64,   66,	  0,   67,   64,   64, 64, 66, 0, 0, 0, 8, 9,
-			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 8, 9,
-			10,   11,   62,   0,   0,   0,   0,   0,   7,   7,   7,   7,   7,   7,   65,   0,   0,   0,   7,   7,   7,	  7,   7,   7,   65, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   0,   0,   0,   67,   64,   64,   64,   64,   64,   66,   0,   0,   0,   67,   64,   64,	64,   64,   64,   66, 0, 0, 0, 0, 0, 8, 9,
-			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	 0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,  100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,   0,   0,  0, 0, 0, 0, 0, 0, 8, 9,
-			10,   11,   7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 10, 11,
+			8,   9,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  0,   0,   0,   0, 0, 0, 0, 0, 0, 8, 9,
+			10,   11,   62,   0,   103,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
+			8,   9,   62,   0,   0,   154,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   105,   0,   0,   0,  0,   0,   0,   0, 0, 154, 0, 0, 0, 8, 9,
+			10,   11,   62,   0,   0,   81,   81,   81,   81,   65,   0,   0,   0,   0,   0,   81,   81,   65,   0,   0,   0,  0,   0,   81,   81, 81, 81, 65, 0, 0, 10, 11,
+			8,   9,   62,   0,   0,   67,   64,   64,   64,   66,   0,   0,   0,   0,   0,   67,   64,   66,   0,   0,   0,  0,   0,   67,   64, 64, 64, 66, 0, 0, 8, 9,
+			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
+			8,   9,   62,   0,   0,   154,   0,   0,   0,   0,   0,   0,   103,   0,   0,   0,   0,   0,   0,   0,   0,  0,   0,   0,   0, 0, 154, 0, 0, 0, 8, 9,
+			10,   11,   62,   0,   81,   81,   81,   81,   65,   0,   0,   0,   0,   0,   81,   81,   81,   81,   65,   0,   0,  0,   0,   0,   81, 81, 81, 81, 65, 0, 10, 11,
+			8,   9,   62,   0,   67,   64,   64,   64,   66,   0,   0,   0,   0,   0,   67,   64,   64,   64,   66,   0,   0,0,  0,   0,   67,  64, 64, 64, 66, 0, 8, 9,
+			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
+			8,   9,   62,   0,   0,   0,   0,   154,   0,   0,   0,   0,   0,   0,   154,   0,   0,   154,   0,   0,   0,  0,   0,   0,   154, 0, 0, 0, 0, 0, 8, 9,
+			10,   11,   62,   0,   0,   81,   81,   81,   81,   65,   0,   0,   0,   81,   81,   81,   81,   81,   81,   65,   0,  0,   0,   81,   81, 81, 81, 65, 0, 0, 10, 11,
+			8,   9,   62,   0,   0,   67,   64,   64,   64,   66,   0,   0,   0,   67,   64,   64,   64,   64,   64,   66,   0,  0,   0,   67,   64, 64, 64, 66, 0, 0, 8, 9,
+			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
+			8,   9,   62,   0,   0,   0,   0,   102,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   102,   0,  0,   0,   0,   0, 0, 0, 0, 0, 0, 8, 9,
+			10,   11,   62,   0,   0,   0,   81,   81,   81,   81,   65,   0,   81,   81,   81,   65,   0,   81,   81,   81,   65,  0,   81,   81,   81, 81, 65, 0, 0, 0, 10, 11,
+			8,   9,   62,   0,   0,   0,   67,   64,   64,   64,   66,   0,   67,   64,   64,   66,   0,   67,   64,   64,   66,  0,   67,   64,   64, 64, 66, 0, 0, 0, 8, 9,
+			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
+			8,   9,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  0,   0,   0,   0, 0, 0, 0, 0, 0, 8, 9,
+			10,   11,   62,   0,   0,   0,   0,   0,   81,   81,   81,   81,   81,   81,   65,   0,   0,   0,   81,   81,   81,  81,   81,   81,   65, 0, 0, 0, 0, 0, 10, 11,
+			8,   9,   62,   0,   0,   0,   0,   0,   67,   64,   64,   64,   64,   64,   66,   0,   0,   0,   67,   64,   64,64,   64,   64,   66, 0, 0, 0, 0, 0, 8, 9,
+			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
+			8,   9,   62,  100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,   0,   0,  0, 0, 0, 0, 101, 0, 8, 9,
+			10,   11,   81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 10, 11,
 		};
+	}
+	else if (stage == 4)
+	{
+	map = new int[size] {
+			22, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22, 22,
+			13, 14, 26, 26, 26, 26, 26, 26, 26, 68, 0, 0, 0, 26, 26, 26, 26, 26, 26, 68, 0, 0, 0, 26, 26, 26, 26, 26, 26, 26, 13, 14,
+			15, 16, 69, 70, 70, 70, 70, 70, 70, 72, 0, 0, 0, 67, 70, 70, 70, 70, 70, 66, 0, 0, 0, 67, 70, 70, 70, 70, 70, 70, 15, 16,
+			13, 14, 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 14,
+			15, 16, 68, 0, 0, 0, 83, 83, 83, 83, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83, 83, 83, 83, 0, 0, 0, 0, 15, 16,
+			13, 14, 68, 0, 0, 0, 83, 0, 0, 0, 105, 0, 12, 12, 12, 12, 12, 12, 12, 12, 0, 0, 0, 0, 0, 83, 0, 0, 0, 0, 13, 14,
+			15, 16, 68, 0, 0, 83, 83, 0, 0, 0, 83, 83, 83, 0, 0, 0, 0, 0, 0, 83, 83, 83, 0, 0, 0, 83, 83, 0, 0, 0, 15, 16,
+			13, 14, 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83, 0, 0, 0, 0, 0, 0, 83, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 14,
+			15, 16, 68, 0, 83, 83, 0, 83, 83, 0, 83, 83, 83, 0, 0, 0, 0, 0, 0, 83, 83, 83, 0, 83, 83, 0, 83, 83, 0, 0, 15, 16,
+			13, 14, 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83, 0, 0, 0, 0, 0, 0, 83, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 14,
+			15, 16, 83, 83, 83, 83, 0, 0, 0, 0, 83, 83, 83, 0, 0, 0, 103, 0, 0, 83, 83, 83, 0, 0, 0, 0, 83, 83, 83, 83, 15, 16,
+			13, 14, 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83, 0, 12, 12, 12, 12, 0, 83, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 14,
+			15, 16, 68, 0, 83, 83, 0, 83, 83, 0, 83, 83, 83, 0, 12, 0, 0, 12, 0, 83, 83, 83, 0, 83, 83, 0, 83, 83, 0, 0, 15, 16,
+			13, 14, 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83, 0, 12, 0, 0, 12, 0, 83, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 14,
+			15, 16, 83, 83, 83, 83, 0, 0, 0, 0, 83, 83, 83, 0, 12, 0, 0, 12, 0, 83, 83, 83, 0, 0, 0, 0, 83, 83, 83, 83, 15, 16,
+			13, 14, 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83, 0, 12, 12, 12, 12, 0, 83, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 14,
+			15, 16, 68, 0, 83, 83, 0, 83, 83, 0, 83, 83, 83, 0, 0, 0, 0, 0, 0, 83, 83, 83, 0, 83, 83, 0, 83, 83, 0, 0, 15, 16,
+			13, 14, 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83, 0, 0, 0, 0, 0, 0, 83, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 14,
+			15, 16, 83, 83, 83, 83, 0, 0, 0, 0, 83, 83, 83, 0, 0, 0, 0, 0, 0, 83, 83, 83, 0, 0, 0, 0, 83, 83, 83, 83, 15, 16,
+			13, 14, 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83, 0, 0, 0, 0, 0, 0, 83, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 14,
+			15, 16, 68, 0, 83, 83, 0, 83, 83, 0, 83, 83, 83, 0, 0, 0, 0, 0, 0, 83, 83, 83, 0, 83, 83, 0, 83, 83, 0, 0, 15, 16,
+			13, 14, 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83, 83, 83, 83, 83, 83, 83, 83, 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 14,
+			15, 16, 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 70, 70, 70, 70, 70, 70, 70, 70, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 16,
+			13, 14, 83, 83, 0, 0, 83, 83, 83, 12, 83, 83, 0, 0, 0, 0, 0, 0, 0, 0, 83, 83, 83, 12, 83, 83, 0, 0, 83, 83, 13, 14,
+			15, 16, 71, 70, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 15, 16,
+			13, 14, 68, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 101, 0, 13, 14,
+			15, 16, 83, 83, 83, 83, 83, 83, 83, 68, 0, 0, 0, 83, 83, 83, 83, 83, 83, 0, 0, 0, 68, 83, 83, 83, 83, 83, 83, 83, 15, 16,
+	};
 	}
 	else
 	{
@@ -298,22 +332,22 @@ AppStatus Scene::LoadLevel(int stage)
 				player->SetPos(pos);
 				map[i] = 0;
 			}
-			//else if (tile == Tile::PLAYER2)
-			//{
-			//	ePos.x = x * TILE_SIZE;
-			//	ePos.y = y * TILE_SIZE + TILE_SIZE - 1;
-			//	player2->SetPos(ePos);
-			//	map[i] = 0;
-			//}
+			else if (tile == Tile::PLAYER2)
+			{
+				ePos.x = x * TILE_SIZE;
+				ePos.y = y * TILE_SIZE + TILE_SIZE - 1;
+				player2->SetPos(ePos);
+				map[i] = 0;
+			}
 			else if (tile == Tile::ZENCHAN)
 			{
 				pos.x = x * TILE_SIZE;
 				pos.y = y * TILE_SIZE + TILE_SIZE - 1;
 				e = new Enemy(pos, hState::EIDLE, hLook::ELEFT, hType::ZENCHAN);
 				e->Initialise();
-				e->lerping = true;
 				e->SetTileMap(level);
 				e->SetPlayer(player);
+				e->SetPlayer2(player2);  
 				enemies.push_back(e);
 
 				map[i] = 0;
@@ -324,7 +358,6 @@ AppStatus Scene::LoadLevel(int stage)
 				pos.y = y * TILE_SIZE + TILE_SIZE - 1;
 				e = new Enemy(pos, hState::EIDLE, hLook::ELEFT, hType::INVADER);
 				e->Initialise();
-				e->lerping = true;
 				e->SetTileMap(level);
 				enemies.push_back(e);
 
@@ -336,7 +369,6 @@ AppStatus Scene::LoadLevel(int stage)
 				pos.y = y * TILE_SIZE + TILE_SIZE - 1;
 				e = new Enemy(pos, hState::EIDLE, hLook::ELEFT, hType::MIGHTA);
 				e->Initialise();
-				e->lerping = true;
 				e->SetTileMap(level);
 				enemies.push_back(e);
 
@@ -348,9 +380,9 @@ AppStatus Scene::LoadLevel(int stage)
 				pos.y = y * TILE_SIZE + TILE_SIZE - 1;
 				e = new Enemy(pos, hState::EIDLE, hLook::ELEFT, hType::DRUNK);
 				e->Initialise();
-				e->lerping = true;
 				e->SetTileMap(level);
 				e->SetPlayer(player);
+				e->SetPlayer2(player2);
 				enemies.push_back(e);
 
 				map[i] = 0;
@@ -404,11 +436,12 @@ AppStatus Scene::LoadLevel(int stage)
 	delete map;
 	return AppStatus::OK;
 }
+
 void Scene::PlayerBubbleSpawn()
 {
-	eBubblingTime += GetFrameTime();
+	bubbleCooldown += GetFrameTime();
 
-	if (IsKeyPressed(KEY_E) && eBubblingTime >= .3 && !isGameOver)
+	if (IsKeyPressed(KEY_E) && bubbleCooldown >= .3 && !isGameOver)
 	{
 		if (player->CanStartShooting() == true) {
 			if (player->IsLookingLeft())
@@ -432,7 +465,7 @@ void Scene::PlayerBubbleSpawn()
 				playerBubbles.push_back(bubble);
 				PlayerBubble* pBubble = new PlayerBubble(player->GetPos(), Directions::LEFT);
 			}
-			eBubblingTime = 0;
+			bubbleCooldown = 0;
 
 		}
 		
@@ -441,28 +474,92 @@ void Scene::PlayerBubbleSpawn()
 
 
 }
+
 void Scene::deletePBubbles()
 {
 	auto check = playerBubbles.begin();
-	int bubble = 0;
-	while (check != playerBubbles.end() && bubble < playerBubbles.size()) {
-		if (!playerBubbles[bubble]->isAlive()) {
+	while (check != playerBubbles.end()) {
+		
+		if (!(*check)->isAlive()) {
+			// Si hay un enemigo dentro de la burbuja
+			
+
+			// Libera la memoria de la burbuja
 			delete* check;
 			check = playerBubbles.erase(check);
 		}
 		else {
-			check++;
-			bubble++;
+			++check;
 		}
 	}
+}
+
+void Scene::Player2BubbleSpawn()
+{
+	bubbleCooldown += GetFrameTime();
+
+	if (IsKeyPressed(KEY_DOWN) && bubbleCooldown >= .3 && !isGameOver)
+	{
+		if (player2->CanStartShooting() == true) {
+			if (player2->IsLookingLeft())
+			{
+				player2->StartShooting();
+				Player2Bubble* bubble = new Player2Bubble(player2->GetPos(), Bubble2Directions::LEFT);
+				bubble->Initialise();
+				sfxs[0] = LoadSound("sound/SoundEffects/Characters/AttackFX.wav");
+				PlaySound(sfxs[0]);
+				player2Bubbles.push_back(bubble);
+				Player2Bubble* pBubble = new Player2Bubble(player2->GetPos(), Bubble2Directions::LEFT);
+
+			}
+			else
+			{
+				player2->StartShooting();
+				Player2Bubble* bubble = new Player2Bubble(player2->GetPos(), Bubble2Directions::RIGHT);
+				bubble->Initialise();
+				sfxs[0] = LoadSound("sound/SoundEffects/Characters/AttackFX.wav");
+				PlaySound(sfxs[0]);
+				player2Bubbles.push_back(bubble);
+				Player2Bubble* pBubble = new Player2Bubble(player2->GetPos(), Bubble2Directions::LEFT);
+			}
+			bubbleCooldown = 0;
+
+		}
+
+
+	}
+
 
 }
+
+void Scene::deleteP2Bubbles()
+{
+	auto check = player2Bubbles.begin();
+	while (check != player2Bubbles.end()) {
+
+		if (!(*check)->isAlive()) {
+			// Si hay un enemigo dentro de la burbuja
+
+
+			// Libera la memoria de la burbuja
+			delete* check;
+			check = player2Bubbles.erase(check);
+		}
+		else {
+			++check;
+		}
+	}
+}
+
+
 void Scene::Update()
 {
 	Point p1, p2;
 	AABB box;
 	PlayerBubbleSpawn();
+	Player2BubbleSpawn();
 	deletePBubbles();
+	deleteP2Bubbles();
 	//Switch between the different debug modes: off, on (sprites & hitboxes), on (hitboxes) 
 	if (IsKeyPressed(KEY_F1))
 	{
@@ -484,10 +581,25 @@ void Scene::Update()
 		player->InitLife();
 		actualLevel = 3;
 	}
-	if (player->GetScore() >= goal_score[actualLevel - 1])
+	else if (IsKeyPressed(KEY_FOUR)) {
+		LoadLevel(4);
+		player->InitLife();
+		actualLevel = 4;
+	}
+	if ((player->GetScore() + player2->GetScore()) >= goal_score[actualLevel - 1])
 	{
 		actualLevel++;
 		
+		if (actualLevel > 3) {
+			isGameWon = true;
+		}
+
+		LoadLevel(actualLevel);
+	}
+	else if (player2->GetScore() >= goal_score[actualLevel - 1])
+	{
+		actualLevel++;
+
 		if (actualLevel > 3) {
 			isGameWon = true;
 		}
@@ -506,12 +618,17 @@ void Scene::Update()
 
 	UpdateBubbles();
 	level->Update();
+	player2->Update();
 	player->Update();
-	//player2->Update();
+	
 
-	if (isPlayerDead) {
+	if (isPlayerDead && isPlayer2Dead) {
 		StartDying();
 	}
+	else if (isPlayerDead && !player2->canPlay) {
+		StartDying();
+	}
+
 
 	CheckCollisions();
 }
@@ -523,15 +640,15 @@ void Scene::Render()
 	if (debug == DebugMode::OFF || debug == DebugMode::SPRITES_AND_HITBOXES)
 	{
 		RenderObjects(); 
+		player2->Draw();
 		player->Draw();
-		//player2->Draw();
+		
 	}
 	if (debug == DebugMode::SPRITES_AND_HITBOXES || debug == DebugMode::ONLY_HITBOXES)
 	{
 		RenderObjectsDebug(YELLOW);
 		player->DrawDebug(GREEN);
-		
-		//player2->DrawDebug(GREEN);
+		player2->DrawDebug(GREEN);
 	}
 
 	EndMode2D();
@@ -541,22 +658,24 @@ void Scene::Render()
 void Scene::Release()
 {
     level->Release();
+	player2->Release();
 	player->Release();
-	//player2->Release();
+	
 	ClearLevel();
 }
 void Scene::CheckCollisions()
 {
 	AABB player_box = player->GetHitbox();
-	AABB player2_box;
-	// if (player2) player2_box = player2->GetHitbox(); // Descomentar si player2 está definido
+	AABB player2_box = player2->GetHitbox();
 
 	CheckPlayerObjectCollisions(player_box);
-	// CheckPlayerObjectCollisions(player2_box); // Descomentar si player2 está definido
+	CheckPlayer2ObjectCollisions(player2_box);
 
 	CheckBubbleEnemyCollisions();
+	CheckBubble2EnemyCollisions();
+
 	CheckPlayerEnemyCollisions(player_box);
-	// CheckPlayerEnemyCollisions(player2_box); // Descomentar si player2 está definido
+	CheckPlayer2EnemyCollisions(player2_box);
 
 	
 }
@@ -584,37 +703,40 @@ void Scene::CheckPlayerObjectCollisions(const AABB& player_box)
 	}
 }
 
-void Scene::CheckBubbleEnemyCollisions()
-{
+void Scene::CheckBubbleEnemyCollisions() {
 	auto it_bubbles = playerBubbles.begin();
-	while (it_bubbles != playerBubbles.end())
-	{
+	while (it_bubbles != playerBubbles.end()) {
 		AABB bubb_box = (*it_bubbles)->GetHitbox();
-
 		auto it_enemies = enemies.begin();
-		while (it_enemies != enemies.end())
-		{
+		while (it_enemies != enemies.end()) {
 			AABB enemy_box = (*it_enemies)->GetHitbox();
-			if (enemy_box.TestAABB(bubb_box))
-			{
-				// Define the action when a bubble collides with an enemy
-				// For example, capture the enemy, pop the bubble, etc.
-
-				// Example action: Delete enemy and bubble
+			if (enemy_box.TestAABB(bubb_box) && !(*it_bubbles)->isEnemyInside) {
+				// Obtener el tipo de enemigo
+				hType enemyType = (*it_enemies)->GetType();
+				// Manejar la colisión basándose en el tipo de enemigo
+				if (enemyType == hType::ZENCHAN) {
+					(*it_bubbles)->ZenchanInside();
+				}
+				else if (enemyType == hType::INVADER) {
+					(*it_bubbles)->InvaderInside();
+				}
+				else if (enemyType == hType::MIGHTA) {
+					(*it_bubbles)->MightaInside();
+				}
+				else if (enemyType == hType::DRUNK) {
+					(*it_bubbles)->DrunkInside();
+				}
 				delete* it_enemies;
 				it_enemies = enemies.erase(it_enemies);
-				/*delete* it_bubbles;
-				it_bubbles = playerBubbles.erase(it_bubbles);*/
-
-				break; // Exit the inner loop since the current bubble is deleted
+				(*it_bubbles)->isEnemyInside = true;
+				break; // Salir del bucle interno después de eliminar el enemigo
 			}
-			else
-			{
+			else {
 				++it_enemies;
 			}
 		}
 
-		if (it_bubbles != playerBubbles.end()) ++it_bubbles; // Move to the next bubble if not deleted
+		if (it_bubbles != playerBubbles.end()) ++it_bubbles; // Avanzar a la siguiente burbuja si no fue eliminada
 	}
 }
 
@@ -641,6 +763,89 @@ void Scene::CheckPlayerEnemyCollisions(const AABB& player_box)
 	}
 }
 
+void Scene::CheckPlayer2ObjectCollisions(const AABB& player_box)
+{
+	auto it = objects.begin();
+	while (it != objects.end())
+	{
+		AABB obj_box = (*it)->GetHitbox();
+		if (player_box.TestAABB(obj_box))
+		{
+			player2->IncrScore((*it)->Points());
+
+			// Delete the object
+			delete* it;
+			// Erase the object from the vector and get the iterator to the next valid element
+			it = objects.erase(it);
+		}
+		else
+		{
+			// Move to the next object
+			++it;
+		}
+	}
+}
+
+void Scene::CheckBubble2EnemyCollisions() {
+	auto it_bubbles = player2Bubbles.begin();
+	while (it_bubbles != player2Bubbles.end()) {
+		AABB bubb_box = (*it_bubbles)->GetHitbox();
+		auto it_enemies = enemies.begin();
+		while (it_enemies != enemies.end()) {
+			AABB enemy_box = (*it_enemies)->GetHitbox();
+			if (enemy_box.TestAABB(bubb_box) && !(*it_bubbles)->isEnemyInside) {
+				// Obtener el tipo de enemigo
+				hType enemyType = (*it_enemies)->GetType();
+				// Manejar la colisión basándose en el tipo de enemigo
+				if (enemyType == hType::ZENCHAN) {
+					(*it_bubbles)->ZenchanInside();
+				}
+				else if (enemyType == hType::INVADER) {
+					(*it_bubbles)->InvaderInside();
+				}
+				else if (enemyType == hType::MIGHTA) {
+					(*it_bubbles)->MightaInside();
+				}
+				else if (enemyType == hType::DRUNK) {
+					(*it_bubbles)->DrunkInside();
+				}
+				delete* it_enemies;
+				it_enemies = enemies.erase(it_enemies);
+				(*it_bubbles)->isEnemyInside = true;
+				break; // Salir del bucle interno después de eliminar el enemigo
+			}
+			else {
+				++it_enemies;
+			}
+		}
+
+		if (it_bubbles != player2Bubbles.end()) ++it_bubbles; // Avanzar a la siguiente burbuja si no fue eliminada
+	}
+}
+
+void Scene::CheckPlayer2EnemyCollisions(const AABB& player_box)
+{
+	auto it_enemies = enemies.begin();
+	while (it_enemies != enemies.end())
+	{
+		AABB enemy_box = (*it_enemies)->GetHitbox();
+		if (player_box.TestAABB(enemy_box))
+		{
+			player2->LifeManager();
+			if (player2->isDead) {
+				isPlayer2Dead = true;
+			}
+			break;
+		}
+		else
+		{
+			++it_enemies;
+		}
+
+
+	}
+}
+
 void Scene::StartDying()
 {
 	timeToDie += GetFrameTime();
@@ -655,11 +860,16 @@ void Scene::ClearLevel()
 		delete obj;
 	}
 	objects.clear();
-	for (PlayerBubble* buble : playerBubbles)
+	for (PlayerBubble* bubble : playerBubbles)
 	{
-		delete buble;
+		delete bubble;
 	}
 	playerBubbles.clear();
+	for (Player2Bubble* bubble2 : player2Bubbles)
+	{
+		delete bubble2;
+	}
+	player2Bubbles.clear();
 	for (Enemy* enemy : enemies)
 	{
 		delete enemy;
@@ -672,6 +882,10 @@ void Scene::UpdateBubbles()
 	for (PlayerBubble* bubble : playerBubbles)
 	{
 		bubble->Update();
+	}
+	for (Player2Bubble* bubb2 : player2Bubbles)
+	{
+		bubb2->Update();
 	}
 }
 
@@ -687,6 +901,13 @@ void Scene::RenderObjects() const
 
 		(*it)->Draw();
 		++it;
+	}
+	auto it2 = player2Bubbles.begin();
+	while (it2 != player2Bubbles.end())
+	{
+
+		(*it2)->Draw();
+		++it2;
 	}
 	for (Enemy* enemy : enemies)
 	{
@@ -707,6 +928,10 @@ void Scene::RenderObjectsDebug(const Color& col) const
 	{
 		pbubb->DrawDebug(col);
 	}
+	for (Player2Bubble* p2bubb : player2Bubbles)
+	{
+		p2bubb->DrawDebug(col);
+	}
 
 }
 void Scene::RenderGUI() const
@@ -720,7 +945,7 @@ void Scene::RenderGUI() const
 	}
 	else if(player->getLife() - 1 == 1) {
 		font1->Draw(0, WINDOW_HEIGHT - 8, TextFormat("#"));
-	}
+	}        
 	else if (player->getLife() - 1 == 0) {
 		font1->Draw(0, WINDOW_HEIGHT - 8, TextFormat(" "));
 	}
@@ -728,11 +953,27 @@ void Scene::RenderGUI() const
 
 	//Player 2
 	font1->Draw(196, 0, TextFormat("2UP"), SKYBLUE);
-	font1->Draw(196, 8, TextFormat("0"));
-	font1->Draw(WINDOW_WIDTH - 16, WINDOW_HEIGHT - 8, TextFormat("$$"));
-	//font1->Draw(245, 220, TextFormat("%d", player->GetLifes()), BLUE);
+	font1->Draw(196, 8, TextFormat("%d", player2->GetScore()));
+	if (player2->getLife() - 1 == 2) {
+		font1->Draw(WINDOW_WIDTH - 16, WINDOW_HEIGHT - 8, TextFormat("$$"));
+	}
+	else if (player2->getLife() - 1 == 1) {
+		font1->Draw(WINDOW_WIDTH - 16, WINDOW_HEIGHT - 8, TextFormat("$"));
+	}
+	else if (player2->getLife() - 1 == 0) {
+		font1->Draw(WINDOW_WIDTH - 16, WINDOW_HEIGHT - 8, TextFormat(" "));
+	}
 
 	//High Score
 	font1->Draw(84, 00, TextFormat("HIGH SCORE"), RED);
-	font1->Draw(110, 8, TextFormat("%d", player->GetScore()));
+	if (player->GetScore() > player2->GetScore()) {
+		font1->Draw(110, 8, TextFormat("%d", player->GetScore()));
+	}
+	else if (player->GetScore() < player2->GetScore()) {
+		font1->Draw(110, 8, TextFormat("%d", player2->GetScore()));
+	}
+	else {
+		font1->Draw(110, 8, TextFormat("%d", player->GetScore()));
+	}
+
 }

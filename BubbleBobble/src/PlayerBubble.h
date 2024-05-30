@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "TileMap.h"
 #include "Player.h"
+#include "Enemy.h"
 #include "PlayerBubble.h"
 
 #define BUBBLE_PHYSICAL_SIZE	14
@@ -25,12 +26,22 @@ public:
 	AppStatus Initialise();
 	bool isAlive();
 	void Release();
-	Directions direc;
-	int level;
+	Directions direction;
+	int bubbleStage;
 	void DrawDebug(const Color& col) const;
 	void JumpOnBubble();
 	void SetPlayer(Player* p);
+	hType GetEnemyType();
 	bool isJustShot();
+	bool isEnemyInside = false;
+	bool isInside();
+
+	void ZenchanInside();
+	void MightaInside();
+	void InvaderInside();
+	void DrunkInside();
+
+
 
 private:
 	//void DrawDebug(const Color& col) const;
@@ -38,15 +49,23 @@ private:
 
 	void Shot();
 	void Wander();
-	void Ceiling();
+	void Zenchan();
+	void Mighta();
+	void Invader();
+	void Drunk();
 
 	BubbleState state;
 
+	bool hasZenchan = false;
+	bool hasMighta = false;
+	bool hasInvader = false;
+	bool hasDrunk = false;
+
 	bool inShoot;
-	int logPosXL;
-	int logPosXR;
+	int bubblePosLeft;
+	int bubblePosRight;
 	float spawnTime;
-	float bTime;
+	float bubbleLifetime;
 	float jumpTime;
 	float timeAlive;
 	float speed;

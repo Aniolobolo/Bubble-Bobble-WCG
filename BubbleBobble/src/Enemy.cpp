@@ -13,6 +13,7 @@ Enemy::Enemy(const Point& p, hState s, hLook view, hType t):
 	state = s;
 	look = view;
 	player = nullptr;
+	player2 = nullptr;
 	map = nullptr;
 	score = 0;
 	if (type == hType::DRUNK) {
@@ -135,6 +136,10 @@ int Enemy::GetScore()
 {
 	return score;
 }
+hType Enemy::GetType() const
+{
+	return type;
+}
 void Enemy::SetTileMap(TileMap* tilemap)
 {
 	map = tilemap;
@@ -142,6 +147,10 @@ void Enemy::SetTileMap(TileMap* tilemap)
 void Enemy::SetPlayer(Player* play)
 {
 	player = play;
+}
+void Enemy::SetPlayer2(Player2* play2)
+{
+	player2 = play2;
 }
 void Enemy::DestroyEnemy(Enemy* enemy)
 {
@@ -424,7 +433,7 @@ void Enemy::MoveY()
 
 	if (type == hType::ZENCHAN) {
 		
-		eTimeLerp += GetFrameTime();
+		timerTime += GetFrameTime();
 		if (state == hState::EJUMPING)
 		{
 			LogicJumping();
@@ -434,35 +443,42 @@ void Enemy::MoveY()
 			pos.y += ENEMY_SPEED;
 			box = GetHitbox();
 			Point playerpos = player->GetPos();
+			Point player2pos = player2->GetPos();
 			if (map->TestCollisionGround(box, &pos.y))
 			{
 				
-				if (playerpos.y < pos.y && eTimeLerp > 1.5f)
+				if (playerpos.y < pos.y || player2pos.y < pos.y)
 				{
-					StartJumping();
-					eTimeLerp = 0;
+					timerTime += GetFrameTime();
+					if (timerTime > 1.0f) {
+						StartJumping();
+						timerTime = 0;
+					}
+					
 					
 				}
+			}
+			else {
+				state == hState::EFALLING;
 			}
 
 		}
 	}
 	else if (type == hType::INVADER) {
 		box = GetHitbox();
-		eTimeLerp += GetFrameTime();
-		if (eTimeLerp <= 5.0f)
+		timerTime += GetFrameTime();
+		if (timerTime <= 5.0f)
 		{
 			state = hState::EWALKING;
 		}
-		else if (eTimeLerp > 5.0f && eTimeLerp < 5.1f)
+		else if (timerTime > 5.0f && timerTime < 5.1f)
 		{
 			state = hState::EFALLING;
 			pos.y += ENEMY_FALLING_SPEED;
 		}
-		else if (eTimeLerp > 5.1f)
+		else if (timerTime > 5.1f)
 		{
-			eTimeLerp = 0;
-			lerping = false;
+			timerTime = 0;
 		}
 	}
 	if (type == hType::MIGHTA) {
@@ -474,7 +490,7 @@ void Enemy::MoveY()
 		}
 	}
 	if (type == hType::DRUNK) {
-		eTimeLerp += GetFrameTime();
+		timerTime += GetFrameTime();
 		if (state == hState::EJUMPING)
 		{
 			LogicJumping();
@@ -484,12 +500,17 @@ void Enemy::MoveY()
 			pos.y += DRUNK_SPEED;
 			box = GetHitbox();
 			Point playerpos = player->GetPos();
+			Point player2pos = player2->GetPos();
 			if (map->TestCollisionGround(box, &pos.y))
 			{
-				if (playerpos.y < pos.y && eTimeLerp > 0.75f)
+				if (playerpos.y < pos.y || player2pos.y < pos.y)
 				{
-					StartJumping();
-					eTimeLerp = 0;
+					timerTime += GetFrameTime();
+					if (timerTime > 1.0f) {
+						StartJumping();
+						timerTime = 0;
+					}
+
 
 				}
 			}
@@ -501,7 +522,7 @@ void Enemy::LogicJumping()
 {
 	AABB box, prev_box;
 	int prev_y;
-	eTimeLerp = 0;
+	timerTime = 0;
 	jump_delay--;
 	if (jump_delay == 0)
 	{

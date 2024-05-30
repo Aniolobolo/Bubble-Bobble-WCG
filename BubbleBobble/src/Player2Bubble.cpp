@@ -4,20 +4,25 @@
 #include "Globals.h"
 #include <raymath.h>
 
-Player2Bubble::Player2Bubble(const Point& p, Directions d) : Entity(p, BUBBLE_PHYSICAL_SIZE, BUBBLE_PHYSICAL_SIZE, BUBBLE_FRAME_SIZE, BUBBLE_FRAME_SIZE)
+Sound sfx2[10];
+
+Player2Bubble::Player2Bubble(const Point& p, Bubble2Directions d) : Entity(p, BUBBLE_PHYSICAL_SIZE, BUBBLE_PHYSICAL_SIZE, BUBBLE_FRAME_SIZE, BUBBLE_FRAME_SIZE)
 {
-	direc = d;
+	direction = d;
 	speed = .3;
-	level = 1;
-	logPosXL = pos.x - SHOOT_RANGE;
-	logPosXR = pos.x + SHOOT_RANGE;
-	bTime = 0;
+	bubbleStage = 1;
+	bubblePosLeft = pos.x - SHOOT_RANGE;
+	bubblePosRight = pos.x + SHOOT_RANGE;
+	bubbleLifetime = 0;
 	spawnTime = 0;
 	player2 = nullptr;
-	timeAlive = GetRandomValue(3, 4);
+	timeAlive = 8;
 	Rectangle rc;
 	inShoot = true;
-	jumpTime = 0;
+
+
+	sfx2[0] = LoadSound("sound/SoundEffects/Characters/AttackFX.wav");
+
 
 
 }
@@ -46,55 +51,237 @@ AppStatus Player2Bubble::Initialise()
 	}
 	Sprite* sprite = dynamic_cast<Sprite*>(render);
 
-	sprite->SetNumberAnimations((int)BubbleAnim::NUM_ANIMATIONS);
+	sprite->SetNumberAnimations((int)Bubble2Anim::NUM_ANIMATIONS);
 
-	sprite->SetAnimationDelay((int)BubbleAnim::IDLE, ANIM_DELAY + 3);
-	for (int i = 0; i < 3; ++i)
-		sprite->AddKeyFrame((int)BubbleAnim::IDLE, { (float)i * n, n, n, n });
+	sprite->SetAnimationDelay((int)Bubble2Anim::IDLE, ANIM_DELAY + 3);
+	for (int i = 3; i < 6; ++i)
+		sprite->AddKeyFrame((int)Bubble2Anim::IDLE, { (float)i * n, 2 * n, n, n });
 
-	sprite->SetAnimationDelay((int)BubbleAnim::INSHOOT, ANIM_DELAY + 6);
-	for (int i = 0; i < 6; ++i)
-		sprite->AddKeyFrame((int)BubbleAnim::INSHOOT, { (float)i * n, 0, n, n });
+	sprite->SetAnimationDelay((int)Bubble2Anim::INSHOOT, ANIM_DELAY + 6);
+	for (int i = 6; i < 12; ++i)
+		sprite->AddKeyFrame((int)Bubble2Anim::INSHOOT, { (float)i * n, 0, n, n });
 
-	sprite->SetAnimation((int)BubbleAnim::INSHOOT);
+	//Zenchan bubbles
+	sprite->SetAnimationDelay((int)Bubble2Anim::DEADZENCHAN, ANIM_DELAY);
+	for (int i = 0; i < 4; ++i)
+		sprite->AddKeyFrame((int)Bubble2Anim::DEADZENCHAN, { (float)i * n, n * 7, n, n });
+
+	sprite->SetAnimationDelay((int)Bubble2Anim::GREENZENCHAN, ANIM_DELAY);
+	for (int i = 3; i < 6; ++i)
+		sprite->AddKeyFrame((int)Bubble2Anim::GREENZENCHAN, { (float)i * n, n * 3, n, n });
+
+	sprite->SetAnimationDelay((int)Bubble2Anim::YELLOWZENCHAN, ANIM_DELAY);
+	for (int i = 6; i < 9; ++i)
+		sprite->AddKeyFrame((int)Bubble2Anim::YELLOWZENCHAN, { (float)i * n, n * 3, n, n });
+
+	sprite->SetAnimationDelay((int)Bubble2Anim::REDZENCHAN, ANIM_DELAY);
+	for (int i = 9; i < 12; ++i)
+		sprite->AddKeyFrame((int)Bubble2Anim::REDZENCHAN, { (float)i * n, n * 3, n, n });
+
+	//Invader bubbles
+	sprite->SetAnimationDelay((int)Bubble2Anim::DEADINVADER, ANIM_DELAY);
+	for (int i = 4; i < 8; ++i)
+		sprite->AddKeyFrame((int)Bubble2Anim::DEADINVADER, { (float)i * n, n * 7, n, n });
+
+	sprite->SetAnimationDelay((int)Bubble2Anim::GREENINVADER, ANIM_DELAY);
+	for (int i = 3; i < 6; ++i)
+		sprite->AddKeyFrame((int)Bubble2Anim::GREENINVADER, { (float)i * n, n * 4, n, n });
+
+	sprite->SetAnimationDelay((int)Bubble2Anim::YELLOWINVADER, ANIM_DELAY);
+	for (int i = 6; i < 9; ++i)
+		sprite->AddKeyFrame((int)Bubble2Anim::YELLOWINVADER, { (float)i * n, n * 4, n, n });
+
+	sprite->SetAnimationDelay((int)Bubble2Anim::REDINVADER, ANIM_DELAY);
+	for (int i = 9; i < 12; ++i)
+		sprite->AddKeyFrame((int)Bubble2Anim::REDINVADER, { (float)i * n, n * 4, n, n });
+
+	//Mighta bubbles
+	sprite->SetAnimationDelay((int)Bubble2Anim::DEADMIGHTA, ANIM_DELAY);
+	for (int i = 9; i < 12; ++i)
+		sprite->AddKeyFrame((int)Bubble2Anim::DEADMIGHTA, { (float)i * n, n * 7, n, n });
+
+	sprite->SetAnimationDelay((int)Bubble2Anim::GREENMIGHTA, ANIM_DELAY);
+	for (int i = 3; i < 6; ++i)
+		sprite->AddKeyFrame((int)Bubble2Anim::GREENMIGHTA, { (float)i * n, n * 5, n, n });
+
+	sprite->SetAnimationDelay((int)Bubble2Anim::YELLOWMIGHTA, ANIM_DELAY);
+	for (int i = 6; i < 9; ++i)
+		sprite->AddKeyFrame((int)Bubble2Anim::YELLOWMIGHTA, { (float)i * n, n * 5, n, n });
+
+	sprite->SetAnimationDelay((int)Bubble2Anim::REDMIGHTA, ANIM_DELAY);
+	for (int i = 9; i < 12; ++i)
+		sprite->AddKeyFrame((int)Bubble2Anim::REDMIGHTA, { (float)i * n, n * 5, n, n });
+
+	//Drunk bubbles
+	sprite->SetAnimationDelay((int)Bubble2Anim::DEADDRUNK, ANIM_DELAY);
+	for (int i = 0; i < 4; ++i)
+		sprite->AddKeyFrame((int)Bubble2Anim::DEADDRUNK, { (float)i * n, n * 8, n, n });
+
+	sprite->SetAnimationDelay((int)Bubble2Anim::GREENDRUNK, ANIM_DELAY);
+	for (int i = 3; i < 6; ++i)
+		sprite->AddKeyFrame((int)Bubble2Anim::GREENDRUNK, { (float)i * n, n * 6, n, n });
+
+	sprite->SetAnimationDelay((int)Bubble2Anim::YELLOWDRUNK, ANIM_DELAY);
+	for (int i = 6; i < 9; ++i)
+		sprite->AddKeyFrame((int)Bubble2Anim::YELLOWDRUNK, { (float)i * n, n * 6, n, n });
+
+	sprite->SetAnimationDelay((int)Bubble2Anim::REDDRUNK, ANIM_DELAY);
+	for (int i = 9; i < 12; ++i)
+		sprite->AddKeyFrame((int)Bubble2Anim::REDDRUNK, { (float)i * n, n * 6, n, n });
+
+
+	sprite->SetAnimation((int)Bubble2Anim::INSHOOT);
 	return AppStatus::OK;
 
 }
 void Player2Bubble::Update()
 {
 	pos += dir;
-	Movement(direc);
+	Move(direction);
 	Sprite* sprite = dynamic_cast<Sprite*>(render);
 	sprite->Update();
+	if (sprite->IsAnimationComplete()) {
 
+		Zenchan();
+		Mighta();
+		Invader();
+		Drunk();
+	}
 }
 void Player2Bubble::Shot()
 {
-	state = BubbleState::JUSTSHOT;
-	SetAnimation((int)BubbleAnim::INSHOOT);
+	state = Bubble2State::JUSTSHOT;
+	SetAnimation((int)Bubble2Anim::INSHOOT);
 }
 void Player2Bubble::Wander()
 {
-	state = BubbleState::WANDER;
-	SetAnimation((int)BubbleAnim::IDLE);
+	if (hasZenchan) {
+		state = Bubble2State::ZENCHANINSIDE;
+		if (bubbleLifetime <= 4) {
+			SetAnimation((int)Bubble2Anim::GREENZENCHAN);
+		}
+		else if (bubbleLifetime > 4 && bubbleLifetime <= 6) {
+			SetAnimation((int)Bubble2Anim::YELLOWZENCHAN);
+		}
+		else if (bubbleLifetime > 6) {
+			SetAnimation((int)Bubble2Anim::REDZENCHAN);
+		}
+	}
+	else if (hasMighta) {
+		state = Bubble2State::MIGHTAINSIDE;
+		if (bubbleLifetime <= 4) {
+			SetAnimation((int)Bubble2Anim::GREENMIGHTA);
+		}
+		else if (bubbleLifetime > 4 && bubbleLifetime <= 6) {
+			SetAnimation((int)Bubble2Anim::YELLOWMIGHTA);
+		}
+		else if (bubbleLifetime > 6) {
+			SetAnimation((int)Bubble2Anim::REDMIGHTA);
+		}
+	}
+	else if (hasInvader) {
+		state = Bubble2State::INVADERINSIDE;
+		if (bubbleLifetime <= 4) {
+			SetAnimation((int)Bubble2Anim::GREENINVADER);
+		}
+		else if (bubbleLifetime > 4 && bubbleLifetime <= 6) {
+			SetAnimation((int)Bubble2Anim::YELLOWINVADER);
+		}
+		else if (bubbleLifetime > 6) {
+			SetAnimation((int)Bubble2Anim::REDINVADER);
+		}
+	}
+	else if (hasDrunk) {
+		state = Bubble2State::DRUNKINSIDE;
+		if (bubbleLifetime <= 4) {
+			SetAnimation((int)Bubble2Anim::GREENDRUNK);
+		}
+		else if (bubbleLifetime > 4 && bubbleLifetime <= 6) {
+			SetAnimation((int)Bubble2Anim::YELLOWDRUNK);
+		}
+		else if (bubbleLifetime > 6) {
+			SetAnimation((int)Bubble2Anim::REDDRUNK);
+		}
+	}
+	else {
+		state = Bubble2State::WANDER;
+		SetAnimation((int)Bubble2Anim::IDLE);
+	}
 }
-void Player2Bubble::Ceiling()
+
+void Player2Bubble::Zenchan()
 {
-	state = BubbleState::ISONCEILING;
-	SetAnimation((int)BubbleAnim::IDLE);
+	if (hasZenchan) {
+		state = Bubble2State::ZENCHANINSIDE;
+		if (bubbleLifetime <= 4) {
+			SetAnimation((int)Bubble2Anim::GREENZENCHAN);
+		}
+		else if (bubbleLifetime > 4 && bubbleLifetime <= 6) {
+			SetAnimation((int)Bubble2Anim::YELLOWZENCHAN);
+		}
+		else if (bubbleLifetime > 6) {
+			SetAnimation((int)Bubble2Anim::REDZENCHAN);
+		}
+	}
+}
+void Player2Bubble::Mighta()
+{
+	if (hasMighta) {
+		state = Bubble2State::MIGHTAINSIDE;
+		if (bubbleLifetime <= 4) {
+			SetAnimation((int)Bubble2Anim::GREENMIGHTA);
+		}
+		else if (bubbleLifetime > 4 && bubbleLifetime <= 6) {
+			SetAnimation((int)Bubble2Anim::YELLOWMIGHTA);
+		}
+		else if (bubbleLifetime > 6) {
+			SetAnimation((int)Bubble2Anim::REDMIGHTA);
+		}
+	}
+}
+void Player2Bubble::Invader()
+{
+	if (hasInvader) {
+		state = Bubble2State::INVADERINSIDE;
+		if (bubbleLifetime <= 4) {
+			SetAnimation((int)Bubble2Anim::GREENINVADER);
+		}
+		else if (bubbleLifetime > 4 && bubbleLifetime <= 6) {
+			SetAnimation((int)Bubble2Anim::YELLOWINVADER);
+		}
+		else if (bubbleLifetime > 6) {
+			SetAnimation((int)Bubble2Anim::REDINVADER);
+		}
+	}
+}
+void Player2Bubble::Drunk()
+{
+	if (hasDrunk) {
+		state = Bubble2State::DRUNKINSIDE;
+		if (bubbleLifetime <= 4) {
+			SetAnimation((int)Bubble2Anim::GREENDRUNK);
+		}
+		else if (bubbleLifetime > 4 && bubbleLifetime <= 6) {
+			SetAnimation((int)Bubble2Anim::YELLOWDRUNK);
+		}
+		else if (bubbleLifetime > 6) {
+			SetAnimation((int)Bubble2Anim::REDDRUNK);
+		}
+	}
 }
 bool Player2Bubble::isAlive()
 {
-	bTime += GetFrameTime();
-	if (bTime >= timeAlive)
+	bubbleLifetime += GetFrameTime();
+	if (bubbleLifetime >= timeAlive)
 	{
+		isEnemyInside = false;
 		return false;
 	}
 	else {
 		return true;
 	}
 }
-void Player2Bubble::ClampPos()
+void Player2Bubble::Clamp()
 {
 
 	if (pos.y < 32)
@@ -120,53 +307,99 @@ void Player2Bubble::ClampPos()
 	}
 
 }
-void Player2Bubble::SetPlayer(Player2* p)
+void Player2Bubble::SetPlayer2(Player2* p)
 {
 	player2 = p;
 }
-void Player2Bubble::Stomp()
+hType Player2Bubble::GetEnemyType()
+{
+	if (hasZenchan) {
+		return hType::ZENCHAN;
+	}
+	else if (hasMighta) {
+		return hType::MIGHTA;
+	}
+	else if (hasInvader) {
+		return hType::INVADER;
+	}
+	else if (hasDrunk) {
+		return hType::DRUNK;
+	}
+}
+bool Player2Bubble::isJustShot()
+{
+	if (state == Bubble2State::JUSTSHOT) {
+		return true;
+	}
+	else {
+		return false;
+	}
+
+}
+bool Player2Bubble::isInside()
+{
+	return isEnemyInside;
+}
+void Player2Bubble::ZenchanInside()
+{
+	hasZenchan = true;
+}
+void Player2Bubble::MightaInside()
+{
+	hasMighta = true;
+}
+void Player2Bubble::InvaderInside()
+{
+	hasInvader = true;
+}
+void Player2Bubble::DrunkInside()
+{
+	hasDrunk = true;
+}
+void Player2Bubble::JumpOnBubble()
 {
 	if (!inShoot)
 	{
 		AABB box = GetHitbox();
-		/*if (player2 != nullptr && IsKeyDown(KEY_Q))
-		{
-			if (jumpTime > 1)
-			{
-				if (player2->TestCollisionFromUp(box, &pos.y))
-				{
-					player2->SetPos(player2->GetPos() += { 0, BUBBLEJUMP });
-					jumpTime = 0;
-				}
-			}
-		}*/
+		//if (player != nullptr && IsKeyDown(KEY_Q))
+		//{
+		//	if (jumpTime > 1)
+		//	{
+		//		if (player->TestCollisionFromUp(box, &pos.y))
+		//		{
+		//			player->SetPos(player->GetPos() += { 0, BUBBLEJUMP });
+		//			jumpTime = 0;
+		//		}
+		//	}
+		//}
 	}
 	jumpTime += GetFrameTime();
 }
 
-void Player2Bubble::Movement(Directions d)
+void Player2Bubble::Move(Bubble2Directions d)
 {
-	ClampPos();
-	Stomp();
+	Clamp();
+	JumpOnBubble();
 	if (pos.y > 32)
 	{
-		if (d == Directions::LEFT)
+		if (d == Bubble2Directions::LEFT)
 		{
 
-			switch (level) {
+			switch (bubbleStage) {
 				Shot();
 			case 1:
 
 				if (pos.x < 20)
 				{
 					pos.x++;
-					level++;
+					bubbleStage++;
 				}
+
 				inShoot = true;
 
 				dir = { -2, 0 };
-				if (pos.x <= logPosXL) {
-					level++;
+				if (pos.x <= bubblePosLeft) {
+					bubbleStage++;
 				}
 				break;
 			case 2:
@@ -179,23 +412,23 @@ void Player2Bubble::Movement(Directions d)
 
 			}
 		}
-		else if (d == Directions::RIGHT)
+		else if (d == Bubble2Directions::RIGHT)
 		{
 
-			switch (level) {
+			switch (bubbleStage) {
 				Shot();
 			case 1:
 
 				if (pos.x > 226)
 				{
 					pos.x--;
-					level++;
+					bubbleStage++;
 				}
 				inShoot = true;
 
 				dir = { 2, 0 };
-				if (pos.x >= logPosXR) {
-					level++;
+				if (pos.x >= bubblePosRight) {
+					bubbleStage++;
 				}
 				break;
 			case 2:
