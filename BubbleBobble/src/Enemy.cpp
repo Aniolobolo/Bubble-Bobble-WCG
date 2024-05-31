@@ -119,11 +119,11 @@ AppStatus Enemy::Initialise()
 	sprite->SetAnimationDelay((int)EnemyAnim::LEVITATING_LEFT, ANIM_DELAY);
 	sprite->AddKeyFrame((int)EnemyAnim::LEVITATING_LEFT, { n, 5 * n, -n, n });
 
-	sprite->SetAnimationDelay((int)EnemyAnim::SHOOT_RIGHT, ANIM_DELAY);
+	sprite->SetAnimationDelay((int)EnemyAnim::SHOOT_RIGHT, ANIM_DELAY + 4);
 	for (i = 0; i < 5; ++i)
 		sprite->AddKeyFrame((int)EnemyAnim::SHOOT_RIGHT, { (float)i * n, 7 * n, n, n });
 
-	sprite->SetAnimationDelay((int)EnemyAnim::SHOOT_LEFT, ANIM_DELAY);
+	sprite->SetAnimationDelay((int)EnemyAnim::SHOOT_LEFT, ANIM_DELAY + 3);
 	for (i = 0; i < 5; ++i)
 		sprite->AddKeyFrame((int)EnemyAnim::SHOOT_LEFT, { (float)i * n, 7 * n, -n, n });
 
@@ -226,9 +226,6 @@ EnemyAnim Enemy::GetAnimation()
 void Enemy::Stop()
 {
 	dir = { 0,0 };
-	state = hState::EIDLE;
-	if (IsLookingRight())	SetAnimation((int)EnemyAnim::IDLE_RIGHT);
-	else					SetAnimation((int)EnemyAnim::IDLE_LEFT);
 }
 void Enemy::StartWalkingLeft()
 {
@@ -322,20 +319,61 @@ void Enemy::ChangeAnimLeft()
 	case hState::EFALLING: SetAnimation((int)EnemyAnim::FALLING_LEFT); break;
 	}
 }
+
+void Enemy::StartShooting()
+{
+	if (checkIfCanShoot()) {
+		state = hState::ESHOOTING;
+		if (IsLookingRight())	SetAnimation((int)EnemyAnim::SHOOT_RIGHT);
+		else					SetAnimation((int)EnemyAnim::SHOOT_LEFT);
+		drunkCanShoot = false;
+		mightaCanShoot = false;
+		invaderCanShoot = false;
+
+	}
+
+}
+bool Enemy::CanStartShooting()
+{
+	if (isShotAnimDone) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 void Enemy::Update()
 {
 	Sprite* sprite = dynamic_cast<Sprite*>(render);
 	sprite->Update(); // Actualizar la animación del sprite
-
 	MoveY();
 	Warp();
-	if (state != hState::EJUMPING && state != hState::EFALLING) {
+	if (state != hState::EJUMPING && state != hState::EFALLING && state != hState::ESHOOTING) {
 		MoveX();
+	}
+	if (sprite->IsAnimationComplete() && state == hState::ESHOOTING) {
+		isShotAnimDone = true;
+		state = hState::EWALKING;
+		if (IsLookingRight())	SetAnimation((int)EnemyAnim::WALKING_RIGHT);
+		else					SetAnimation((int)EnemyAnim::WALKING_LEFT);
+		
+		
 	}
 }
 
 
 
+
+bool Enemy::checkIfCanShoot()
+{
+	if (drunkCanShoot || mightaCanShoot || invaderCanShoot) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 
 void Enemy::MoveX()
 {
@@ -484,7 +522,7 @@ void Enemy::MoveY()
 		{
 			state = hState::EWALKING;
 		}
-		else if (ItimerTime > 5.0f && ItimerTime < 5.1f)
+		else if (ItimerTime > 5.0f && ItimerTime < 5.1f && state != hState::ESHOOTING)
 		{
 			state = hState::EFALLING;
 			pos.y += ENEMY_FALLING_SPEED;
@@ -513,8 +551,9 @@ void Enemy::MoveY()
 				if (playerpos.y < pos.y || player2pos.y < pos.y)
 				{
 					MtimerTime += GetFrameTime();
-					if (MtimerTime > 0.5f) {
+					if (MtimerTime > 0.65f && state != hState::ESHOOTING) {
 						StartJumping();
+						mightaCanShoot = false;
 						MtimerTime = 0;
 					}
 
@@ -545,7 +584,7 @@ void Enemy::MoveY()
 				if (playerpos.y < pos.y || player2pos.y < pos.y)
 				{
 					DtimerTime += GetFrameTime();
-					if (DtimerTime > 0.25f) {
+					if (DtimerTime > 0.25f && state != hState::ESHOOTING) {
 						StartJumping();
 						DtimerTime = 0;
 					}

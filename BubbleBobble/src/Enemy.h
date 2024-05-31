@@ -74,6 +74,9 @@ public:
 	int GetScore();
 	hType GetType() const;
 
+	void StartShooting();
+	bool CanStartShooting();
+
 	void Update();
 	void DrawDebug(const Color& col) const;
 	void Release();
@@ -87,7 +90,7 @@ public:
 
 protected:
 	bool hasStartedWalking;
-	
+	bool checkIfCanShoot();
 
 	//Player mechanics
 	void MoveX();
@@ -124,6 +127,7 @@ protected:
 	
 	bool hasJumped = false;
 	
+	bool isShotAnimDone = false;
 	int jump_delay;
 	int direction;
 	float ZtimerTime = 0;

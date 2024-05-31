@@ -615,7 +615,7 @@ void Scene::deleteP2Bubbles()
 void Scene::DrunkShotSpawn()
 {
 	drunkCooldown += GetFrameTime();
-	if (drunkCooldown >= 5 && !isGameOver)
+	if (drunkCooldown >= 6 && !isGameOver)
 	{
 		for (Enemy* enemy : enemies)
 		{
@@ -624,21 +624,29 @@ void Scene::DrunkShotSpawn()
 			{
 				if (enemy->IsLookingLeft())
 				{
+					enemy->StartShooting();
 					DrunkShot* shot = new DrunkShot(enemy->GetPos(), ShotDirections::LEFT);
 					shot->Initialise();
 					dShots.push_back(shot);
 					drunkCooldown = 0;
+					waitForAnimTimer = 0;
+
 				}
 				else
 				{
+					enemy->StartShooting();
 					DrunkShot* shot = new DrunkShot(enemy->GetPos(), ShotDirections::RIGHT);
 					shot->Initialise();
 					dShots.push_back(shot);
 					drunkCooldown = 0;
+					waitForAnimTimer = 0;
+
 				}
 			}
+
+
 		}
-		
+
 	}
 }
 
@@ -666,6 +674,7 @@ void Scene::InvaderShotSpawn()
 	{
 		for (Enemy* enemy : enemies)
 		{
+			enemy->getReadyToShoot = true;
 			if (enemy->invaderCanShoot)
 			{
 				InvaderShot* shot = new InvaderShot(enemy->GetPos());
@@ -674,6 +683,7 @@ void Scene::InvaderShotSpawn()
 				invaderCooldown = 0;
 			}
 		}
+		
 
 	}
 }
@@ -701,23 +711,31 @@ void Scene::MightaShotSpawn()
 	{
 		for (Enemy* enemy : enemies)
 		{
-			if (enemy->mightaCanShoot)
-			{
-				if (enemy->IsLookingLeft())
+			enemy->getReadyToShoot = true;
+				if (enemy->mightaCanShoot)
 				{
-					MightaShot* shot = new MightaShot(enemy->GetPos(), mShotDirections::LEFT);
-					shot->Initialise();
-					mShots.push_back(shot);
-					mightaCooldown = 0;
+					if (enemy->IsLookingLeft())
+					{
+						enemy->StartShooting();
+						MightaShot* shot = new MightaShot(enemy->GetPos(), mShotDirections::LEFT);
+						shot->Initialise();
+						mShots.push_back(shot);
+						mightaCooldown = 0;
+						waitForAnimTimer = 0;
+						
+					}
+					else
+					{
+						enemy->StartShooting();
+						MightaShot* shot = new MightaShot(enemy->GetPos(), mShotDirections::RIGHT);
+						shot->Initialise();
+						mShots.push_back(shot);
+						mightaCooldown = 0;
+						waitForAnimTimer = 0;
+					}
 				}
-				else
-				{
-					MightaShot* shot = new MightaShot(enemy->GetPos(), mShotDirections::RIGHT);
-					shot->Initialise();
-					mShots.push_back(shot);
-					mightaCooldown = 0;
-				}
-			}
+				
+			
 		}
 
 	}

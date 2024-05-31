@@ -79,33 +79,37 @@ void MightaShot::Update()
 void MightaShot::Move(mShotDirections d)
 {
 	AABB box;
-	if (d == mShotDirections::LEFT)
-	{
-		dir = { -2, 0 };
-		box = GetHitbox();
-		if (map->TestCollisionWallLeft(box))
+	waitForAnim += GetFrameTime();
+	if (waitForAnim > 0.5f) {
+		if (d == mShotDirections::LEFT)
 		{
-			LOG("Touched left wall");
-			deleteShot = true;
-		}
-		else {
-			deleteShot = false;
-		}
+			dir = { -2, 0 };
+			box = GetHitbox();
+			if (map->TestCollisionWallLeft(box))
+			{
+				LOG("Touched left wall");
+				deleteShot = true;
+			}
+			else {
+				deleteShot = false;
+			}
 
-	}
-	else if (d == mShotDirections::RIGHT)
-	{
-		dir = { 2, 0 };
-		box = GetHitbox();
-		if (map->TestCollisionWallRight(box))
+		}
+		else if (d == mShotDirections::RIGHT)
 		{
-			LOG("Touched left wall");
-			deleteShot = true;
-		}
-		else {
-			deleteShot = false;
+			dir = { 2, 0 };
+			box = GetHitbox();
+			if (map->TestCollisionWallRight(box))
+			{
+				LOG("Touched left wall");
+				deleteShot = true;
+			}
+			else {
+				deleteShot = false;
+			}
 		}
 	}
+	
 
 }
 void MightaShot::DrawDebug(const Color& col) const

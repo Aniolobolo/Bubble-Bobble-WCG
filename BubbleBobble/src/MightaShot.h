@@ -37,6 +37,7 @@ private:
 	float speed;
 	float lifetime;
 	float timeAlive;
+	float waitForAnim = 0;
 	mShotState state;
 	TileMap* map;
 

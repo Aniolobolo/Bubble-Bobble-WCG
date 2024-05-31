@@ -68,6 +68,7 @@ private:
     Player2 *player2;
     TileMap *level;
     Text* font1;
+    float waitForAnimTimer = 0;
     int goal_score[3];
     int actualLevel;
     std::vector<Object*> objects;

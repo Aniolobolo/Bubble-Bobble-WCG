@@ -79,34 +79,36 @@ void DrunkShot::Update()
 void DrunkShot::Move(ShotDirections d)
 {
 	AABB box;
-	if (d == ShotDirections::LEFT)
-	{
-		dir = { -3, 0 };
-		box = GetHitbox();
-		if (map->TestCollisionWallLeft(box))
+	waitForAnim += GetFrameTime();
+	if (waitForAnim > 0.6f) {
+		if (d == ShotDirections::LEFT)
 		{
-			LOG("Touched left wall");
-			deleteShot = true;
-		}
-		else {
-			deleteShot = false;
-		}
+			dir = { -2, 0 };
+			box = GetHitbox();
+			if (map->TestCollisionWallLeft(box))
+			{
+				LOG("Touched left wall");
+				deleteShot = true;
+			}
+			else {
+				deleteShot = false;
+			}
 
-	}
-	else if (d == ShotDirections::RIGHT)
-	{
-		dir = { 3, 0 };
-		box = GetHitbox();
-		if (map->TestCollisionWallRight(box))
+		}
+		else if (d == ShotDirections::RIGHT)
 		{
-			LOG("Touched left wall");
-			deleteShot = true;
-		}
-		else {
-			deleteShot = false;
+			dir = { 2, 0 };
+			box = GetHitbox();
+			if (map->TestCollisionWallRight(box))
+			{
+				LOG("Touched left wall");
+				deleteShot = true;
+			}
+			else {
+				deleteShot = false;
+			}
 		}
 	}
-
 }
 void DrunkShot::DrawDebug(const Color& col) const
 {
