@@ -10,23 +10,23 @@
 #define BUBBLEJUMP				-20
 #define SHOOT_RANGE 65
 
-enum class Directions { LEFT, RIGHT };
+enum class BubbleDirections { LEFT, RIGHT };
 enum class BubbleAnim { INSHOOT, IDLE, POP, GREENZENCHAN, YELLOWZENCHAN, REDZENCHAN, DEADZENCHAN, GREENINVADER, YELLOWINVADER, REDINVADER, DEADINVADER, GREENMIGHTA, YELLOWMIGHTA, REDMIGHTA, DEADMIGHTA, GREENDRUNK, YELLOWDRUNK, REDDRUNK, DEADDRUNK, NUM_ANIMATIONS };
 enum class BubbleState { JUSTSHOT, WANDER, ISONCEILING, POP, ZENCHANINSIDE, INVADERINSIDE, MIGHTAINSIDE, DRUNKINSIDE};
 class PlayerBubble : public Entity
 {
 public:
-	PlayerBubble(const Point& p, Directions d);
+	PlayerBubble(const Point& p, BubbleDirections d);
 	~PlayerBubble();
 
 	void Update();
 
-	void Move(Directions d);
+	void Move(BubbleDirections d);
 	void Clamp();
 	AppStatus Initialise();
 	bool isAlive();
 	void Release();
-	Directions direction;
+	BubbleDirections direction;
 	int bubbleStage;
 	void DrawDebug(const Color& col) const;
 	void JumpOnBubble();

@@ -18,11 +18,9 @@ enum class Resource {
     IMG_PLAYER2,
     IMG_ZENCHAN,
     IMG_INVADER,
-    IMG_SHOTINVADER,
     IMG_MIGHTA,
-    IMG_SHOTMIGHTA,
     IMG_DRUNK,
-    IMG_SHOTDRUNK,
+    IMG_SHOTS,
     IMG_BUBBLE,
     IMG_TILES,
     IMG_ITEMS

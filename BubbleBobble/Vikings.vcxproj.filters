@@ -61,6 +61,15 @@
     <ClCompile Include="src\Text.cpp">
       <Filter>Render</Filter>
     </ClCompile>
+    <ClCompile Include="src\DrunkShot.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="src\InvaderShot.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MightaShot.cpp">
+      <Filter>Entities\Enemies</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Globals.h">
@@ -125,6 +134,15 @@
     </ClInclude>
     <ClInclude Include="src\Text.h">
       <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DrunkShot.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="src\InvaderShot.h">
+      <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MightaShot.h">
+      <Filter>Entities\Enemies</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

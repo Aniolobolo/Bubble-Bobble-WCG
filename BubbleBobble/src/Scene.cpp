@@ -8,14 +8,19 @@ Scene::Scene()
 {
 	isGameOver = false;
 	pBubble = nullptr;
+	p2Bubble = nullptr;
 	player = nullptr;
 	player2 = nullptr;
 	level = nullptr;
+	dShot = nullptr;
+	iShot = nullptr;
+	mShot = nullptr;
 	camera.target = { 0, 0 };				//Center of the screen
 	camera.offset = { 0, MARGIN_GUI_Y };	//Offset from the target (center of the screen)
 	camera.rotation = 0.0f;					//No rotation
 	camera.zoom = 1.0f;						//Default zoom
 	bubbleCooldown = 0;
+	bubble2Cooldown = 0;
 	debug = DebugMode::OFF;
 
 	actualLevel = 1;
@@ -45,6 +50,33 @@ Scene::~Scene()
 		delete pBubble;
 		pBubble = nullptr;
 	}
+	if (p2Bubble != nullptr)
+	{
+		p2Bubble->Release();
+		delete p2Bubble;
+		p2Bubble = nullptr;
+	}
+
+	if (dShot != nullptr)
+	{
+		dShot->Release();
+		delete dShot;
+		dShot = nullptr;
+	}
+
+	if (iShot != nullptr)
+	{
+		iShot->Release();
+		delete iShot;
+		iShot = nullptr;
+	}
+
+	if (mShot != nullptr)
+	{
+		mShot->Release();
+		delete mShot;
+		mShot = nullptr;
+	}
 
 	// Release and delete level
 	if (level != nullptr)
@@ -70,6 +102,30 @@ Scene::~Scene()
 		delete bubbles;
 	}
 	playerBubbles.clear();
+
+	for (Entity* bub2bles : player2Bubbles)
+	{
+		delete bub2bles;
+	}
+	player2Bubbles.clear();
+
+	for (Entity* drunkshot : dShots)
+	{
+		delete drunkshot;
+	}
+	dShots.clear();
+
+	for (Entity* invadershot : iShots)
+	{
+		delete invadershot;
+	}
+	iShots.clear();
+
+	for (Entity* mightashot : mShots)
+	{
+		delete mightashot;
+	}
+	mShots.clear();
 
 	// Delete objects from the vector efficiently
 	for (auto it = objects.begin(); it != objects.end(); ++it)
@@ -184,7 +240,7 @@ AppStatus Scene::LoadLevel(int stage)
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   150,   0,   0,   0,   154,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
-			1,   1,   50,   0,   0,   0,   0,   102,   0,   0,   0,   0,   0,   0,   0,   105,   0,   0,   0,   0,   0,	  0,   0,   104,   0, 0, 0, 0, 0, 0, 1, 1,
+			1,   1,   50,   0,   0,   0,   0,   0,   0,   102,   0,   0,   102,   0,   0,   102,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   80,   80,   53,   0,   0,   80,   80,   80,   80,   80,   80,   80,   80,   80,   80,   80,   80,   80,   80,	  80,   80,   80,   80, 53, 0, 0, 80, 80, 1, 1,
 			1,   1,   51,  52,  54,   0,   0,   55,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52, 54, 0, 0, 55, 52, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
@@ -246,33 +302,34 @@ AppStatus Scene::LoadLevel(int stage)
 	else if (stage == 3)
 	{
 		map = new int[size] {
-			22,   22,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  0,   0,   0,   0, 0, 0, 0, 0, 0, 22, 22,
-			8,   9,   25,   25,   25,   25,   25,   25,   25,   62,   0,   0,   0,   25,   25,   25,   25,   25,   25,   62,  0,   0,   0,  25, 25, 25, 25, 25, 25, 25, 8, 9,
-			10,   11,   63,  64,  64,  64,  64,  64,  64,  66,  0,  0,  0,  67,  64,  64,  64, 64,  64,  66,  0,  0,  0,  67, 64,  64, 64, 64,  64, 64, 10, 11,
-			8,   9,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  0,   0,   0,   0, 0, 0, 0, 0, 0, 8, 9,
-			10,   11,   62,   0,   103,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   154,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   105,   0,   0,   0,  0,   0,   0,   0, 0, 154, 0, 0, 0, 8, 9,
-			10,   11,   62,   0,   0,   81,   81,   81,   81,   65,   0,   0,   0,   0,   0,   81,   81,   65,   0,   0,   0,  0,   0,   81,   81, 81, 81, 65, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   67,   64,   64,   64,   66,   0,   0,   0,   0,   0,   67,   64,   66,   0,   0,   0,  0,   0,   67,   64, 64, 64, 66, 0, 0, 8, 9,
-			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   154,   0,   0,   0,   0,   0,   0,   103,   0,   0,   0,   0,   0,   0,   0,   0,  0,   0,   0,   0, 0, 154, 0, 0, 0, 8, 9,
-			10,   11,   62,   0,   81,   81,   81,   81,   65,   0,   0,   0,   0,   0,   81,   81,   81,   81,   65,   0,   0,  0,   0,   0,   81, 81, 81, 81, 65, 0, 10, 11,
-			8,   9,   62,   0,   67,   64,   64,   64,   66,   0,   0,   0,   0,   0,   67,   64,   64,   64,   66,   0,   0,0,  0,   0,   67,  64, 64, 64, 66, 0, 8, 9,
-			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   0,   0,   154,   0,   0,   0,   0,   0,   0,   154,   0,   0,   154,   0,   0,   0,  0,   0,   0,   154, 0, 0, 0, 0, 0, 8, 9,
-			10,   11,   62,   0,   0,   81,   81,   81,   81,   65,   0,   0,   0,   81,   81,   81,   81,   81,   81,   65,   0,  0,   0,   81,   81, 81, 81, 65, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   67,   64,   64,   64,   66,   0,   0,   0,   67,   64,   64,   64,   64,   64,   66,   0,  0,   0,   67,   64, 64, 64, 66, 0, 0, 8, 9,
-			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   0,   0,   102,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   102,   0,  0,   0,   0,   0, 0, 0, 0, 0, 0, 8, 9,
-			10,   11,   62,   0,   0,   0,   81,   81,   81,   81,   65,   0,   81,   81,   81,   65,   0,   81,   81,   81,   65,  0,   81,   81,   81, 81, 65, 0, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   0,   67,   64,   64,   64,   66,   0,   67,   64,   64,   66,   0,   67,   64,   64,   66,  0,   67,   64,   64, 64, 66, 0, 0, 0, 8, 9,
-			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  0,   0,   0,   0, 0, 0, 0, 0, 0, 8, 9,
-			10,   11,   62,   0,   0,   0,   0,   0,   81,   81,   81,   81,   81,   81,   65,   0,   0,   0,   81,   81,   81,  81,   81,   81,   65, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,   0,   0,   0,   0,   0,   67,   64,   64,   64,   64,   64,   66,   0,   0,   0,   67,   64,   64,64,   64,   64,   66, 0, 0, 0, 0, 0, 8, 9,
-			10,   11,   62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 0,   0,   0,   0, 0, 0, 0, 0, 0, 10, 11,
-			8,   9,   62,  100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,   0,   0,  0, 0, 0, 0, 101, 0, 8, 9,
-			10,   11,   81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 10, 11,
+			22, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22, 22,
+			8, 9, 25, 25, 25, 25, 25, 25, 25, 62, 0, 0, 0, 25, 25, 25, 25, 25, 25, 62, 0, 0, 0, 25, 25, 25, 25, 25, 25, 25, 8, 9,
+			10, 11, 63, 64, 64, 64, 64, 64, 64, 66, 0, 0, 0, 67, 64, 64, 64, 64, 64, 66, 0, 0, 0, 67, 64, 64, 64, 64, 64, 64, 10, 11,
+			8, 9, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 9,
+			10, 11, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 11,
+			8, 9, 62, 0, 0, 154, 0, 0, 104, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 154, 0, 0, 0, 8, 9,
+			10, 11, 62, 0, 0, 82, 82, 82, 82, 65, 0, 0, 0, 0, 0, 82, 82, 65, 0, 0, 0, 0, 0, 82, 82, 82, 82, 65, 0, 0, 10, 11,
+			8, 9, 62, 0, 0, 67, 64, 64, 64, 66, 0, 0, 0, 0, 0, 67, 64, 66, 0, 0, 0, 0, 0, 67, 64, 64, 64, 66, 0, 0, 8, 9,
+			10, 11, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 11,
+			8, 9, 62, 0, 0, 154, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 154, 0, 0, 0, 8, 9,
+			10, 11, 62, 0, 82, 82, 82, 82, 65, 0, 0, 0, 0, 0, 82, 82, 82, 82, 65, 0, 0, 0, 0, 0, 82, 82, 82, 82, 65, 0, 10, 11,
+			8, 9, 62, 0, 67, 64, 64, 64, 66, 0, 0, 0, 0, 0, 67, 64, 64, 64, 66, 0, 0, 0, 0, 0, 67, 64, 64, 64, 66, 0, 8, 9,
+			10, 11, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 11,
+			8, 9, 62, 0, 0, 0, 0, 154, 0, 0, 0, 0, 0, 0, 154, 0, 0, 154, 0, 0, 0, 0, 0, 0, 154, 0, 0, 0, 0, 0, 8, 9,
+			10, 11, 62, 0, 0, 82, 82, 82, 82, 65, 0, 0, 0, 82, 82, 82, 82, 82, 82, 65, 0, 0, 0, 82, 82, 82, 82, 65, 0, 0, 10, 11,
+			8, 9, 62, 0, 0, 67, 64, 64, 64, 66, 0, 0, 0, 67, 64, 64, 64, 64, 64, 66, 0, 0, 0, 67, 64, 64, 64, 66, 0, 0, 8, 9,
+			10, 11, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 11,
+			8, 9, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 9,
+			10, 11, 62, 0, 0, 0, 82, 82, 82, 82, 65, 0, 82, 82, 82, 65, 0, 82, 82, 82, 65, 0, 82, 82, 82, 82, 65, 0, 0, 0, 10, 11,
+			8, 9, 62, 0, 0, 0, 67, 64, 64, 64, 66, 0, 67, 64, 64, 66, 0, 67, 64, 64, 66, 0, 67, 64, 64, 64, 66, 0, 0, 0, 8, 9,
+			10, 11, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 11,
+			8, 9, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 9,
+			10, 11, 62, 0, 0, 0, 0, 0, 82, 82, 82, 82, 82, 82, 65, 0, 0, 0, 82, 82, 82, 82, 82, 82, 65, 0, 0, 0, 0, 0, 10, 11,
+			8, 9, 62, 0, 0, 0, 0, 0, 67, 64, 64, 64, 64, 64, 66, 0, 0, 0, 67, 64, 64, 64, 64, 64, 66, 0, 0, 0, 0, 0, 8, 9,
+			10, 11, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 11,
+			8, 9, 62, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 101, 0, 8, 9,
+			10, 11, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 10, 11,
+
 		};
 	}
 	else if (stage == 4)
@@ -359,6 +416,8 @@ AppStatus Scene::LoadLevel(int stage)
 				e = new Enemy(pos, hState::EIDLE, hLook::ELEFT, hType::INVADER);
 				e->Initialise();
 				e->SetTileMap(level);
+				e->SetPlayer(player);
+				e->SetPlayer2(player2);
 				enemies.push_back(e);
 
 				map[i] = 0;
@@ -370,6 +429,8 @@ AppStatus Scene::LoadLevel(int stage)
 				e = new Enemy(pos, hState::EIDLE, hLook::ELEFT, hType::MIGHTA);
 				e->Initialise();
 				e->SetTileMap(level);
+				e->SetPlayer(player);
+				e->SetPlayer2(player2);
 				enemies.push_back(e);
 
 				map[i] = 0;
@@ -441,29 +502,29 @@ void Scene::PlayerBubbleSpawn()
 {
 	bubbleCooldown += GetFrameTime();
 
-	if (IsKeyPressed(KEY_E) && bubbleCooldown >= .3 && !isGameOver)
+	if (IsKeyPressed(KEY_E) && bubbleCooldown >= .5 && !isGameOver)
 	{
 		if (player->CanStartShooting() == true) {
 			if (player->IsLookingLeft())
 			{
 				player->StartShooting();
-				PlayerBubble* bubble = new PlayerBubble(player->GetPos(), Directions::LEFT);
+				PlayerBubble* bubble = new PlayerBubble(player->GetPos(), BubbleDirections::LEFT);
 				bubble->Initialise();
 				sfxs[0] = LoadSound("sound/SoundEffects/Characters/AttackFX.wav");
 				PlaySound(sfxs[0]);
 				playerBubbles.push_back(bubble);
-				PlayerBubble* pBubble = new PlayerBubble(player->GetPos(), Directions::LEFT);
+				PlayerBubble* pBubble = new PlayerBubble(player->GetPos(), BubbleDirections::LEFT);
 
 			}
 			else
 			{
 				player->StartShooting();
-				PlayerBubble* bubble = new PlayerBubble(player->GetPos(), Directions::RIGHT);
+				PlayerBubble* bubble = new PlayerBubble(player->GetPos(), BubbleDirections::RIGHT);
 				bubble->Initialise();
 				sfxs[0] = LoadSound("sound/SoundEffects/Characters/AttackFX.wav");
 				PlaySound(sfxs[0]);
 				playerBubbles.push_back(bubble);
-				PlayerBubble* pBubble = new PlayerBubble(player->GetPos(), Directions::LEFT);
+				PlayerBubble* pBubble = new PlayerBubble(player->GetPos(), BubbleDirections::LEFT);
 			}
 			bubbleCooldown = 0;
 
@@ -496,9 +557,9 @@ void Scene::deletePBubbles()
 
 void Scene::Player2BubbleSpawn()
 {
-	bubbleCooldown += GetFrameTime();
+	bubble2Cooldown += GetFrameTime();
 
-	if (IsKeyPressed(KEY_DOWN) && bubbleCooldown >= .3 && !isGameOver)
+	if (IsKeyPressed(KEY_DOWN) && bubble2Cooldown >= .5 && !isGameOver)
 	{
 		if (player2->CanStartShooting() == true) {
 			if (player2->IsLookingLeft())
@@ -522,7 +583,7 @@ void Scene::Player2BubbleSpawn()
 				player2Bubbles.push_back(bubble);
 				Player2Bubble* pBubble = new Player2Bubble(player2->GetPos(), Bubble2Directions::LEFT);
 			}
-			bubbleCooldown = 0;
+			bubble2Cooldown = 0;
 
 		}
 
@@ -551,6 +612,132 @@ void Scene::deleteP2Bubbles()
 	}
 }
 
+void Scene::DrunkShotSpawn()
+{
+	drunkCooldown += GetFrameTime();
+	if (drunkCooldown >= 5 && !isGameOver)
+	{
+		for (Enemy* enemy : enemies)
+		{
+			enemy->getReadyToShoot = true;
+			if (enemy->drunkCanShoot)
+			{
+				if (enemy->IsLookingLeft())
+				{
+					DrunkShot* shot = new DrunkShot(enemy->GetPos(), ShotDirections::LEFT);
+					shot->Initialise();
+					dShots.push_back(shot);
+					drunkCooldown = 0;
+				}
+				else
+				{
+					DrunkShot* shot = new DrunkShot(enemy->GetPos(), ShotDirections::RIGHT);
+					shot->Initialise();
+					dShots.push_back(shot);
+					drunkCooldown = 0;
+				}
+			}
+		}
+		
+	}
+}
+
+
+void Scene::deleteDrunkShot()
+{
+	auto check = dShots.begin();
+	while (check != dShots.end()) {
+
+		if (!(*check)->isAlive()) {
+			delete* check;
+			check = dShots.erase(check);
+		}
+		else {
+			++check;
+		}
+	}
+}
+
+
+void Scene::InvaderShotSpawn()
+{
+	invaderCooldown += GetFrameTime();
+	if (invaderCooldown >= 5 && !isGameOver)
+	{
+		for (Enemy* enemy : enemies)
+		{
+			if (enemy->invaderCanShoot)
+			{
+				InvaderShot* shot = new InvaderShot(enemy->GetPos());
+				shot->Initialise();
+				iShots.push_back(shot);
+				invaderCooldown = 0;
+			}
+		}
+
+	}
+}
+
+
+void Scene::deleteInvaderShot()
+{
+	auto check = iShots.begin();
+	while (check != iShots.end()) {
+
+		if (!(*check)->isAlive()) {
+			delete* check;
+			check = iShots.erase(check);
+		}
+		else {
+			++check;
+		}
+	}
+}
+
+void Scene::MightaShotSpawn()
+{
+	mightaCooldown += GetFrameTime();
+	if (mightaCooldown >= 6 && !isGameOver)
+	{
+		for (Enemy* enemy : enemies)
+		{
+			if (enemy->mightaCanShoot)
+			{
+				if (enemy->IsLookingLeft())
+				{
+					MightaShot* shot = new MightaShot(enemy->GetPos(), mShotDirections::LEFT);
+					shot->Initialise();
+					mShots.push_back(shot);
+					mightaCooldown = 0;
+				}
+				else
+				{
+					MightaShot* shot = new MightaShot(enemy->GetPos(), mShotDirections::RIGHT);
+					shot->Initialise();
+					mShots.push_back(shot);
+					mightaCooldown = 0;
+				}
+			}
+		}
+
+	}
+}
+
+void Scene::deleteMightaShot()
+{
+	auto check = mShots.begin();
+	while (check != mShots.end()) {
+
+		if (!(*check)->isAlive()) {
+			delete* check;
+			check = mShots.erase(check);
+		}
+		else {
+			++check;
+		}
+	}
+}
+
 
 void Scene::Update()
 {
@@ -558,8 +745,14 @@ void Scene::Update()
 	AABB box;
 	PlayerBubbleSpawn();
 	Player2BubbleSpawn();
+	DrunkShotSpawn();
+	InvaderShotSpawn();
+	MightaShotSpawn();
 	deletePBubbles();
 	deleteP2Bubbles();
+	deleteDrunkShot();
+	deleteInvaderShot();
+	deleteMightaShot();
 	//Switch between the different debug modes: off, on (sprites & hitboxes), on (hitboxes) 
 	if (IsKeyPressed(KEY_F1))
 	{
@@ -677,6 +870,9 @@ void Scene::CheckCollisions()
 	CheckPlayerEnemyCollisions(player_box);
 	CheckPlayer2EnemyCollisions(player2_box);
 
+	CheckPlayerProjectileCollisions(player_box);
+	CheckPlayer2ProjectileCollisions(player2_box);
+
 	
 }
 
@@ -763,6 +959,67 @@ void Scene::CheckPlayerEnemyCollisions(const AABB& player_box)
 	}
 }
 
+void Scene::CheckPlayerProjectileCollisions(const AABB& player_box)
+{
+	auto it_drunk = dShots.begin();
+	while (it_drunk != dShots.end())
+	{
+		AABB drunk_box = (*it_drunk)->GetHitbox();
+		if (player_box.TestAABB(drunk_box))
+		{
+			player->LifeManager();
+			if (player->isDead) {
+				isPlayerDead = true;
+			}
+			break;
+		}
+		else
+		{
+			++it_drunk;
+		}
+
+
+	}
+	auto it_invader = iShots.begin();
+	while (it_invader != iShots.end())
+	{
+		AABB invader_box = (*it_invader)->GetHitbox();
+		if (player_box.TestAABB(invader_box))
+		{
+			player->LifeManager();
+			if (player->isDead) {
+				isPlayerDead = true;
+			}
+			break;
+		}
+		else
+		{
+			++it_invader;
+		}
+
+
+	}
+	auto it_mighta = mShots.begin();
+	while (it_mighta != mShots.end())
+	{
+		AABB mighta_box = (*it_mighta)->GetHitbox();
+		if (player_box.TestAABB(mighta_box))
+		{
+			player->LifeManager();
+			if (player->isDead) {
+				isPlayerDead = true;
+			}
+			break;
+		}
+		else
+		{
+			++it_mighta;
+		}
+
+
+	}
+}
+
 void Scene::CheckPlayer2ObjectCollisions(const AABB& player_box)
 {
 	auto it = objects.begin();
@@ -846,6 +1103,67 @@ void Scene::CheckPlayer2EnemyCollisions(const AABB& player_box)
 	}
 }
 
+void Scene::CheckPlayer2ProjectileCollisions(const AABB& player_box)
+{
+	auto it_drunk = dShots.begin();
+	while (it_drunk != dShots.end())
+	{
+		AABB drunk_box = (*it_drunk)->GetHitbox();
+		if (player_box.TestAABB(drunk_box))
+		{
+			player2->LifeManager();
+			if (player2->isDead) {
+				isPlayer2Dead = true;
+			}
+			break;
+		}
+		else
+		{
+			++it_drunk;
+		}
+
+
+	}
+	auto it_invader = iShots.begin();
+	while (it_invader != iShots.end())
+	{
+		AABB invader_box = (*it_invader)->GetHitbox();
+		if (player_box.TestAABB(invader_box))
+		{
+			player2->LifeManager();
+			if (player2->isDead) {
+				isPlayer2Dead = true;
+			}
+			break;
+		}
+		else
+		{
+			++it_invader;
+		}
+
+
+	}
+	auto it_mighta = mShots.begin();
+	while (it_mighta != mShots.end())
+	{
+		AABB mighta_box = (*it_mighta)->GetHitbox();
+		if (player_box.TestAABB(mighta_box))
+		{
+			player2->LifeManager();
+			if (player2->isDead) {
+				isPlayer2Dead = true;
+			}
+			break;
+		}
+		else
+		{
+			++it_mighta;
+		}
+
+
+	}
+}
+
 void Scene::StartDying()
 {
 	timeToDie += GetFrameTime();
@@ -870,6 +1188,21 @@ void Scene::ClearLevel()
 		delete bubble2;
 	}
 	player2Bubbles.clear();
+	for (DrunkShot* DrunkShots : dShots)
+	{
+		delete DrunkShots;
+	}
+	dShots.clear();
+	for (InvaderShot* InvaderShots : iShots)
+	{
+		delete InvaderShots;
+	}
+	iShots.clear();
+	for (MightaShot* MightaShots : mShots)
+	{
+		delete MightaShots;
+	}
+	mShots.clear();
 	for (Enemy* enemy : enemies)
 	{
 		delete enemy;
@@ -887,6 +1220,19 @@ void Scene::UpdateBubbles()
 	{
 		bubb2->Update();
 	}
+	for (DrunkShot* shotD : dShots)
+	{
+		shotD->Update();
+	}
+	for (InvaderShot* shotI : iShots)
+	{
+		shotI->Update();
+	}
+	for (MightaShot* shotM : mShots)
+	{
+		shotM->Update();
+	}
+
 }
 
 void Scene::RenderObjects() const
@@ -908,6 +1254,60 @@ void Scene::RenderObjects() const
 
 		(*it2)->Draw();
 		++it2;
+	}
+	auto shots = dShots.begin();
+	while (shots != dShots.end())
+	{
+
+		if (*shots != nullptr) {
+			(*shots)->Draw();
+			++shots;
+		}
+		
+	}
+	for (DrunkShot* shot : dShots) {
+		if (shot != nullptr) {
+			shot->Draw();
+		}
+		else {
+			LOG("Null pointer detected in dShots");
+		}
+	}
+	auto ishots = iShots.begin();
+	while (ishots != iShots.end())
+	{
+
+		if (*ishots != nullptr) {
+			(*ishots)->Draw();
+			++ishots;
+		}
+
+	}
+	for (InvaderShot* ishot : iShots) {
+		if (ishot != nullptr) {
+			ishot->Draw();
+		}
+		else {
+			LOG("Null pointer detected in iShots");
+		}
+	}
+	auto mshots = mShots.begin();
+	while (mshots != mShots.end())
+	{
+
+		if (*mshots != nullptr) {
+			(*mshots)->Draw();
+			++mshots;
+		}
+
+	}
+	for (MightaShot* mshot : mShots) {
+		if (mshot != nullptr) {
+			mshot->Draw();
+		}
+		else {
+			LOG("Null pointer detected in iShots");
+		}
 	}
 	for (Enemy* enemy : enemies)
 	{
@@ -932,6 +1332,19 @@ void Scene::RenderObjectsDebug(const Color& col) const
 	{
 		p2bubb->DrawDebug(col);
 	}
+	for (DrunkShot* dshot : dShots)
+	{
+		dshot->DrawDebug(col);
+	}
+	for (InvaderShot* ishot : iShots)
+	{
+		ishot->DrawDebug(col);
+	}
+	for (MightaShot* mshot : mShots)
+	{
+		mshot->DrawDebug(col);
+	}
+
 
 }
 void Scene::RenderGUI() const

@@ -20,7 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AABB.cpp" />
+    <ClCompile Include="src\DrunkShot.cpp" />
     <ClCompile Include="src\Enemy.cpp" />
+    <ClCompile Include="src\InvaderShot.cpp" />
+    <ClCompile Include="src\MightaShot.cpp" />
     <ClCompile Include="src\Player2.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\Game.cpp" />
@@ -42,7 +45,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AABB.h" />
+    <ClInclude Include="src\DrunkShot.h" />
     <ClInclude Include="src\Enemy.h" />
+    <ClInclude Include="src\InvaderShot.h" />
+    <ClInclude Include="src\MightaShot.h" />
     <ClInclude Include="src\Player2.h" />
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\Game.h" />

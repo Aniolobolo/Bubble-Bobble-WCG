@@ -11,7 +11,7 @@ public:
     //Parameterized constructor
     Point(int px, int py) : x(px), y(py) {}
     //Copy constructor
-     Point(const Point& p) : x(p.x), y(p.y) {}
+    Point(const Point& p) : x(p.x), y(p.y) {}
     //Destructor
     ~Point() {}
 

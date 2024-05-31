@@ -6,7 +6,7 @@ Shot::Shot()
 
 	Rectangle rc = { 2 * TILE_SIZE, 12, SHOT_FRAME_WIDTH, SHOT_FRAME_HEIGHT };
 	ResourceManager& data = ResourceManager::Instance();
-	render = new StaticImage(data.GetTexture(Resource::IMG_SHOTINVADER), rc);
+	render = new StaticImage(data.GetTexture(Resource::IMG_SHOTS), rc);
 	SetAlive(false);
 
 }

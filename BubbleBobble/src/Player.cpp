@@ -21,6 +21,8 @@ Player::Player(const Point& p, State s, Look view) :
 	pTime = 0;
 	damageTime = 2;
 	isDead = false;
+	Initialise();
+	SetAnimation((int)PlayerAnim::IDLE_RIGHT);
 }
 Player::~Player()
 {

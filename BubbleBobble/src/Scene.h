@@ -7,6 +7,9 @@
 #include "Object.h"
 #include "PlayerBubble.h"
 #include "Player2Bubble.h"
+#include "DrunkShot.h"
+#include "InvaderShot.h"
+#include "MightaShot.h"
 #include "Text.h"
 
 enum class DebugMode { OFF, SPRITES_AND_HITBOXES, ONLY_HITBOXES, SIZE };
@@ -26,6 +29,13 @@ public:
 
     void Player2BubbleSpawn();
     void deleteP2Bubbles();
+
+    void DrunkShotSpawn();
+    void deleteDrunkShot();
+    void InvaderShotSpawn();
+    void deleteInvaderShot();
+    void MightaShotSpawn();
+    void deleteMightaShot();
     bool isGameOver;
     bool isGameWon;
 
@@ -36,10 +46,12 @@ private:
     void CheckPlayerObjectCollisions(const AABB& player_box);
     void CheckBubbleEnemyCollisions();
     void CheckPlayerEnemyCollisions(const AABB& player_box);
+    void CheckPlayerProjectileCollisions(const AABB& player_box);
     //Player 2 collisions
     void CheckPlayer2ObjectCollisions(const AABB& player_box);
     void CheckBubble2EnemyCollisions();
     void CheckPlayer2EnemyCollisions(const AABB& player_box);
+    void CheckPlayer2ProjectileCollisions(const AABB& player_box);
 
     void StartDying();
     void ClearLevel();
@@ -64,8 +76,18 @@ private:
     PlayerBubble* pBubble;
     std::vector<Player2Bubble*> player2Bubbles;
     PlayerBubble* p2Bubble;
+    std::vector<DrunkShot*> dShots;
+    DrunkShot* dShot;
+    std::vector<InvaderShot*> iShots;
+    InvaderShot* iShot;
+    std::vector<MightaShot*> mShots;
+    MightaShot* mShot;
     int collisionCount;
     float bubbleCooldown;
+    float bubble2Cooldown;
+    float drunkCooldown;
+    float invaderCooldown;
+    float mightaCooldown;
     float timeToDie = 0;
     Camera2D camera;
     DebugMode debug;

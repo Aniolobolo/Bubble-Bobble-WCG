@@ -6,7 +6,7 @@
 
 Sound sfx[10];
 
-PlayerBubble::PlayerBubble(const Point& p, Directions d) : Entity(p, BUBBLE_PHYSICAL_SIZE, BUBBLE_PHYSICAL_SIZE, BUBBLE_FRAME_SIZE, BUBBLE_FRAME_SIZE)
+PlayerBubble::PlayerBubble(const Point& p, BubbleDirections d) : Entity(p, BUBBLE_PHYSICAL_SIZE, BUBBLE_PHYSICAL_SIZE, BUBBLE_FRAME_SIZE, BUBBLE_FRAME_SIZE)
 {
 	direction = d;
 	speed = .3;
@@ -376,13 +376,13 @@ void PlayerBubble::JumpOnBubble()
 	jumpTime += GetFrameTime();
 }
 
-void PlayerBubble::Move(Directions d)
+void PlayerBubble::Move(BubbleDirections d)
 {
 	Clamp();
 	JumpOnBubble();
 	if (pos.y > 32)
 	{
-		if (d == Directions::LEFT)
+		if (d == BubbleDirections::LEFT)
 		{
 			
 			switch (bubbleStage) {
@@ -412,7 +412,7 @@ void PlayerBubble::Move(Directions d)
 
 			}
 		}
-		else if (d == Directions::RIGHT)
+		else if (d == BubbleDirections::RIGHT)
 		{
 
 			switch (bubbleStage) {
