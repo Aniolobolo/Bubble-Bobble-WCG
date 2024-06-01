@@ -23,7 +23,7 @@
 
 ##### Special keys
 | Special keys| Functions|
-| --- | --- | 
+| -- | -- | 
 | SpaceBar| Insert coin|
 | F1| Show collisions|
 | F2| God mode P1|
