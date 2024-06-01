@@ -1,4 +1,4 @@
-#Bubble Bobble 
+# Bubble Bobble 
 
 <img src="https://github.com/Aniolobolo/Bubble-Bobble-WCG/blob/main/wiki_images/Poster1.png" width="600" height="600">
 
