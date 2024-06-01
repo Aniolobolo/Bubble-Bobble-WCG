@@ -1,19 +1,53 @@
-# Bubble Bobble 🧙🏾‍♂️🧙🏾‍♂️
-TODO: Write a project description
-## Installation 🧙🏾‍♂️🧙🏾‍♂️
-TODO: Describe the installation process
-## Usage 🧙🏾‍♂️🧙🏾‍♂️
-TODO: Write usage instructions
-## Contributing 🧙🏾‍♂️🧙🏾‍♂️
-1. Fork it!🍴🍴
-2. Create your feature branch🌳: `git checkout -b my-newfeature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request :D 
-## History 🧙🏾‍♂️🧙🏾‍♂️
-TODO: Write history
-## Credits 🧙🏾‍♂️🧙🏾‍♂️
-TODO: Write credits
-## License 🧙🏾‍♂️🧙🏾‍♂️
-TODO: Write license (pagar 509 rupias (bolivares))
+# 								Bubble Bobble 
 
+<img src="https://github.com/Aniolobolo/Bubble-Bobble-WCG/blob/main/wiki_images/Poster1.png" width="300" height="300">
+
+
+
+<br></br>
+## Bubble Bobble is an arcade videogame made in 1986 by Taito. This game is an action-platformer where the protagonists, Bub and Bob, try to rescue their girlfriends as they navigate through a series of single-screen levels filled with enemies.
+### In order to win you have to blow up in bubbles all the enemies and then you get points and then go to the next level, be careful with the enemies, if you bump into them 3 times, you lose.
+
+<br></br>
+### The controls for the game are very simple here is the manual:
+<br></br>
+
+####Player controls
+| Player| button| Function|
+| 1 | a | Move left|
+| 1 | d | Move right|
+| 1 | s | Shoot bubble|
+| 1 | w | Jump|
+
+| 2 | Left arrow | Move left|
+| 2 | Right arrow | Move right|
+| 2 | Down arrow | Shoot bubble|
+| 2 | Up arrow | Jump|
+<br></br>
+#### Special keys
+| Special keys| Functions|
+| SpaceBar| Insert coin|
+| F1| Show collisions|
+| F2| God mode P1|
+| F3| God mode P2|
+| I | Enable P2|
+| P | Instant win| 
+| O | Instant Lose|
+| 1 | Go to level 1|
+| 2 | Go to level 2|
+| 3 | Go to level 3|
+| 4 | Go to level 4|
+<br></br>
+[github link](https://github.com/Aniolobolo/Bubble-Bobble-WCG)
+<br></br>
+## Team Members
+Asier Ulloa García-Obledo
+- Code / Design
+- [AsiGamer2](https://github.com/AsiGamer2)
+
+Aniol López Ortega
+- Code / Management
+- [Aniolobolo](https://github.com/Aniolobolo)
+<br></br>
+<img src="https://github.com/Aniolobolo/Bubble-Bobble-WCG/blob/main/wiki_images/Team%20skull.jpeg" width="400" height="500">
+<img src="https://github.com/Aniolobolo/Bubble-Bobble-WCG/blob/main/wiki_images/team%20magos.png" width="400" height="500">
