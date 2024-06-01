@@ -43,7 +43,7 @@ Asier Ulloa García-Obledo
 Aniol López Ortega
 - Code / Management
 - [Aniolobolo](https://github.com/Aniolobolo)
-<br></br>
+
 <img src="https://github.com/Aniolobolo/Bubble-Bobble-WCG/blob/main/wiki_images/Team%20skull.jpeg" width="400" height="500">
 <img src="https://github.com/Aniolobolo/Bubble-Bobble-WCG/blob/main/wiki_images/team%20magos.png" width="400" height="500">
 
