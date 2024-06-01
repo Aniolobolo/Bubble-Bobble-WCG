@@ -263,7 +263,7 @@ bool Player2Bubble::isAlive()
 void Player2Bubble::Clamp()
 {
 
-	if (pos.y < 32)
+	if (pos.y < 36)
 	{
 		if (pos.x <= WINDOW_WIDTH / 2)
 		{
@@ -273,8 +273,9 @@ void Player2Bubble::Clamp()
 			dir = { -1, 1 };
 		}
 	}
-	if (pos.y == 32)
+	if (pos.y == 36)
 	{
+		isOnCeiling = true;
 		if (pos.x <= GetRandomValue(110, WINDOW_WIDTH / 2))
 		{
 			dir = { 1, 0 };
@@ -359,7 +360,7 @@ void Player2Bubble::Move(Bubble2Directions d)
 {
 	Clamp();
 	JumpOnBubble();
-	if (pos.y > 32)
+	if (pos.y > 36)
 	{
 		if (d == Bubble2Directions::LEFT)
 		{

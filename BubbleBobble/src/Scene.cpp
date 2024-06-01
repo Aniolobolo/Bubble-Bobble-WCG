@@ -1111,7 +1111,9 @@ void Scene::CheckCollisions()
 	CheckPlayer2ProjectileCollisions(player2_box);
 
 	CheckPlayerBubbleCollisions(player_box);
+	CheckPlayerBubbleCollisions(player2_box);
 	CheckPlayer2BubbleCollisions(player2_box);
+	CheckPlayer2BubbleCollisions(player_box);
 
 	
 }
@@ -1433,12 +1435,20 @@ void Scene::CheckPlayer2BubbleCollisions(const AABB& player_box)
 	while (it != player2Bubbles.end())
 	{
 		AABB bubb_box = (*it)->GetHitbox();
-		if (player_box.TestAABB(bubb_box)) {
-			(*it)->popped = true;
+		if (player_box.TestAABB(bubb_box) && (*it)->isOnCeiling) {
+
+			if ((*it)->isEnemyInside) {
+				ObjectSpawn();
+			}
+			// Delete the object
+			delete* it;
+			// Erase the object from the vector and get the iterator to the next valid element
+			it = player2Bubbles.erase(it);
 		}
 		else {
 			++it;
 		}
+
 	}
 }
 

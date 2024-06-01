@@ -46,6 +46,7 @@ public:
 	bool hasInvader = false;
 	bool hasDrunk = false;
 	bool popped = false;
+	bool isOnCeiling = false;
 	float bubbleLifetime;
 	Bubble2State state;
 
