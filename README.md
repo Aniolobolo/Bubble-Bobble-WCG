@@ -1,11 +1,12 @@
-# 								Bubble Bobble 
+#Bubble Bobble 
 
 <img src="https://github.com/Aniolobolo/Bubble-Bobble-WCG/blob/main/wiki_images/Poster1.png" width="600" height="600">
+
 ## Bubble Bobble is an arcade videogame made in 1986 by Taito. This game is an action-platformer where the protagonists, Bub and Bob, try to rescue their girlfriends as they navigate through a series of single-screen levels filled with enemies. In order to win you have to blow up in bubbles all the enemies and then you get points and then go to the next level, be careful with the enemies, if you bump into them 3 times, you lose.
 
 
 #### The controls for the game are very simple here is the manual:
-<br></br>
+
 
 ##### Player controls
 
