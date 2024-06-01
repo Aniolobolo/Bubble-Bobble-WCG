@@ -24,7 +24,7 @@
 | 2 | Right arrow | Move right|
 | 2 | Down arrow | Shoot bubble|
 | 2 | Up arrow | Jump|
-<br></br>
+
 #### Special keys
 | Special keys| Functions|
 | --- | --- | 
@@ -39,9 +39,6 @@
 | 2 | Go to level 2|
 | 3 | Go to level 3|
 | 4 | Go to level 4|
-<br></br>
-[github link](https://github.com/Aniolobolo/Bubble-Bobble-WCG)
-<br></br>
 ## Team Members
 Asier Ulloa García-Obledo
 - Code / Design
@@ -53,3 +50,5 @@ Aniol López Ortega
 <br></br>
 <img src="https://github.com/Aniolobolo/Bubble-Bobble-WCG/blob/main/wiki_images/Team%20skull.jpeg" width="400" height="500">
 <img src="https://github.com/Aniolobolo/Bubble-Bobble-WCG/blob/main/wiki_images/team%20magos.png" width="400" height="500">
+
+[github link](https://github.com/Aniolobolo/Bubble-Bobble-WCG)
