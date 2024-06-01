@@ -12,7 +12,8 @@
 ### The controls for the game are very simple here is the manual:
 <br></br>
 
-####Player controls
+#### Player controls
+
 | Player| button| Function|
 | 1 | a | Move left|
 | 1 | d | Move right|
