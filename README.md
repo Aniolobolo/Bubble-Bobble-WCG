@@ -22,9 +22,8 @@
 | 2 | Up arrow | Jump|
 
 ##### Special keys
-* Special keys :Functions
 
-* SpaceBar:Insert coin
+* SpaceBar:   Insert coin
 * F1:   Show collisions
 * F2:   God mode P1
 * F3:   God mode P2
