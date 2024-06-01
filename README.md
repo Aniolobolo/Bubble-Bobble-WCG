@@ -25,16 +25,19 @@
 * Special keys :Functions
 
 * SpaceBar:Insert coin
-* F1:Show collisions
-* F2: God mode P1
-* F3: God mode P2
-* I: Enable P2
-* P: Instant win
-* O: Instant Lose
-* 1: Go to level 1
-* 2: Go to level 2
-* 3: Go to level 3
-* 4: Go to level 4
+* F1:   Show collisions
+* F2:   God mode P1
+* F3:   God mode P2
+* I:   Enable P2
+* P:   Instant win
+* O:   Instant Lose
+* 1:   Go to level 1
+* 2:   Go to level 2
+* 3:   Go to level 3
+* 4:   Go to level 4
+* T:   Invader shot
+* Y:   Mighta shot
+* U:   Drunk shot
 ## Team Members
 Asier Ulloa García-Obledo
 - Code / Design
