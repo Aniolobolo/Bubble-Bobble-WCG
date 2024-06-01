@@ -1,6 +1,6 @@
 # Bubble Bobble 
-<iframe width="740" height="590" src="https://github.com/Aniolobolo/Bubble-Bobble-WCG/blob/main/wiki_images/Poster1.png"></iframe>
-<img src="https://github.com/Aniolobolo/Bubble-Bobble-WCG/blob/main/wiki_images/Poster1.png">
+
+<img  width="600" height="700" src="https://github.com/Aniolobolo/Bubble-Bobble-WCG/blob/main/wiki_images/Poster1.png">
 
 ## Bubble Bobble is an arcade videogame made in 1986 by Taito. This game is an action-platformer where the protagonists, Bub and Bob, try to rescue their girlfriends as they navigate through a series of single-screen levels filled with enemies. In order to win you have to blow up in bubbles all the enemies and then you get points in order to advance to the next level, be careful with the enemies, if you bump into them 3 times, you lose.
 
@@ -44,7 +44,7 @@ Aniol López Ortega
 - Code / Management
 - [Aniolobolo](https://github.com/Aniolobolo)
 
-<img src="https://github.com/Aniolobolo/Bubble-Bobble-WCG/blob/main/wiki_images/Team%20skull.jpeg" >
-<img src="https://github.com/Aniolobolo/Bubble-Bobble-WCG/blob/main/wiki_images/team%20magos.png" >
+<img width="400" height="500" src="https://github.com/Aniolobolo/Bubble-Bobble-WCG/blob/main/wiki_images/Team%20skull.jpeg" >
+<img width="400" height="500" src="https://github.com/Aniolobolo/Bubble-Bobble-WCG/blob/main/wiki_images/team%20magos.png" >
 
 [github link](https://github.com/Aniolobolo/Bubble-Bobble-WCG)
