@@ -37,7 +37,8 @@
 * T:   Invader shot
 * Y:   Mighta shot
 * U:   Drunk shot
-## Team Members
+
+## Team members
 Asier Ulloa García-Obledo
 - Code / Design
 - [AsiGamer2](https://github.com/AsiGamer2)
