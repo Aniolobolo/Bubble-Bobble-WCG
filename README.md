@@ -15,11 +15,11 @@
 #### Player controls
 
 | Player| button| Function|
+| --- | --- | --- |
 | 1 | a | Move left|
 | 1 | d | Move right|
 | 1 | s | Shoot bubble|
 | 1 | w | Jump|
-
 | 2 | Left arrow | Move left|
 | 2 | Right arrow | Move right|
 | 2 | Down arrow | Shoot bubble|
@@ -27,6 +27,7 @@
 <br></br>
 #### Special keys
 | Special keys| Functions|
+| --- | --- | 
 | SpaceBar| Insert coin|
 | F1| Show collisions|
 | F2| God mode P1|
