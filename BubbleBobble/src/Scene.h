@@ -74,8 +74,8 @@ private:
     TileMap *level;
     Text* font1;
     float waitForAnimTimer = 0;
-    int goal_score[3];
-    int actualLevel;
+    int enemiesToKill[4];
+    int actualLevel = 1;
     std::vector<Object*> objects;
     Object* object;
     std::vector<Enemy*> enemies;
@@ -98,6 +98,8 @@ private:
     float mightaCooldown;
     int objectChosen;
     int posChosen;
+    float enemiesKilled = 0;
+    float timeToNextLevel = 0;
     float timeToDie = 0;
 
     bool canSpawnObjects = false;

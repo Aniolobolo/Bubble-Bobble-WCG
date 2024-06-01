@@ -445,7 +445,7 @@ void Player::Update()
 				godMode = !godMode;
 			}
 
-			if (IsKeyPressed(KEY_ONE) || IsKeyPressed(KEY_TWO) || IsKeyPressed(KEY_THREE)) {
+			if (IsKeyPressed(KEY_ONE) || IsKeyPressed(KEY_TWO) || IsKeyPressed(KEY_THREE) || IsKeyPressed(KEY_FOUR)) {
 				state = State::IDLE;
 				SetAnimation((int)PlayerAnim::IDLE_RIGHT);
 			}
@@ -528,7 +528,7 @@ void Player::MoveY()
 			//	if (map->TestOnLadder(box, &pos.x))
 			//		StartClimbingUp();
 			//}
-			if (IsKeyPressed(KEY_Q) && state != State::DEAD)
+			if (IsKeyPressed(KEY_W) && state != State::DEAD)
 			{
 				StartJumping();
 			}

@@ -470,7 +470,7 @@ void Player2::Update()
 				godMode = !godMode;
 			}
 
-			if (IsKeyPressed(KEY_ONE) || IsKeyPressed(KEY_TWO) || IsKeyPressed(KEY_THREE)) {
+			if (IsKeyPressed(KEY_ONE) || IsKeyPressed(KEY_TWO) || IsKeyPressed(KEY_THREE) || IsKeyPressed(KEY_FOUR)) {
 				state = eState::IDLE;
 				SetAnimation((int)Player2Anim::IDLE_LEFT);
 			}
