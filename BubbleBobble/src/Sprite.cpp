@@ -60,19 +60,21 @@ bool Sprite::IsAnimationComplete() const
 }
 void Sprite::Update()
 {
-    /*Both animation modes (automatic and manual) are carry out with animation delay*/
-    if (current_delay > 0)
-    {
-        current_delay--;
-        if (current_delay == 0)
+    if (this != nullptr) {
+        /*Both animation modes (automatic and manual) are carry out with animation delay*/
+        if (current_delay > 0)
         {
-            //Only automatic animation mode advances next frame
-            if (mode == AnimMode::AUTOMATIC)
+            current_delay--;
+            if (current_delay == 0)
             {
-                current_frame++;
-                current_frame %= animations[current_anim].frames.size();
-                current_delay = animations[current_anim].delay;
-                animation_complete = (current_frame == 0);
+                //Only automatic animation mode advances next frame
+                if (mode == AnimMode::AUTOMATIC)
+                {
+                    current_frame++;
+                    current_frame %= animations[current_anim].frames.size();
+                    current_delay = animations[current_anim].delay;
+                    animation_complete = (current_frame == 0);
+                }
             }
         }
     }

@@ -238,18 +238,18 @@ AppStatus Scene::LoadLevel(int stage)
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
-			1,   1,   50,   0,   0,   0,   0,   150,   0,   0,   0,   154,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
+			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   102,   0,   0,   102,   0,   0,   102,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   80,   80,   53,   0,   0,   80,   80,   80,   80,   80,   80,   80,   80,   80,   80,   80,   80,   80,   80,	  80,   80,   80,   80, 53, 0, 0, 80, 80, 1, 1,
 			1,   1,   51,  52,  54,   0,   0,   55,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52, 54, 0, 0, 55, 52, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
-			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   151,	  0,   0,   0,   153, 0, 0, 0, 0, 0, 1, 1,
+			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   80,   80,   53,   0,   0,   80,   80,   80,   80,   80,   80,   80,   80,   80,   80,   80,   80,   80,   80,	  80,   80,   80,   80, 53, 0, 0, 80, 80, 1, 1,
 			1,   1,   51,  52,  54,   0,   0,   55,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52, 54, 0, 0, 55, 52, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
-			1,   1,   50,   0,   0,   0,   0,   152,   0,   0,   0,   154,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
+			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   50,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,	  0,   0,   0,   0, 0, 0, 0, 0, 0, 1, 1,
 			1,   1,   80,   80,   53,   0,   0,   80,   80,   80,   80,   80,   80,   80,   80,   80,   80,   80,   80,   80,   80,	  80,   80,   80,   80, 53, 0, 0, 80, 80, 1, 1,
 			1,   1,   51,  52,  54,   0,   0,   55,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52,  52, 54, 0, 0, 55, 52, 1, 1,
@@ -274,7 +274,7 @@ AppStatus Scene::LoadLevel(int stage)
 			2, 2, 57, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 60, 0, 0, 0, 61, 58, 58, 58, 58, 58, 58, 2, 2,
 			2, 2, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2,
 			2, 2, 56, 103, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2,
-			2, 2, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 154, 0, 0, 0, 2, 59, 0, 0, 2, 59, 0, 0, 154, 0, 0, 2, 2,
+			2, 2, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 59, 0, 0, 2, 59, 0, 0, 0, 0, 0, 2, 2,
 			2, 2, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 56, 0, 0, 2, 2, 2, 2, 2, 59, 0, 2, 2,
 			2, 2, 56, 0, 0, 0, 0, 0, 0, 0, 103, 0, 0, 0, 0, 2, 57, 58, 58, 58, 60, 0, 0, 61, 58, 58, 58, 2, 56, 0, 2, 2,
 			2, 2, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 81, 81, 81, 2, 59, 0, 0, 2, 2, 81, 81, 2, 56, 0, 2, 2,
@@ -284,11 +284,11 @@ AppStatus Scene::LoadLevel(int stage)
 			2, 2, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 59, 103, 0, 2, 81, 56, 0, 0, 0, 0, 2, 2,
 			2, 2, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 61, 2, 56, 0, 0, 2, 57, 60, 0, 0, 0, 0, 2, 2,
 			2, 2, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 56, 0, 103, 2, 2, 59, 0, 0, 0, 0, 2, 2,
-			2, 2, 56, 0, 0, 0, 0, 0, 0, 154, 0, 0, 0, 0, 154, 0, 0, 2, 2, 57, 60, 0, 0, 61, 2, 2, 59, 0, 0, 0, 2, 2,
+			2, 2, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 00, 0, 0, 2, 2, 57, 60, 0, 0, 61, 2, 2, 59, 0, 0, 0, 2, 2,
 			2, 2, 56, 0, 0, 0, 2, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 2, 57, 60, 0, 0, 0, 0, 61, 2, 56, 0, 0, 0, 2, 2,
 			2, 2, 56, 0, 0, 2, 2, 57, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 60, 0, 0, 0, 0, 0, 0, 2, 56, 0, 0, 0, 2, 2,
 			2, 2, 56, 0, 2, 2, 57, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 56, 0, 0, 0, 2, 2,
-			2, 2, 56, 0, 2, 57, 60, 0, 0, 0, 0, 154, 0, 0, 0, 0, 154, 0, 0, 0, 0, 0, 0, 0, 2, 2, 56, 0, 0, 0, 2, 2,
+			2, 2, 56, 0, 2, 57, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 56, 0, 0, 0, 2, 2,
 			2, 2, 56, 0, 2, 56, 0, 0, 0, 2, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 2, 57, 60, 0, 0, 0, 2, 2,
 			2, 2, 56, 0, 2, 56, 0, 0, 2, 2, 57, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 60, 0, 0, 0, 0, 2, 2,
 			2, 2, 56, 0, 2, 56, 0, 0, 2, 57, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2,
@@ -307,15 +307,15 @@ AppStatus Scene::LoadLevel(int stage)
 			10, 11, 63, 64, 64, 64, 64, 64, 64, 66, 0, 0, 0, 67, 64, 64, 64, 64, 64, 66, 0, 0, 0, 67, 64, 64, 64, 64, 64, 64, 10, 11,
 			8, 9, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 9,
 			10, 11, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 11,
-			8, 9, 62, 0, 0, 154, 0, 0, 104, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 154, 0, 0, 0, 8, 9,
+			8, 9, 62, 0, 0, 0, 0, 0, 104, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 9,
 			10, 11, 62, 0, 0, 82, 82, 82, 82, 65, 0, 0, 0, 0, 0, 82, 82, 65, 0, 0, 0, 0, 0, 82, 82, 82, 82, 65, 0, 0, 10, 11,
 			8, 9, 62, 0, 0, 67, 64, 64, 64, 66, 0, 0, 0, 0, 0, 67, 64, 66, 0, 0, 0, 0, 0, 67, 64, 64, 64, 66, 0, 0, 8, 9,
 			10, 11, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 11,
-			8, 9, 62, 0, 0, 154, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 154, 0, 0, 0, 8, 9,
+			8, 9, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 9,
 			10, 11, 62, 0, 82, 82, 82, 82, 65, 0, 0, 0, 0, 0, 82, 82, 82, 82, 65, 0, 0, 0, 0, 0, 82, 82, 82, 82, 65, 0, 10, 11,
 			8, 9, 62, 0, 67, 64, 64, 64, 66, 0, 0, 0, 0, 0, 67, 64, 64, 64, 66, 0, 0, 0, 0, 0, 67, 64, 64, 64, 66, 0, 8, 9,
 			10, 11, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 11,
-			8, 9, 62, 0, 0, 0, 0, 154, 0, 0, 0, 0, 0, 0, 154, 0, 0, 154, 0, 0, 0, 0, 0, 0, 154, 0, 0, 0, 0, 0, 8, 9,
+			8, 9, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 9,
 			10, 11, 62, 0, 0, 82, 82, 82, 82, 65, 0, 0, 0, 82, 82, 82, 82, 82, 82, 65, 0, 0, 0, 82, 82, 82, 82, 65, 0, 0, 10, 11,
 			8, 9, 62, 0, 0, 67, 64, 64, 64, 66, 0, 0, 0, 67, 64, 64, 64, 64, 64, 66, 0, 0, 0, 67, 64, 64, 64, 66, 0, 0, 8, 9,
 			10, 11, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 11,
@@ -549,6 +549,9 @@ void Scene::deletePBubbles()
 			delete* check;
 			check = playerBubbles.erase(check);
 		}
+		else if ((*check)->popped) {
+			(*check)->bubbleLifetime = 7;
+		}
 		else {
 			++check;
 		}
@@ -606,6 +609,9 @@ void Scene::deleteP2Bubbles()
 			delete* check;
 			check = player2Bubbles.erase(check);
 		}
+		else if ((*check)->popped) {
+			(*check)->bubbleLifetime = 7;
+		}
 		else {
 			++check;
 		}
@@ -644,9 +650,27 @@ void Scene::DrunkShotSpawn()
 				}
 			}
 
-
 		}
 
+	}
+	else {
+		for (Enemy* enemy : enemies) {
+			if (IsKeyPressed(KEY_U)) {
+				DrunkShot* shot = new DrunkShot(enemy->GetPos(), ShotDirections::LEFT);
+				shot->Initialise();
+				dShots.push_back(shot);
+			}
+			if (IsKeyPressed(KEY_T)) {
+				InvaderShot* shot = new InvaderShot(enemy->GetPos());
+				shot->Initialise();
+				iShots.push_back(shot);
+			}
+			if (IsKeyPressed(KEY_Y)) {
+				MightaShot* shot = new MightaShot(enemy->GetPos(), mShotDirections::LEFT);
+				shot->Initialise();
+				mShots.push_back(shot);
+			}
+		}
 	}
 }
 
@@ -685,6 +709,25 @@ void Scene::InvaderShotSpawn()
 		}
 		
 
+	}
+	else {
+		for (Enemy* enemy : enemies) {
+			if (IsKeyPressed(KEY_U)) {
+				DrunkShot* shot = new DrunkShot(enemy->GetPos(), ShotDirections::LEFT);
+				shot->Initialise();
+				dShots.push_back(shot);
+			}
+			if (IsKeyPressed(KEY_T)) {
+				InvaderShot* shot = new InvaderShot(enemy->GetPos());
+				shot->Initialise();
+				iShots.push_back(shot);
+			}
+			if (IsKeyPressed(KEY_Y)) {
+				MightaShot* shot = new MightaShot(enemy->GetPos(), mShotDirections::LEFT);
+				shot->Initialise();
+				mShots.push_back(shot);
+			}
+		}
 	}
 }
 
@@ -733,11 +776,32 @@ void Scene::MightaShotSpawn()
 						mightaCooldown = 0;
 						waitForAnimTimer = 0;
 					}
+
+					
 				}
 				
 			
 		}
 
+	}
+	else {
+		for (Enemy* enemy : enemies) {
+			if (IsKeyPressed(KEY_U)) {
+				DrunkShot* shot = new DrunkShot(enemy->GetPos(), ShotDirections::LEFT);
+				shot->Initialise();
+				dShots.push_back(shot);
+			}
+			if (IsKeyPressed(KEY_T)) {
+				InvaderShot* shot = new InvaderShot(enemy->GetPos());
+				shot->Initialise();
+				iShots.push_back(shot);
+			}
+			if (IsKeyPressed(KEY_Y)) {
+				MightaShot* shot = new MightaShot(enemy->GetPos(), mShotDirections::LEFT);
+				shot->Initialise();
+				mShots.push_back(shot);
+			}
+		}
 	}
 }
 
@@ -756,11 +820,165 @@ void Scene::deleteMightaShot()
 	}
 }
 
+void Scene::ObjectSpawn()
+{
+	objectChosen = GetRandomValue(1, 5);
+	posChosen = GetRandomValue(1, 4);
+	Point pos;
+	Object* obj;
+
+	switch (objectChosen)
+	{
+	case 1:
+		switch (posChosen)
+		{
+		case 1:
+			pos.x = 64;
+			pos.y = 86;
+			break;
+		case 2:
+			pos.x = 176;
+			pos.y = 86;
+			break;
+		case 3:
+			pos.x = 64;
+			pos.y = 162;
+			break;
+		case 4:
+			pos.x = 176;
+			pos.y = 162;
+			break;
+		default:
+			LOG("Position not set... Object did not spawn.");
+			return;
+		}
+		obj = new Object(pos, ObjectType::ITEM_CHERRY);
+		break;
+	case 2:
+		switch (posChosen)
+		{
+		case 1:
+			pos.x = 64;
+			pos.y = 86;
+			break;
+		case 2:
+			pos.x = 176;
+			pos.y = 86;
+			break;
+		case 3:
+			pos.x = 64;
+			pos.y = 162;
+			break;
+		case 4:
+			pos.x = 176;
+			pos.y = 162;
+			break;
+		default:
+			LOG("Position not set... Object did not spawn.");
+			return;
+		}
+		obj = new Object(pos, ObjectType::ITEM_BANANA);
+		break;
+	case 3:
+		switch (posChosen)
+		{
+		case 1:
+			pos.x = 64;
+			pos.y = 86;
+			break;
+		case 2:
+			pos.x = 176;
+			pos.y = 86;
+			break;
+		case 3:
+			pos.x = 64;
+			pos.y = 162;
+			break;
+		case 4:
+			pos.x = 176;
+			pos.y = 162;
+			break;
+		default:
+			LOG("Position not set... Object did not spawn.");
+			return;
+		}
+		obj = new Object(pos, ObjectType::ITEM_BEER);
+		break;
+	case 4:
+		switch (posChosen)
+		{
+		case 1:
+			pos.x = 64;
+			pos.y = 86;
+			break;
+		case 2:
+			pos.x = 176;
+			pos.y = 86;
+			break;
+		case 3:
+			pos.x = 64;
+			pos.y = 162;
+			break;
+		case 4:
+			pos.x = 176;
+			pos.y = 162;
+			break;
+		default:
+			LOG("Position not set... Object did not spawn.");
+			return;
+		}
+		obj = new Object(pos, ObjectType::ITEM_BORGER);
+		break;
+	case 5:
+		switch (posChosen)
+		{
+		case 1:
+			pos.x = 64;
+			pos.y = 86;
+			break;
+		case 2:
+			pos.x = 176;
+			pos.y = 86;
+			break;
+		case 3:
+			pos.x = 64;
+			pos.y = 162;
+			break;
+		case 4:
+			pos.x = 176;
+			pos.y = 162;
+			break;
+		default:
+			LOG("Position not set... Object did not spawn.");
+			return;
+		}
+		obj = new Object(pos, ObjectType::ITEM_WATERMELON);
+		break;
+	default:
+		LOG("Object type not set... Object did not spawn.");
+		return;
+	}
+
+	if (obj != nullptr)
+	{
+		objects.push_back(obj);
+	}
+}
+
+
 
 void Scene::Update()
 {
 	Point p1, p2;
 	AABB box;
+
+	objectSpawnTimer += GetFrameTime();
+
+	if (objectSpawnTimer >= 6.0f) {
+		ObjectSpawn();
+		objectSpawnTimer = 0;
+	}
+
 	PlayerBubbleSpawn();
 	Player2BubbleSpawn();
 	DrunkShotSpawn();
@@ -771,6 +989,7 @@ void Scene::Update()
 	deleteDrunkShot();
 	deleteInvaderShot();
 	deleteMightaShot();
+
 	//Switch between the different debug modes: off, on (sprites & hitboxes), on (hitboxes) 
 	if (IsKeyPressed(KEY_F1))
 	{
@@ -890,6 +1109,9 @@ void Scene::CheckCollisions()
 
 	CheckPlayerProjectileCollisions(player_box);
 	CheckPlayer2ProjectileCollisions(player2_box);
+
+	CheckPlayerBubbleCollisions(player_box);
+	CheckPlayer2BubbleCollisions(player2_box);
 
 	
 }
@@ -1038,6 +1260,29 @@ void Scene::CheckPlayerProjectileCollisions(const AABB& player_box)
 	}
 }
 
+void Scene::CheckPlayerBubbleCollisions(const AABB& player_box)
+{
+	auto it = playerBubbles.begin();
+	while (it != playerBubbles.end())
+	{
+		AABB bubb_box = (*it)->GetHitbox();
+		if (player_box.TestAABB(bubb_box) && (*it)->isOnCeiling) {
+			
+			if ((*it)->isEnemyInside) {
+				ObjectSpawn();
+			}
+			// Delete the object
+			delete* it;
+			// Erase the object from the vector and get the iterator to the next valid element
+			it = playerBubbles.erase(it);
+		}
+		else {
+			++it;
+		}
+		
+	}
+}
+
 void Scene::CheckPlayer2ObjectCollisions(const AABB& player_box)
 {
 	auto it = objects.begin();
@@ -1179,6 +1424,21 @@ void Scene::CheckPlayer2ProjectileCollisions(const AABB& player_box)
 		}
 
 
+	}
+}
+
+void Scene::CheckPlayer2BubbleCollisions(const AABB& player_box)
+{
+	auto it = player2Bubbles.begin();
+	while (it != player2Bubbles.end())
+	{
+		AABB bubb_box = (*it)->GetHitbox();
+		if (player_box.TestAABB(bubb_box)) {
+			(*it)->popped = true;
+		}
+		else {
+			++it;
+		}
 	}
 }
 

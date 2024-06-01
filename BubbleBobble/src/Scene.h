@@ -36,6 +36,8 @@ public:
     void deleteInvaderShot();
     void MightaShotSpawn();
     void deleteMightaShot();
+    void ObjectSpawn();
+    void BubbleEnemySpawn();
     bool isGameOver;
     bool isGameWon;
 
@@ -47,11 +49,14 @@ private:
     void CheckBubbleEnemyCollisions();
     void CheckPlayerEnemyCollisions(const AABB& player_box);
     void CheckPlayerProjectileCollisions(const AABB& player_box);
+    void CheckPlayerBubbleCollisions(const AABB& player_box);
+
     //Player 2 collisions
     void CheckPlayer2ObjectCollisions(const AABB& player_box);
     void CheckBubble2EnemyCollisions();
     void CheckPlayer2EnemyCollisions(const AABB& player_box);
     void CheckPlayer2ProjectileCollisions(const AABB& player_box);
+    void CheckPlayer2BubbleCollisions(const AABB& player_box);
 
     void StartDying();
     void ClearLevel();
@@ -72,7 +77,9 @@ private:
     int goal_score[3];
     int actualLevel;
     std::vector<Object*> objects;
+    Object* object;
     std::vector<Enemy*> enemies;
+    Enemy* enemy;
     std::vector<PlayerBubble*> playerBubbles;
     PlayerBubble* pBubble;
     std::vector<Player2Bubble*> player2Bubbles;
@@ -89,7 +96,13 @@ private:
     float drunkCooldown;
     float invaderCooldown;
     float mightaCooldown;
+    int objectChosen;
+    int posChosen;
     float timeToDie = 0;
+
+    bool canSpawnObjects = false;
+    float objectSpawnTimer = 0;
+
     Camera2D camera;
     DebugMode debug;
 };

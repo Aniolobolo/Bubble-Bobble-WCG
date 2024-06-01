@@ -41,11 +41,20 @@ public:
 	void InvaderInside();
 	void DrunkInside();
 
-
+	bool hasZenchan = false;
+	bool hasMighta = false;
+	bool hasInvader = false;
+	bool hasDrunk = false;
+	bool canspawn = false;
+	bool popped = false;
+	float bubbleLifetime;
+	bool isOnCeiling = false;
+	BubbleState state;
+	void SetAnimation(int id);
 
 private:
 	//void DrawDebug(const Color& col) const;
-	void SetAnimation(int id);
+	
 
 	void Shot();
 	void Wander();
@@ -54,18 +63,15 @@ private:
 	void Invader();
 	void Drunk();
 
-	BubbleState state;
+	
 
-	bool hasZenchan = false;
-	bool hasMighta = false;
-	bool hasInvader = false;
-	bool hasDrunk = false;
 
+	
 	bool inShoot;
 	int bubblePosLeft;
 	int bubblePosRight;
 	float spawnTime;
-	float bubbleLifetime;
+	
 	float jumpTime;
 	float timeAlive;
 	float speed;
