@@ -3,6 +3,7 @@
 #include "TileMap.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "ParticleManager.h"
 #include "PlayerBubble.h"
 
 #define BUBBLE_PHYSICAL_SIZE	14
@@ -41,6 +42,8 @@ public:
 	void InvaderInside();
 	void DrunkInside();
 
+	void SetParticleManager(ParticleManager* particles);
+
 	bool hasZenchan = false;
 	bool hasMighta = false;
 	bool hasInvader = false;
@@ -75,5 +78,6 @@ private:
 	float jumpTime;
 	float timeAlive;
 	float speed;
+	ParticleManager* particles;
 	Player* player;
 };

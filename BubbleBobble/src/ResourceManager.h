@@ -12,6 +12,7 @@ enum class Resource {
     IMG_PROFESSORS,
     IMG_ACLARATION,
     IMG_GAMEWON,
+    IMG_GAMEGOODEND,
     IMG_GAMEOVER,
     IMG_FONT,
     IMG_PLAYER,

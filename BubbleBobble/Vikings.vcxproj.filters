@@ -70,6 +70,12 @@
     <ClCompile Include="src\MightaShot.cpp">
       <Filter>Entities\Enemies</Filter>
     </ClCompile>
+    <ClCompile Include="src\Particle.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ParticleManager.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Globals.h">
@@ -143,6 +149,12 @@
     </ClInclude>
     <ClInclude Include="src\MightaShot.h">
       <Filter>Entities\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Particle.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParticleManager.h">
+      <Filter>Entities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

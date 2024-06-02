@@ -78,11 +78,17 @@ AppStatus Game::LoadResources()
     }
     img_gameover = data.GetTexture(Resource::IMG_GAMEOVER);
 
-    if (data.LoadTexture(Resource::IMG_GAMEWON, "images/winScreen.png") != AppStatus::OK)
+    if (data.LoadTexture(Resource::IMG_GAMEWON, "images/badend.png") != AppStatus::OK)
     {
         return AppStatus::ERROR;
     }
     img_win = data.GetTexture(Resource::IMG_GAMEWON);
+
+    if (data.LoadTexture(Resource::IMG_GAMEGOODEND, "images/happyend.png") != AppStatus::OK)
+    {
+        return AppStatus::ERROR;
+    }
+    img_goodwin = data.GetTexture(Resource::IMG_GAMEGOODEND);
 
     if (data.LoadTexture(Resource::IMG_INSERTCOIN, "images/insertCoin.png") != AppStatus::OK)
     {
@@ -188,6 +194,11 @@ AppStatus Game::Update()
 
             break;
 
+        case GameState::GOODWIN:
+            if (IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_SPACE)) gState = GameState::MAIN_MENU;
+
+            break;
+
         case GameState::PLAYING:  
             if (IsKeyPressed(KEY_ESCAPE))
             {
@@ -208,8 +219,13 @@ AppStatus Game::Update()
             {
                 StopMusicStream(levelMusic);
                 FinishPlay();
+                gState = GameState::GOODWIN;
+            }
+            else if (IsKeyPressed(KEY_L))
+            {
+                StopMusicStream(levelMusic);
+                FinishPlay();
                 gState = GameState::WIN;
-
             }
             else if (scene->isGameOver == true) {
                 StopMusicStream(levelMusic);
@@ -220,6 +236,11 @@ AppStatus Game::Update()
             else if (scene->isGameWon == true) {
                 StopMusicStream(levelMusic);
                 gState = GameState::WIN;
+                
+            }
+            else if (scene->isGoodGameWon == true) {
+                StopMusicStream(levelMusic);
+                gState = GameState::GOODWIN;
             }
             else
             {
@@ -249,6 +270,10 @@ void Game::Render()
 
         case GameState::WIN:
             DrawTexture(*img_win, 0, 0, WHITE);
+            break;
+
+        case GameState::GOODWIN:
+            DrawTexture(*img_goodwin, 0, 0, WHITE);
             break;
 
         case GameState::GAMEOVER:
@@ -292,6 +317,7 @@ void Game::UnloadResources()
     data.ReleaseTexture(Resource::IMG_INSERTCOIN);
     data.ReleaseTexture(Resource::IMG_GAMEOVER);
     data.ReleaseTexture(Resource::IMG_GAMEWON);
+    data.ReleaseTexture(Resource::IMG_GAMEGOODEND);
     data.ReleaseTexture(Resource::IMG_ACLARATION);
     data.ReleaseTexture(Resource::IMG_CREDITS);
     data.ReleaseTexture(Resource::IMG_PROFESSORS);

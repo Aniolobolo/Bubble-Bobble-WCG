@@ -16,6 +16,7 @@ PlayerBubble::PlayerBubble(const Point& p, BubbleDirections d) : Entity(p, BUBBL
 	bubbleLifetime = 0;
 	spawnTime = 0;
 	player = nullptr;
+	particles = nullptr;
 	timeAlive = 8;
 	Rectangle rc;
 	inShoot = true;
@@ -140,15 +141,11 @@ AppStatus PlayerBubble::Initialise()
 }
 void PlayerBubble::Update()
 {
-	
-	if (state != BubbleState::POP) {
-		pos += dir;
-		Move(direction);
-	}
+	pos += dir;
+	Move(direction);
 	Sprite* sprite = dynamic_cast<Sprite*>(render);
 	sprite->Update();
 	if (sprite->IsAnimationComplete()) {
-		Wander();
 		Zenchan();
 		Mighta();
 		Invader();
@@ -162,31 +159,27 @@ void PlayerBubble::Shot()
 }
 void PlayerBubble::Wander()
 {
-	if(!isEnemyInside){
+	/*if(!isEnemyInside){
 		if (bubbleLifetime > 7 || popped) {
 			state = BubbleState::POP;
 			SetAnimation((int)BubbleAnim::POP);
 		}
-	}
+	}*/
 }
 
 void PlayerBubble::Zenchan()
 {
 	if (hasZenchan) {
 		state = BubbleState::ZENCHANINSIDE;
-		if (bubbleLifetime <= 3) {
+		if (bubbleLifetime <= 4) {
 			SetAnimation((int)BubbleAnim::GREENZENCHAN);
 		}
-		else if (bubbleLifetime > 3 && bubbleLifetime <= 5) {
+		else if (bubbleLifetime > 4 && bubbleLifetime <= 6) {
 			SetAnimation((int)BubbleAnim::YELLOWZENCHAN);
 		}
-		else if (bubbleLifetime > 5 && bubbleLifetime <= 7) {
+		else if (bubbleLifetime > 6 && bubbleLifetime <= 8) {
 			canspawn = true;
 			SetAnimation((int)BubbleAnim::REDZENCHAN);
-		}
-		else if (bubbleLifetime > 7 || popped) {
-			state = BubbleState::POP;
-			SetAnimation((int)BubbleAnim::POP);
 		}
 	}
 }
@@ -194,19 +187,15 @@ void PlayerBubble::Mighta()
 {
 	if (hasMighta) {
 		state = BubbleState::MIGHTAINSIDE;
-		if (bubbleLifetime <= 3) {
+		if (bubbleLifetime <= 4) {
 			SetAnimation((int)BubbleAnim::GREENMIGHTA);
 		}
-		else if (bubbleLifetime > 3 && bubbleLifetime <= 5) {
+		else if (bubbleLifetime > 4 && bubbleLifetime <= 6) {
 			SetAnimation((int)BubbleAnim::YELLOWMIGHTA);
 		}
-		else if (bubbleLifetime > 5 && bubbleLifetime <= 7) {
+		else if (bubbleLifetime > 6 && bubbleLifetime <= 8) {
 			canspawn = true;
 			SetAnimation((int)BubbleAnim::REDMIGHTA);
-		}
-		else if (bubbleLifetime > 7 || popped) {
-			state = BubbleState::POP;
-			SetAnimation((int)BubbleAnim::POP);
 		}
 	}
 }
@@ -214,19 +203,15 @@ void PlayerBubble::Invader()
 {
 	if (hasInvader) {
 		state = BubbleState::INVADERINSIDE;
-		if (bubbleLifetime <= 3) {
+		if (bubbleLifetime <= 4) {
 			SetAnimation((int)BubbleAnim::GREENINVADER);
 		}
-		else if (bubbleLifetime > 3 && bubbleLifetime <= 5) {
+		else if (bubbleLifetime > 4 && bubbleLifetime <= 6) {
 			SetAnimation((int)BubbleAnim::YELLOWINVADER);
 		}
-		else if (bubbleLifetime > 5 && bubbleLifetime <= 7) {
+		else if (bubbleLifetime > 6 && bubbleLifetime <= 8) {
 			canspawn = true;
 			SetAnimation((int)BubbleAnim::REDINVADER);
-		}
-		else if (bubbleLifetime > 7 || popped) {
-			state = BubbleState::POP;
-			SetAnimation((int)BubbleAnim::POP);
 		}
 	}
 }
@@ -234,19 +219,15 @@ void PlayerBubble::Drunk()
 {
 	if (hasDrunk) {
 		state = BubbleState::DRUNKINSIDE;
-		if (bubbleLifetime <= 3) {
+		if (bubbleLifetime <= 4) {
 			SetAnimation((int)BubbleAnim::GREENDRUNK);
 		}
-		else if (bubbleLifetime > 3 && bubbleLifetime <= 5) {
+		else if (bubbleLifetime > 4 && bubbleLifetime <= 6) {
 			SetAnimation((int)BubbleAnim::YELLOWDRUNK);
 		}
-		else if (bubbleLifetime > 5 && bubbleLifetime <= 7) {
+		else if (bubbleLifetime > 6 && bubbleLifetime <= 8) {
 			canspawn = true;
 			SetAnimation((int)BubbleAnim::REDDRUNK);
-		}
-		else if (bubbleLifetime > 7 || popped) {
-			state = BubbleState::POP;
-			SetAnimation((int)BubbleAnim::POP);
 		}
 	}
 }
@@ -337,6 +318,10 @@ void PlayerBubble::InvaderInside()
 void PlayerBubble::DrunkInside()
 {
 	hasDrunk = true;
+}
+void PlayerBubble::SetParticleManager(ParticleManager* particles)
+{
+	this->particles = particles;
 }
 void PlayerBubble::JumpOnBubble()
 {

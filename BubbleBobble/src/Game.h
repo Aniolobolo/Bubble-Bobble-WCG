@@ -2,7 +2,7 @@
 #include "Globals.h"
 #include "Scene.h"
 
-enum class GameState { MAIN_MENU, ACLARATION, PROFESSORS, INSERT_COIN, GAMEOVER, WIN, PLAYING, SETTINGS, CREDITS };
+enum class GameState { MAIN_MENU, ACLARATION, PROFESSORS, INSERT_COIN, GAMEOVER, WIN, GOODWIN, PLAYING, SETTINGS, CREDITS };
 
 class Game
 {
@@ -31,6 +31,7 @@ private:
     const Texture2D* img_credits;
     const Texture2D* img_profs;
     const Texture2D* img_win;
+    const Texture2D* img_goodwin;
     const Texture2D *img_gameover;
     const Texture2D *img_insertcoin;
 

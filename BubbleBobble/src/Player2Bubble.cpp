@@ -16,6 +16,7 @@ Player2Bubble::Player2Bubble(const Point& p, Bubble2Directions d) : Entity(p, BU
 	bubbleLifetime = 0;
 	spawnTime = 0;
 	player2 = nullptr;
+	particles = nullptr;
 	timeAlive = 8;
 	Rectangle rc;
 	inShoot = true;
@@ -141,18 +142,20 @@ AppStatus Player2Bubble::Initialise()
 }
 void Player2Bubble::Update()
 {
-	if (state != Bubble2State::POP) {
-		pos += dir;
-		Move(direction);
-	}
+	pos += dir;
+	Move(direction);
 	Sprite* sprite = dynamic_cast<Sprite*>(render);
 	sprite->Update();
 	if (sprite->IsAnimationComplete()) {
-		Wander();
 		Zenchan();
 		Mighta();
 		Invader();
 		Drunk();
+	}
+	if (!isAlive() ) {
+		Point p;
+		p.x = pos.x - (TILE_SIZE - BUBBLE_FRAME_SIZE) / 2;
+		p.y = pos.y - (TILE_SIZE - BUBBLE_FRAME_SIZE) / 2;
 	}
 }
 
@@ -164,30 +167,27 @@ void Player2Bubble::Shot()
 
 void Player2Bubble::Wander()
 {
-	if (!isEnemyInside) {
-		if (bubbleLifetime > 7 || popped) {
-			state = Bubble2State::POP;
-			SetAnimation((int)Bubble2Anim::POP);
-		}
-	}
+	//if (!isEnemyInside) {
+	//	if (bubbleLifetime > 7 || popped) {
+	//		state = Bubble2State::POP;
+	//		SetAnimation((int)Bubble2Anim::POP);
+	//	}
+	//}
 }
+
 
 void Player2Bubble::Zenchan()
 {
 	if (hasZenchan) {
 		state = Bubble2State::ZENCHANINSIDE;
-		if (bubbleLifetime <= 3) {
+		if (bubbleLifetime <= 4) {
 			SetAnimation((int)Bubble2Anim::GREENZENCHAN);
 		}
-		else if (bubbleLifetime > 3 && bubbleLifetime <= 5) {
+		else if (bubbleLifetime > 4 && bubbleLifetime <= 6) {
 			SetAnimation((int)Bubble2Anim::YELLOWZENCHAN);
 		}
-		else if (bubbleLifetime > 5 && bubbleLifetime <= 7) {
+		else if (bubbleLifetime > 6 && bubbleLifetime <= 8) {
 			SetAnimation((int)Bubble2Anim::REDZENCHAN);
-		}
-		else if (bubbleLifetime > 7 || popped) {
-			state = Bubble2State::POP;
-			SetAnimation((int)Bubble2Anim::POP);
 		}
 	}
 }
@@ -195,18 +195,14 @@ void Player2Bubble::Mighta()
 {
 	if (hasMighta) {
 		state = Bubble2State::MIGHTAINSIDE;
-		if (bubbleLifetime <= 3) {
+		if (bubbleLifetime <= 4) {
 			SetAnimation((int)Bubble2Anim::GREENMIGHTA);
 		}
-		else if (bubbleLifetime > 3 && bubbleLifetime <= 5) {
+		else if (bubbleLifetime > 4 && bubbleLifetime <= 6) {
 			SetAnimation((int)Bubble2Anim::YELLOWMIGHTA);
 		}
-		else if (bubbleLifetime > 5 && bubbleLifetime <= 7) {
+		else if (bubbleLifetime > 6 && bubbleLifetime <= 8) {
 			SetAnimation((int)Bubble2Anim::REDMIGHTA);
-		}
-		else if (bubbleLifetime > 7 || popped) {
-			state = Bubble2State::POP;
-			SetAnimation((int)Bubble2Anim::POP);
 		}
 	}
 }
@@ -214,18 +210,14 @@ void Player2Bubble::Invader()
 {
 	if (hasInvader) {
 		state = Bubble2State::INVADERINSIDE;
-		if (bubbleLifetime <= 3) {
+		if (bubbleLifetime <= 4) {
 			SetAnimation((int)Bubble2Anim::GREENINVADER);
 		}
-		else if (bubbleLifetime > 3 && bubbleLifetime <= 5) {
+		else if (bubbleLifetime > 4 && bubbleLifetime <= 6) {
 			SetAnimation((int)Bubble2Anim::YELLOWINVADER);
 		}
-		else if (bubbleLifetime > 5 && bubbleLifetime <= 7) {
+		else if (bubbleLifetime > 6 && bubbleLifetime <= 8) {
 			SetAnimation((int)Bubble2Anim::REDINVADER);
-		}
-		else if (bubbleLifetime > 7 || popped) {
-			state = Bubble2State::POP;
-			SetAnimation((int)Bubble2Anim::POP);
 		}
 	}
 }
@@ -233,18 +225,14 @@ void Player2Bubble::Drunk()
 {
 	if (hasDrunk) {
 		state = Bubble2State::DRUNKINSIDE;
-		if (bubbleLifetime <= 3) {
+		if (bubbleLifetime <= 4) {
 			SetAnimation((int)Bubble2Anim::GREENDRUNK);
 		}
-		else if (bubbleLifetime > 3 && bubbleLifetime <= 5) {
+		else if (bubbleLifetime > 4 && bubbleLifetime <= 6) {
 			SetAnimation((int)Bubble2Anim::YELLOWDRUNK);
 		}
-		else if (bubbleLifetime > 5 && bubbleLifetime <= 7) {
+		else if (bubbleLifetime > 6 && bubbleLifetime <= 8) {
 			SetAnimation((int)Bubble2Anim::REDDRUNK);
-		}
-		else if (bubbleLifetime > 7 || popped) {
-			state = Bubble2State::POP;
-			SetAnimation((int)Bubble2Anim::POP);
 		}
 	}
 }
@@ -335,6 +323,10 @@ void Player2Bubble::InvaderInside()
 void Player2Bubble::DrunkInside()
 {
 	hasDrunk = true;
+}
+void Player2Bubble::SetParticleManager(ParticleManager* particles)
+{
+	this->particles = particles;
 }
 void Player2Bubble::JumpOnBubble()
 {

@@ -10,6 +10,7 @@
 #include "DrunkShot.h"
 #include "InvaderShot.h"
 #include "MightaShot.h"
+#include "ParticleManager.h"
 #include "Text.h"
 
 enum class DebugMode { OFF, SPRITES_AND_HITBOXES, ONLY_HITBOXES, SIZE };
@@ -40,6 +41,8 @@ public:
     void BubbleEnemySpawn();
     bool isGameOver;
     bool isGameWon;
+    bool isGoodGameWon;
+    bool isP2Playing;
 
 private:
 
@@ -104,6 +107,8 @@ private:
 
     bool canSpawnObjects = false;
     float objectSpawnTimer = 0;
+
+    ParticleManager* particles;
 
     Camera2D camera;
     DebugMode debug;

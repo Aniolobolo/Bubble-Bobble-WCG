@@ -15,6 +15,7 @@ Scene::Scene()
 	dShot = nullptr;
 	iShot = nullptr;
 	mShot = nullptr;
+	particles = nullptr;
 	camera.target = { 0, 0 };				//Center of the screen
 	camera.offset = { 0, MARGIN_GUI_Y };	//Offset from the target (center of the screen)
 	camera.rotation = 0.0f;					//No rotation
@@ -542,15 +543,9 @@ void Scene::deletePBubbles()
 	while (check != playerBubbles.end()) {
 		
 		if (!(*check)->isAlive()) {
-			// Si hay un enemigo dentro de la burbuja
-			
 
-			// Libera la memoria de la burbuja
 			delete* check;
 			check = playerBubbles.erase(check);
-		}
-		else if ((*check)->popped) {
-			(*check)->bubbleLifetime = 7;
 		}
 		else {
 			++check;
@@ -602,10 +597,6 @@ void Scene::deleteP2Bubbles()
 	while (check != player2Bubbles.end()) {
 
 		if (!(*check)->isAlive()) {
-			// Si hay un enemigo dentro de la burbuja
-
-
-			// Libera la memoria de la burbuja
 			delete* check;
 			check = player2Bubbles.erase(check);
 		}
@@ -1278,6 +1269,10 @@ void Scene::Update()
 		ObjectSpawn();
 	}
 
+	if (IsKeyPressed(KEY_I)) {
+		isP2Playing = true;
+	}
+
 	PlayerBubbleSpawn();
 	Player2BubbleSpawn();
 	DrunkShotSpawn();
@@ -1323,8 +1318,11 @@ void Scene::Update()
 			actualLevel++;
 			enemiesKilled = 0;
 
-			if (actualLevel > 4) {
+			if (actualLevel > 4 && !isP2Playing) {
 				isGameWon = true;
+			}
+			else if (actualLevel > 4 && isP2Playing) {
+				isGoodGameWon = true;
 			}
 
 			LoadLevel(actualLevel);
@@ -1569,6 +1567,7 @@ void Scene::CheckPlayerBubbleCollisions(const AABB& player_box)
 			if ((*it)->isEnemyInside) {
 				ObjectSpawn();
 			}
+
 			// Delete the object
 			delete* it;
 			// Erase the object from the vector and get the iterator to the next valid element
