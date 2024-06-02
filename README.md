@@ -28,7 +28,8 @@
 * F2:   God mode P1
 * F3:   God mode P2
 * I:   Enable P2
-* P:   Intsant Win
+* P:   Good Ending
+* L:   Bad Ending
 * O:   Instant Lose
 * 1:   Go to level 1
 * 2:   Go to level 2
