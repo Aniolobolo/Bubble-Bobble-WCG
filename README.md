@@ -53,3 +53,5 @@ Aniol López Ortega
 <img width="400" height="500" src="https://github.com/Aniolobolo/Bubble-Bobble-WCG/blob/main/wiki_images/team%20magos.png?raw=true" >
 
 [github link](https://github.com/Aniolobolo/Bubble-Bobble-WCG)
+[Youtube gameplay](https://www.youtube.com/watch?v=2FvbT-4dxNY)
+[Release Link]( https://github.com/Aniolobolo/Bubble-Bobble-WCG/releases/tag/FinalRelease)
